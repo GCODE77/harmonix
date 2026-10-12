@@ -1,6 +1,7 @@
 /* 노래 만들기 회귀 테스트 (v108).  앱을 http 로 열고 콘솔에:  const m=await import('./test/song.test.js'); await m.default();
    합성한 "허밍"(배음·비브라토·숨소리 잡음, 박자를 살짝 흔듦)을 분석에 넣어 음·박·조·코드가 나오는지, 편곡·WAV·MIDI·악보 보내기가 도는지 본다.
    사용자의 지난 노래(konti:smlast)는 갈무리했다 되돌린다. */
+function smChartName0(){ const c=SM.chords[0]; return showChord({root:mod(c.root+SM.transp),suffix:c.suffix,bass:c.bass==null?null:mod(c.bass+SM.transp)},0,smPref()); }
 export default async function songTest(){
   const T=[]; let pass=0, fail=0; const ok=(n,c,i)=>{ T.push({name:n,cond:c}); if(c)pass++; else{ fail++; console.warn('✗',n,i); } };
   const keep=localStorage.getItem('konti:smlast'), shown=KB.shown, snap=JSON.parse(JSON.stringify({notes:SM.notes,chords:SM.chords,bpm:SM.bpm,recBpm:SM.recBpm,key:SM.key,style:SM.style,tr:SM.tr,lyric:SM.lyric,transp:SM.transp}));
@@ -42,6 +43,14 @@ export default async function songTest(){
     SM.sel=11; $('smadd').click(); ok('음 넣기',SM.notes.length===13); $('smdel').click(); ok('음 지우기',SM.notes.length===12);
     smChordPop(0); $('smchin').value='Am'; $('smchok').click(); ok('코드 직접 바꾸기',SM.chords[0].root===9&&SM.chords[0].suffix==='m'&&$('smpop').hidden);
     SM.transp=2; ok('조를 옮기면 내 목소리는 빠진다',!smVoiceOk()); SM.transp=0;
+    // 코드 악보
+    smRender(); const cb=document.querySelectorAll('#smchart .smcbar');
+    ok('코드 악보: 마디 4칸에 코드·가사',cb.length===4&&cb[0].querySelector('b').textContent===smChartName0()&&cb[0].querySelector('span').textContent==='학교종이',cb.length&&cb[0].textContent);
+    // 듣기 — 녹음 뒤(오디오 엔진을 새로 띄운 뒤)에도 실제로 소리가 나온다
+    smFreshAudio();
+    const sound=async()=>{ const c=AC(), an=c.createAnalyser(); an.fftSize=2048; master.connect(an); await smPlay(); let pk=0;
+      for(let i=0;i<12;i++){ await new Promise(r=>setTimeout(r,200)); const b=new Float32Array(2048); an.getFloatTimeDomainData(b); for(const v of b)pk=Math.max(pk,Math.abs(v)); } smStop(); return pk; };
+    const pk=await sound(); ok('노래 듣기: 소리가 나온다(엔진을 새로 띄운 뒤)',pk>.03,pk);
     // 내려받기
     let blobs=[]; const realDl=window.smDownload; window.smDownload=(b,n)=>blobs.push({b,n});
     try{
