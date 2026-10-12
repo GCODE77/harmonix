@@ -951,7 +951,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "115";
+const APP_VER = "116";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -11984,7 +11984,7 @@ async function smPrewarm(wait){
   for(const e of ev){ const I=INSTRUMENTS[e.inst]; if(!I)continue; const f=SAMPLE_MAP[e.inst]; if(!f)continue; const m=e.m+(I.oct?I.oct*12:0); keys.set(f+'|'+mod(m)+'|'+(Math.floor(m/12)-1),1); }
   for(const k of keys.keys()){ const [f,pc,o]=k.split('|'); warmSample(f,+pc,+o); }
   if(wait){ const ps=[...keys.keys()].map(k=>{ const [f,pc,o]=k.split('|'); return sampleCache.get(sampleKey(f,+pc,+o)); }).filter(p=>p instanceof Promise);
-    if(ps.length)await Promise.race([Promise.allSettled(ps),new Promise(r=>setTimeout(r,3000))]); }   // 못 받은 음은 합성음으로 바로 친다
+    if(ps.length)await Promise.race([Promise.allSettled(ps),new Promise(r=>setTimeout(r,1200))]); }   // 못 받은 음은 합성음으로 바로 친다
 }
 
 /* ---------- 듣기 ---------- */
@@ -11996,7 +11996,7 @@ async function smPlay(){
 async function smPlay2(){
   const ctx=AC(); if(!ctx){ toast('이 브라우저는 소리를 낼 수 없어요'); return; } try{ await ctx.resume(); }catch(e){}
   if(ctx.state!=='running'){ toast('소리 장치가 잠겨 있어요 — 한 번 더 눌러 주세요(폰 무음 모드·볼륨도 확인)'); return; }
-  $('smplay').textContent='… 악기 소리 받는 중'; await smPrewarm(true);
+  if(!SM.quick){ $('smplay').textContent='… 악기 소리 받는 중'; await smPrewarm(true); } else smPrewarm(); SM.quick=false;   // 스타일을 바꿀 땐 기다리지 않는다(못 받은 음은 합성음으로 먼저)
   if(SM.play)return;
   const A=smEvents(), bus=ctx.createGain(); bus.gain.value=SM.volA; bus.connect(master);
   const vb=ctx.createGain(); vb.gain.value=SM.volV*1.4; vb.connect(master);
@@ -12166,7 +12166,8 @@ function smEnter(){ if(!SM.notes.length&&smLoad()){ $('smlyric').value=SM.lyric|
   $('smchpng').onclick=smChartPng; $('smtitle').oninput=smChartRender; $('smchprint').onclick=()=>{ const w=window.open('','_blank'); if(!w){ toast('팝업이 막혔어요 — 그림 저장을 쓰세요'); return; } w.document.write('<meta charset=utf-8><title>코드 악보</title><style>body{font-family:sans-serif;margin:24px;color:#111}.smchead b{font-size:28px;margin-right:14px}.smchead span{color:#555}.smcgrid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:16px}.smcbar{border-left:2px solid #222;padding:4px 10px 12px;display:flex;flex-direction:column;gap:4px;min-height:96px}.smcbar i{font-size:11px;color:#999;font-style:normal}.smcbar b{font-size:24px;color:#c62828}.smcbar span{font-size:18px;font-weight:700}.smcbar small{color:#777}</style>'+$('smchart').innerHTML); w.document.close(); setTimeout(()=>{ try{ w.print(); }catch(e){} },300); };
   $('smgame').onclick=()=>{ smStop(); const sg=gmMySong(); if(!sg){ toast('먼저 노래를 만들어 주세요'); return; } showScreen('gm'); try{ history.pushState({v:'gm'},''); }catch(e){} GM.daily=false; GM.song=sg; gmReset(); toast('내 노래로 게임을 시작해요 — ▶ 시작!'); };
   $('smplay').onclick=()=>{ try{ const c=AC(); c&&c.resume(); }catch(e){} smPlay(); }; $('smwav').onclick=smExportWav; $('smmidi').onclick=smExportMidi; $('smscore').onclick=smToScore;
-  $('smstyles').onclick=e=>{ const b=e.target.closest('[data-s]'); if(!b)return; SM.style=b.dataset.s; SM.lead=SM_STYLES[SM.style].lead; const was=!!SM.play; smStop(); smRender(); smSave(); smPrewarm(); if(was)smPlay(); };
+  $('smstyles').onclick=e=>{ const b=e.target.closest('[data-s]'); if(!b||!SM.notes.length)return; try{ AC().resume(); }catch(_){} SM.style=b.dataset.s; SM.lead=SM_STYLES[SM.style].lead; smStop(); SM.prep=false; smRender(); smSave();
+    SM.quick=true; smPlay(); toast(SM_STYLES[SM.style].icon+' '+SM_STYLES[SM.style].name+' 스타일로 들려 드려요'); };   // v116: 스타일을 누르면 곧바로 그 스타일로 재생
   $('smlead').onchange=()=>{ SM.lead=$('smlead').value; smStop(); smSave(); smPrewarm(); };
   for(const k of Object.keys(SM.tr)){ const b=$('smtr_'+k); if(b)b.onclick=()=>{ SM.tr[k]=!SM.tr[k]; smStop(); smRender(); smSave(); }; }
   $('smbpm2').onchange=()=>{ SM.bpm=Math.max(40,Math.min(200,Math.round(+$('smbpm2').value||SM.bpm))); smStop(); smRender(); smSave(); };
