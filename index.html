@@ -538,6 +538,8 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#tnpop
 #tngtr .peg.det b em{color:#3a2a08}
 #tnroll .wk{font-size:10px;text-align:center;line-height:1.15;white-space:pre-line;word-break:keep-all}
 /* 노래 만들기 (v108) */
+#sm .smstaffbox{background:#fbfaf6;border-radius:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;min-height:40px}
+#sm .smstf{display:block}
 #smchart{background:#fbfaf6;color:#111;border-radius:12px;padding:12px 12px 6px}
 .smchead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.smchead b{font-size:19px}.smchead span{color:#666;font-size:13px}
 .smcgrid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:8px}
@@ -802,6 +804,7 @@ header{padding-top:8px!important;padding-left:10px!important}
         <label><input type="checkbox" id="smstt" checked> 가사 받아쓰기</label>
       </div>
       <div class="smlive"><div class="smlevel"><i id="smlevel"></i></div><span id="smnow">–</span><span id="smrectime"></span></div>
+      <div id="smstaff" class="smstaffbox"></div>
       <canvas id="smtrace"></canvas>
       <div id="smsttnote" class="smnote"></div>
       <div id="smstatus"></div>
@@ -811,6 +814,8 @@ header{padding-top:8px!important;padding-left:10px!important}
       <div id="sminfo" class="smnote"></div>
       <div class="smrow smplayrow"><button class="btn cta smbig" id="smplay" type="button">▶ 노래 듣기</button><span id="smwhere"></span></div>
       <div class="smprog"><i id="smprog"></i></div>
+      <div class="smlab">🎵 멜로디 오선보 <small>음표를 누르면 아래에서 고칠 수 있어요</small></div>
+      <div id="smscorestaff" class="smstaffbox"></div>
       <div class="smlab">🎼 코드 악보 <small>코드·가사·멜로디 음 이름 · 고치면 바로 바뀌어요</small></div>
       <div id="smchart"></div>
       <div class="smrow"><button class="btn" id="smchpng" type="button">⬇ 코드 악보 그림(PNG)</button><button class="btn" id="smchprint" type="button">🖨 인쇄·PDF</button></div>
@@ -11591,7 +11596,7 @@ async function smRecStart(){
   let stream;
   try{ stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}}); }
   catch(e){ smStatus('마이크를 쓸 수 없어요 — 브라우저 주소창 옆 🔒 에서 마이크를 허용해 주세요.','err'); return; }
-  SM.stream=stream; SM.chunks=[]; SM.trace=[]; SM.recSr=ctx.sampleRate; SM.recBpm=SM.bpm=Math.max(50,Math.min(160,+$('smbpm').value||90));
+  SM.stream=stream; SM.chunks=[]; SM.trace=[]; SM.lv={notes:[],cur:null,cand:null,quiet:0}; $('smstaff').innerHTML=smStaffSvg([],-1,{minW:$('smstaff').clientWidth-4}); SM.recSr=ctx.sampleRate; SM.recBpm=SM.bpm=Math.max(50,Math.min(160,+$('smbpm').value||90));
   SM.src=ctx.createMediaStreamSource(stream);
   SM.an=ctx.createAnalyser(); SM.an.fftSize=2048; SM.src.connect(SM.an);
   SM.proc=ctx.createScriptProcessor(4096,1,1); const zero=ctx.createGain(); zero.gain.value=0; SM.proc.connect(zero); zero.connect(ctx.destination); SM.zero=zero;
@@ -11622,12 +11627,49 @@ function smLive(){
   const an=SM.an; if(!an)return; const buf=new Float32Array(an.fftSize); an.getFloatTimeDomainData(buf);
   const r=yinPitch(buf,AC().sampleRate,.004); let rms=r.rms; $('smlevel').style.width=Math.min(100,rms*900)+'%';
   if(r.f&&r.prob>.5&&r.f>60&&r.f<1200)SM.trace.push(69+12*Math.log2(r.f/440)); else SM.trace.push(null);
+  smLiveNote(SM.trace[SM.trace.length-1],rms); smLiveStaff();
   if(SM.trace.length>240)SM.trace.shift();
   const cv=$('smtrace'), g=cv.getContext('2d'), W=cv.width=cv.clientWidth*2, H=cv.height=cv.clientHeight*2; g.clearRect(0,0,W,H);
   const vs=SM.trace.filter(x=>x!=null); if(!vs.length)return; const lo=Math.min(...vs)-3, hi=Math.max(...vs)+3;
   g.strokeStyle='#f0b95e'; g.lineWidth=4; g.beginPath(); let pen=false;
   SM.trace.forEach((v,i)=>{ const x=i/240*W; if(v==null){ pen=false; return; } const y=H-(v-lo)/(hi-lo)*H; if(!pen){ g.moveTo(x,y); pen=true; } else g.lineTo(x,y); }); g.stroke();
   const last=SM.trace[SM.trace.length-1]; if(last!=null)$('smnow').textContent=smName(Math.round(last));
+}
+/* ---------- 녹음하는 동안 오선지에 음표 (v110, 사용자 요청: "녹음할 때 오선지에도 무슨 음인지 음표랑 같이") ----------
+   60ms 마다 잰 음높이가 같은 반음 근처로 2번(약 0.12초) 이어지면 음표 하나로 찍는다. 지금 부르는 음은 빨갛게 커진다.
+   남자 목소리처럼 낮으면 한 옥타브 올려 그리고 높은음자리표 밑에 8 을 단다(악보 관례). 끝나고 분석한 멜로디도 같은 오선지로 보여 준다. */
+function smStaffSvg(ns,cur,opt){
+  opt=opt||{}; const LS=9, top=22, gapX=opt.gap||34, x0=46, ms=ns.map(n=>n.m), med=ms.length?ms.slice().sort((a,b)=>a-b)[ms.length>>1]:67, oct=med<57?12:0;
+  const W=Math.max(opt.minW||320,x0+ns.length*gapX+20), H=top+LS*4+70, bot=top+LS*4;
+  const st=m=>{ const pc=mod(m); return Math.floor(m/12)*7+[0,0,1,1,2,3,3,4,4,5,5,6][pc]; }, E4=st(64);
+  let s='<svg class="smstf" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">';
+  for(let i=0;i<5;i++)s+='<line x1="4" x2="'+(W-4)+'" y1="'+(top+i*LS)+'" y2="'+(top+i*LS)+'" stroke="#333" stroke-width="1.3"/>';
+  s+='<text x="6" y="'+(bot+9)+'" font-size="'+(LS*6.2)+'" fill="#222">𝄞</text>'+(oct?'<text x="16" y="'+(bot+30)+'" font-size="11" fill="#222" font-weight="700">8</text>':'');
+  ns.forEach((n,i)=>{ const m=n.m+oct, sp=st(m)-E4, y=bot-sp*LS/2, x=x0+i*gapX+gapX/2, on=i===cur, col=on?'#e53935':'#111', sh=[1,3,6,8,10].includes(mod(m));
+    for(let k=-2;k>=sp;k-=2){ const yy=bot-k*LS/2; s+='<line x1="'+(x-10)+'" x2="'+(x+10)+'" y1="'+yy+'" y2="'+yy+'" stroke="#333" stroke-width="1.3"/>'; }
+    for(let k=10;k<=sp;k+=2){ const yy=bot-k*LS/2; s+='<line x1="'+(x-10)+'" x2="'+(x+10)+'" y1="'+yy+'" y2="'+yy+'" stroke="#333" stroke-width="1.3"/>'; }
+    if(sh)s+='<text x="'+(x-18)+'" y="'+(y+4)+'" font-size="13" fill="'+col+'">♯</text>';
+    const hollow=n.dur>=2, r=on?6.6:5.6, up=sp<4;
+    s+='<ellipse cx="'+x+'" cy="'+y+'" rx="'+r+'" ry="'+(r*.78)+'" transform="rotate(-18 '+x+' '+y+')" fill="'+(hollow?'#fff':col)+'" stroke="'+col+'" stroke-width="1.8"/>';
+    if(!(n.dur>=4))s+='<line x1="'+(up?x+r-.6:x-r+.6)+'" x2="'+(up?x+r-.6:x-r+.6)+'" y1="'+y+'" y2="'+(up?y-30:y+30)+'" stroke="'+col+'" stroke-width="1.5"/>';
+    if(n.dur===.5)s+='<path d="M'+(up?x+r-.6:x-r+.6)+' '+(up?y-30:y+30)+' q8 '+(up?8:-8)+' 6 '+(up?20:-20)+'" fill="none" stroke="'+col+'" stroke-width="1.6"/>';
+    s+='<text x="'+x+'" y="'+(H-22)+'" text-anchor="middle" font-size="'+(on?14:12)+'" font-weight="800" fill="'+(on?'#e53935':'#444')+'">'+TN_DOS[mod(n.m)].replace('♯','#')+'</text>';
+    if(n.ly)s+='<text x="'+x+'" y="'+(H-6)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#111">'+n.ly.replace(/</g,'')+'</text>'; });
+  return s+'</svg>';
+}
+function smLiveNote(mf,rms){   // 녹음 중 실시간 음표
+  const L=SM.lv||(SM.lv={notes:[],cur:null,cand:null,quiet:0});
+  if(mf==null){ if(++L.quiet>=1){ L.cur=null; L.cand=null; } return; }
+  L.quiet=0;
+  if(L.cur&&rms<L.cur.pk*.45){ L.cur=null; L.cand=null; }   // 소리가 확 줄면 그 음은 끝 — 같은 음을 다시 부르면 새 음표
+  if(L.cur&&Math.abs(mf-L.cur.mf)<.6){ L.cur.pk=Math.max(L.cur.pk,rms); L.cur.mf=L.cur.mf*.7+mf*.3; L.cur.m=Math.round(L.cur.mf); return; }
+  if(L.cand&&Math.abs(mf-L.cand.mf)<.6){ L.cand.n++; L.cand.mf=(L.cand.mf+mf)/2; if(L.cand.n>=2){ L.cur={m:Math.round(L.cand.mf),mf:L.cand.mf,pk:rms}; L.notes.push(L.cur); if(L.notes.length>60)L.notes.shift(); L.cand=null; } return; }
+  L.cand={mf,n:1};
+}
+function smLiveStaff(){
+  const L=SM.lv; if(!L)return; const el=$('smstaff'); if(!el)return;
+  const show=L.notes.slice(-40), cur=L.cur?show.indexOf(L.cur):-1;
+  el.innerHTML=smStaffSvg(show,cur,{minW:el.clientWidth-4}); el.scrollLeft=el.scrollWidth;
 }
 function smSttStart(){
   SM.sttText=''; SM.stt=null; if(!SM.sttOn)return;
@@ -11958,6 +12000,8 @@ function smRender(){
   document.querySelectorAll('#smstyles .btn').forEach(b=>b.classList.toggle('on',b.dataset.s===SM.style));
   for(const k2 of Object.keys(SM.tr)){ const b=$('smtr_'+k2); if(b){ b.classList.toggle('on',!!SM.tr[k2]); } }
   smChartRender();
+  { const T=SM.transp, el=$('smscorestaff'); el.innerHTML=smStaffSvg(SM.notes.map(n=>({m:n.m+T,dur:n.dur,ly:n.ly})),SM.sel,{minW:el.clientWidth-4,gap:38});
+    el.querySelectorAll('ellipse').forEach((e,i)=>{ e.style.cursor='pointer'; e.onclick=()=>{ SM.sel=i; smRender(); $('smnotebar').scrollIntoView({block:'nearest'}); }; }); }
   $('smlead').value=SM.lead; $('smbpm2').value=SM.bpm; $('smvolv').value=SM.volV; $('smvola').value=SM.volA;
 }
 function smEdit(fn){ const n=SM.notes[SM.sel]; if(!n)return; smStop(); fn(n); smFixBars(false); SM.sel=SM.notes.indexOf(n); smRender(); smSave(); }
