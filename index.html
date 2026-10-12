@@ -600,6 +600,11 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#tnpop
 .gmbox b{font-size:22px}.gmbox small{color:var(--dim);font-size:13.5px;line-height:1.5}
 .gmbtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px}.gmbtns .btn{min-height:48px;font-size:16px;font-weight:700}
 .gmbtns .btn[hidden]{display:none}
+.gmmodes .gmopt{min-height:38px}
+.gmbox small b,.gmdailybtn b{font-size:inherit}
+.gmdailybtn{width:100%;min-height:44px;white-space:normal;line-height:1.35;font-size:14px;background:linear-gradient(90deg,rgba(255,138,240,.18),rgba(255,179,71,.18));border-color:#ffb347}.gmdailybtn b{font-weight:700;color:#ffd98a}
+.gmdailyrow{border-color:#ffb347;background:rgba(255,179,71,.1)}
+#gm.gmrhythm .gk span{opacity:.35}
 .gmrankrow{display:flex;align-items:center;gap:14px;justify-content:center}
 #gmrank{font:900 64px/1 sans-serif;text-shadow:0 0 18px currentColor}#gmrank.rS{color:#ffd54a}#gmrank.rA{color:#7ee787}#gmrank.rB{color:#6cb6ff}#gmrank.rC{color:#d2a8ff}#gmrank.rD{color:#aaa}
 #gmrec{font-size:20px;font-weight:900;color:#ff8af0;animation:kbpulse .8s infinite}#gmrec[hidden]{display:none}
@@ -781,7 +786,7 @@ header{padding-top:8px!important;padding-left:10px!important}
     <span id="gmscore">0</span>
   </div>
   <div id="gmfield"><canvas id="gmcv"></canvas>
-    <div id="gmstart"><div class="gmbox"><small id="gmstage"></small><b id="gmtitle">곡을 골라요</b><small id="gmdesc"></small><div class="gmbtns"><button class="btn cta" id="gmgo" type="button">▶ 시작</button><button class="btn" id="gmdemo" type="button">🔊 먼저 듣기</button></div><div class="gmopts"><button class="btn gmopt" id="gmbg" type="button">🎶 반주</button><button class="btn gmopt" id="gmguide" type="button">🎤 노래 가이드</button></div></div></div>
+    <div id="gmstart"><div class="gmbox"><small id="gmstage"></small><b id="gmtitle">곡을 골라요</b><small id="gmdesc"></small><div class="gmbtns"><button class="btn cta" id="gmgo" type="button">▶ 시작</button><button class="btn" id="gmdemo" type="button">🔊 먼저 듣기</button></div><div class="gmopts"><button class="btn gmopt" id="gmbg" type="button">🎶 반주</button><button class="btn gmopt" id="gmguide" type="button">🎤 노래 가이드</button></div><div class="gmopts gmmodes"><button class="btn gmopt" data-mode="basic" type="button">🎹 기본</button><button class="btn gmopt" data-mode="rhythm" type="button">🥁 리듬</button><button class="btn gmopt" data-mode="duel" type="button">⚔ 대결</button><button class="btn gmopt" id="gmswap" type="button">🎲 악기 바꿔 치기</button></div><button class="btn gmdailybtn" id="gmdaily" type="button">📅 오늘의 도전</button></div></div>
     <div id="gmend" hidden><div class="gmbox"><div class="gmrankrow"><span id="gmrank">S</span><div id="gmstars">★★★</div></div><div id="gmrec" hidden>🎉 신기록!</div><b id="gmresult"></b><small id="gmdetail"></small><div class="gmbtns"><button class="btn cta" id="gmnext" type="button">다음 판 ▶</button><button class="btn" id="gmagain" type="button">다시 하기</button><button class="btn" id="gmother" type="button">곡 목록</button></div></div></div>
   </div>
   <div id="gmkeys"></div>
@@ -860,6 +865,7 @@ header{padding-top:8px!important;padding-left:10px!important}
         <button class="btn cta" id="smwav" type="button">⬇ 노래 파일 (WAV)</button>
         <button class="btn" id="smmidi" type="button">⬇ MIDI</button>
         <button class="btn" id="smscore" type="button">🎼 악보로 보기</button>
+        <button class="btn" id="smgame" type="button">🎮 게임으로 치기</button>
       </div>
     </section>
   </div>
@@ -906,7 +912,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "111";
+const APP_VER = "112";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -11177,7 +11183,7 @@ const GM_LEVELS={
   hard:{label:'어려움',icon:'🔥',desc:'1.3배 빠르게',short:'어려움',wait:false,sp:1.3},
   expert:{label:'아주 어려움',icon:'⚡',desc:'1.6배 — 고수용',short:'고수',wait:false,sp:1.6}
 };
-const GM_CATS=['전체','동요','캐럴·찬송','클래식','유명곡','연습'];
+const GM_CATS=['전체','내 노래','동요','캐럴·찬송','클래식','유명곡','연습'];
 /* 곡 문자열: '음이름옥타브:박' (예 C4:1 F#4:.5 Bb3:2), r:박 = 쉼표. 박은 4분음표=1, 생략하면 1. ts=한 마디 박 수(기본 4) */
 const GM_SONG_DEF=[
   {id:'school',name:'학교종이 땡땡땡',cat:'동요',lv:1,bpm:96,n:'G4 G4 A4 A4 G4 G4 E4:2 G4 G4 E4 E4 D4:3 G4 G4 A4 A4 G4 G4 E4:2 G4 E4 D4 E4 C4:3'},
@@ -11258,8 +11264,8 @@ const GM_SONG_DEF=[
 })();
 /* 판 번호: 쉬운 것부터(같은 난이도에서는 위에 적은 순서) */
 const GM_SONGS=GM_SONG_DEF.map((s,i)=>({...s,_i:i})).sort((a,b)=>a.lv-b.lv||a._i-b._i).map((s,i)=>{ s.no=i+1; return s; });
-const GM={on:false,song:null,level:'normal',cat:'전체',blocks:[],T:0,last:0,raf:0,started:false,done:false,score:0,combo:0,maxCombo:0,perfect:0,good:0,miss:0,wrong:0,fx:[],parts:[],down:new Map(),held:new Map(),W:300,H:400,demo:null,waiting:false,rng:null,shake:0,pulse:0,pop:0,missFlash:0,flash:new Map(),tick:true,dt:1/60,kmap:{},pops:[],fever:1,feverPop:0,bg:true,guide:false,bus:null,harm:null};
-try{ const l=localStorage.getItem('konti:gmlevel'); if(l&&GM_LEVELS[l])GM.level=l; GM.tick=localStorage.getItem('konti:gmtick')!=='0'; GM.bg=localStorage.getItem('konti:gmbg')!=='0'; GM.guide=localStorage.getItem('konti:gmguide')==='1'; const s=localStorage.getItem('konti:gmsong'); GM.song=GM_SONGS.find(x=>x.id===s)||null; }catch(e){}
+const GM={on:false,song:null,level:'normal',cat:'전체',blocks:[],T:0,last:0,raf:0,started:false,done:false,score:0,combo:0,maxCombo:0,perfect:0,good:0,miss:0,wrong:0,fx:[],parts:[],down:new Map(),held:new Map(),W:300,H:400,demo:null,waiting:false,rng:null,shake:0,pulse:0,pop:0,missFlash:0,flash:new Map(),tick:true,dt:1/60,kmap:{},mode:'basic',swap:false,swapI:0,daily:false,ds:[0,0],pops:[],fever:1,feverPop:0,bg:true,guide:false,bus:null,harm:null};
+try{ const l=localStorage.getItem('konti:gmlevel'); if(l&&GM_LEVELS[l])GM.level=l; GM.tick=localStorage.getItem('konti:gmtick')!=='0'; GM.bg=localStorage.getItem('konti:gmbg')!=='0'; GM.mode=localStorage.getItem('konti:gmmode')||'basic'; GM.swap=localStorage.getItem('konti:gmswap')==='1'; GM.guide=localStorage.getItem('konti:gmguide')==='1'; const s=localStorage.getItem('konti:gmsong'); GM.song=GM_SONGS.find(x=>x.id===s)||null; }catch(e){}
 const gmMidi=t=>{ const m=/^([A-G])([#b]?)(-?\d)$/.exec(t); if(!m)return -1; return 12*(+m[3]+1)+{C:0,D:2,E:4,F:5,G:7,A:9,B:11}[m[1]]+(m[2]==='#'?1:(m[2]==='b'?-1:0)); };
 const GM_BLK=[1,3,6,8,10], gmIsBlack=m=>GM_BLK.includes(((m%12)+12)%12);
 const gmWi=m=>{ const mm=gmIsBlack(m)?m-1:m; return Math.floor(mm/12)*7+[0,0,1,1,2,3,3,4,4,5,5,6][mm%12]; };
@@ -11277,7 +11283,42 @@ function gmRangeOf(blocks){   // 곡의 음이 다 들어가는 흰 건반 범�
   while(z-a+1<8){ z++; if(z-a+1<8&&a>gmWi(48))a--; }
   return {a,nw:z-a+1};
 }
-function gmX(m,lw){ const R=GM.rng; if(gmIsBlack(m))return {cx:(gmWi(m)-R.a+1)*lw,w:lw*.62,black:true}; return {cx:(gmWi(m)-R.a+.5)*lw,w:lw-6,black:false}; }
+/* ============ 놀이 방식 (v112, 사용자: "악기 바꿔 치기 · 리듬 모드 · 오늘의 도전 · 대결 모드 · 내 노래를 게임으로 — 다 해 보자") ============
+   · 리듬: 아무 건반이나 박자에 맞춰 누르면 그 자리 블록의 **맞는 음**이 난다. 블록은 가운데 한 줄로 내려온다.
+   · 대결: 2마디씩 1P(파랑)·2P(빨강)가 번갈아 친다 — 자기 블록 점수만 자기 것. 끝나면 승자.
+   · 악기 바꿔 치기: 누를 때마다 다음 악기로. · 오늘의 도전: 날짜로 곡·난이도가 정해진다(하루 기록). · 내 노래: 노래 만들기의 곡. */
+const GM_SWAP=[['piano','🎹 피아노'],['vibes','✨ 비브라폰'],['marimba','🪵 마림바'],['harp','🪕 하프'],['flute','🎶 플루트'],['violin','🎻 바이올린'],['brass','🎺 트럼펫'],['sax','🎷 색소폰'],['ep','🎛 일렉 피아노'],['guitar','🎸 기타']];
+const gmOwner=b=>Math.floor(b.beat/((GM.song.ts||4)*2)+1e-6)%2;
+function gmMySong(){
+  let o=null; try{ o=(typeof SM!=='undefined'&&SM.notes&&SM.notes.length)?SM:JSON.parse(localStorage.getItem('konti:smlast')||'null'); }catch(e){}
+  if(!o||!o.notes||!o.notes.length)return null;
+  const T=o.transp||0, ns=o.notes.slice().sort((a,b)=>a.on-b.on), tk=[]; let pos=0;
+  for(const n of ns){ if(n.on>pos+1e-6)tk.push('r:'+(n.on-pos)); tk.push(kbNoteName(n.m+T,'sharp')+':'+n.dur); pos=Math.max(pos,n.on+n.dur); }
+  let title='내 노래'; try{ const t=document.getElementById('smtitle'); if(t&&t.value.trim())title=t.value.trim(); }catch(e){}
+  return {id:'mysong',name:'🎙 '+title,cat:'내 노래',lv:2,bpm:o.bpm||90,ts:o.ts||4,n:tk.join(' '),no:0};
+}
+function gmDayNo(){ return Math.floor((Date.now()+9*3600e3)/864e5); }
+function gmDailyPick(){
+  const d=gmDayNo(), pool=GM_SONGS.filter(s=>s.lv>=2&&s.cat!=='연습'), h=((d*2654435761)>>>0)%pool.length;
+  return {day:d,song:pool[h],level:['normal','hard','normal','slow','hard','expert','normal'][d%7],swap:d%3===0,mode:d%4===1?'rhythm':'basic'};
+}
+function gmDailyRec(){ try{ const o=JSON.parse(localStorage.getItem('konti:gmdaily')||'{}'); return o.day===gmDayNo()?o:null; }catch(e){ return null; } }
+function gmDailyStart(){
+  const P2=gmDailyPick(); GM.song=P2.song; GM.level=P2.level; GM.mode=P2.mode; GM.swap=P2.swap; GM.daily=true;
+  $('gmpop').hidden=true; gmReset(); toast('📅 오늘의 도전: '+P2.song.name+' · '+GM_LEVELS[P2.level].label+(P2.swap?' · 악기 바꿔 치기':'')+(P2.mode==='rhythm'?' · 리듬 모드':''));
+}
+function gmModeUI(){
+  document.querySelectorAll('.gmmodes [data-mode]').forEach(b=>b.classList.toggle('on',b.dataset.mode===GM.mode));
+  const sw=$('gmswap'); if(sw){ sw.classList.toggle('on',GM.swap); }
+  const r=gmDailyRec(), dp=gmDailyPick(), db=$('gmdaily'); if(db)db.innerHTML='📅 오늘의 도전 · '+dp.song.name+(r?' <b>· 오늘 기록 '+r.score+'점 '+'★'.repeat(r.stars)+'</b>':' <b>· 아직 안 했어요</b>');
+  document.getElementById('gm').classList.toggle('gmrhythm',GM.mode==='rhythm');
+}
+function gmRhythmTarget(){   // 리듬 모드: 지금 누르면 맞을 블록(음 높이는 안 본다)
+  const lv=GM_LEVELS[GM.level], sb=gmSpeedBeats();
+  if(lv.wait){ const nx=GM.blocks.find(b=>!b.hit&&!b.gone); return nx&&nx.beat-GM.T<=1.1?nx:null; }
+  let best=null,bd=.34*sb; for(const b of GM.blocks){ if(b.hit||b.gone)continue; const d=Math.abs(b.beat-GM.T); if(d<=bd){ bd=d; best=b; } } return best;
+}
+function gmX(m,lw){ const R=GM.rng; if(GM.mode==='rhythm'&&GM.W){ return {cx:GM.W/2,w:Math.min(GM.W*.42,lw*3),black:false}; } if(gmIsBlack(m))return {cx:(gmWi(m)-R.a+1)*lw,w:lw*.62,black:true}; return {cx:(gmWi(m)-R.a+.5)*lw,w:lw-6,black:false}; }
 function gmBest(id,lv){ try{ return JSON.parse(localStorage.getItem('konti:gmbest')||'{}')[id+':'+lv]||null; }catch(e){ return null; } }
 function gmSaveBest(stars,score){ try{ const o=JSON.parse(localStorage.getItem('konti:gmbest')||'{}'), k=GM.song.id+':'+GM.level, old=o[k]; if(!old||score>old.score||stars>old.stars)o[k]={stars:Math.max(stars,old?old.stars:0),score:Math.max(score,old?old.score:0)}; localStorage.setItem('konti:gmbest',JSON.stringify(o)); }catch(e){} }
 function gmEnter(){
@@ -11311,8 +11352,9 @@ function gmReset(){
   const tot=GM.blocks.reduce((m,b)=>Math.max(m,b.beat+b.dur),1); GM.total=tot;
   $('gmscore').textContent='0'; $('gmend').hidden=true; $('gmstart').hidden=false;
   $('gmtitle').textContent=sg.name; const b=gmBest(sg.id,GM.level);
-  $('gmstage').textContent='STAGE '+sg.no+' / '+GM_SONGS.length+' · '+sg.cat+' · '+'●'.repeat(sg.lv)+'○'.repeat(5-sg.lv);
-  $('gmdesc').innerHTML=lv.icon+' <b>'+lv.label+'</b> — '+lv.desc+(b?'<br>내 기록 '+'★'.repeat(b.stars)+'☆'.repeat(3-b.stars)+' '+b.score+'점':'');
+  $('gmstage').textContent=(GM.daily?'📅 오늘의 도전 · ':'')+(sg.no?'STAGE '+sg.no+' / '+GM_SONGS.length+' · '+sg.cat+' · '+'●'.repeat(sg.lv)+'○'.repeat(5-sg.lv):'🎙 노래 만들기에서 만든 내 노래');
+  gmModeUI();
+  $('gmdesc').innerHTML=lv.icon+' <b>'+lv.label+'</b> — '+lv.desc+({rhythm:'<br>🥁 <b>리듬 모드</b> — 아무 건반이나 박자에 맞춰 누르면 맞는 음이 나요',duel:'<br>⚔ <b>대결 모드</b> — 2마디씩 🔵1P · 🔴2P 번갈아 쳐요'}[GM.mode]||'')+(GM.swap?'<br>🎲 누를 때마다 악기가 바뀌어요':'')+(b?'<br>내 기록 '+'★'.repeat(b.stars)+'☆'.repeat(3-b.stars)+' '+b.score+'점':'');
   $('gmlevel').textContent=lv.icon+' '+lv.short; $('gmsong').textContent='🎵 '+sg.no+'. '+sg.name+' ▾';
   $('gmtick').classList.toggle('on',GM.tick); $('gmtick').setAttribute('aria-pressed',GM.tick?'true':'false'); gmOptUI();
   try{ localStorage.setItem('konti:gmsong',sg.id); }catch(e){}
@@ -11325,7 +11367,8 @@ function gmSized(){
 function gmStart(){
   if(GM.demo)gmDemoStop(); AC();
   GM.blocks=gmParse(GM.song); GM.rng=gmRangeOf(GM.blocks); if(!gmKey(GM.blocks[0].m))gmBuildKeys();
-  GM.T=-3; GM.score=GM.combo=GM.maxCombo=GM.perfect=GM.good=GM.miss=GM.wrong=0; GM.fx=[]; GM.parts=[]; GM.pops=[]; GM.fever=1; GM.feverPop=0; GM.done=false; GM.started=true; GM.last=performance.now(); GM.lastBeat=-4;
+  GM.T=-3; GM.score=GM.combo=GM.maxCombo=GM.perfect=GM.good=GM.miss=GM.wrong=0; GM.fx=[]; GM.parts=[]; GM.pops=[]; GM.fever=1; GM.feverPop=0; GM.ds=[0,0]; GM.swapI=0; GM.done=false; GM.started=true;
+  if(GM.swap)for(const [k] of GM_SWAP){ const f=SAMPLE_MAP[k]; if(f)for(const b of GM.blocks.slice(0,40))try{ warmSample(f,mod(b.m),Math.floor(b.m/12)-1); }catch(e){} } GM.last=performance.now(); GM.lastBeat=-4;
   $('gmstart').hidden=true; $('gmend').hidden=true; $('gmscore').textContent='0';
   gmHarmony(); gmBusNew();
   cancelAnimationFrame(GM.raf); GM.raf=requestAnimationFrame(gmLoop);
@@ -11413,6 +11456,7 @@ function gmPress(m){
     if(mul>GM.fever){ GM.feverPop=1; gmFx(m,mul===2?'🔥 피버! ×2':'🌈 슈퍼 피버! ×3',true,true); }
     GM.fever=mul;
     const add=((perfect?(great?80:100):60)+Math.min(GM.combo,10)*5)*mul; GM.score+=add; $('gmscore').textContent=GM.score;
+    if(GM.mode==='duel'){ GM.ds[gmOwner(best)]+=add; $('gmscore').textContent=GM.ds[0]+' : '+GM.ds[1]; }
     const col=GM_PCC[m%12]; gmBurst(m,col,(perfect?22:12)+(mul-1)*8); GM.flash.set(m,1);
     GM.pops.push({m,t:0,txt:'+'+add,mul});
     if(GM.combo%10===0)gmChime(GM.combo);
@@ -11440,8 +11484,10 @@ function gmFinish(){
   if(stars>=2||newRec){ gmConfetti(); const t0=performance.now(), loop=()=>{ if(GM.started||!GM.done||performance.now()-t0>3500)return; GM.dt=1/60; gmDraw(); requestAnimationFrame(loop); }; requestAnimationFrame(loop); }
   $('gmstars').textContent='★'.repeat(stars)+'☆'.repeat(3-stars);
   $('gmresult').textContent=stars===3?'최고예요! 🎉':(stars===2?'잘했어요! 👏':(stars===1?'좋아요, 한 번 더!':'다시 도전해 봐요'));
-  $('gmdetail').innerHTML=GM.score+'점 · 퍼펙트 '+GM.perfect+(lv.wait?'':' · 굿 '+GM.good+' · 미스 '+GM.miss)+' · 최고 콤보 '+GM.maxCombo+(lv.wait?' · 틀린 건반 '+GM.wrong:'');
-  const last=GM.song.no>=GM_SONGS.length; $('gmnext').hidden=last; $('gmnext').classList.toggle('cta',stars>=1); $('gmagain').classList.toggle('cta',stars<1);
+  if(GM.mode==='duel'){ const [a,b]=GM.ds; $('gmresult').textContent=a===b?'🤝 비겼어요!':(a>b?'🔵 1P 승리! 🏆':'🔴 2P 승리! 🏆'); }
+  if(GM.daily){ const r=gmDailyRec(); if(!r||GM.score>r.score)try{ localStorage.setItem('konti:gmdaily',JSON.stringify({day:gmDayNo(),score:GM.score,stars,rank})); }catch(e){} }
+  $('gmdetail').innerHTML=(GM.mode==='duel'?'🔵 1P '+GM.ds[0]+'점 · 🔴 2P '+GM.ds[1]+'점<br>':'')+(GM.daily?'📅 오늘의 도전 기록 저장 · ':'')+GM.score+'점 · 퍼펙트 '+GM.perfect+(lv.wait?'':' · 굿 '+GM.good+' · 미스 '+GM.miss)+' · 최고 콤보 '+GM.maxCombo+(lv.wait?' · 틀린 건반 '+GM.wrong:'');
+  const last=GM.song.no>=GM_SONGS.length||GM.daily; $('gmnext').hidden=last; $('gmnext').classList.toggle('cta',stars>=1); $('gmagain').classList.toggle('cta',stars<1);
   $('gmend').hidden=false; gmClearHints();
 }
 function gmNext(){ const i=GM_SONGS.indexOf(GM.song); if(i+1>=GM_SONGS.length){ toast('마지막 판까지 왔어요! 🎉'); return; } GM.song=GM_SONGS[i+1]; gmReset(); gmStart(); }
@@ -11493,6 +11539,7 @@ function gmDraw(){
     const near=Math.max(0,1-Math.abs(yb-lineY)/(pxb*.8));   // 선에 가까울수록 밝게
     g.shadowColor=col; g.shadowBlur=8+near*16;
     g.fillStyle=o.black?'#2a1f3d':col; g.beginPath(); g.roundRect?g.roundRect(x,yt,w,h,10):g.rect(x,yt,w,h); g.fill(); g.shadowBlur=0;
+    if(GM.mode==='duel'){ g.strokeStyle=gmOwner(b)?'#ff4d5e':'#3d8bff'; g.lineWidth=5; g.stroke(); g.fillStyle=gmOwner(b)?'#ff4d5e':'#3d8bff'; g.font='900 12px sans-serif'; g.textAlign='left'; g.textBaseline='top'; g.fillText(gmOwner(b)?'2P':'1P',x+5,yt+4); }
     if(o.black){ g.strokeStyle=col; g.lineWidth=3; g.stroke(); }
     else{ g.fillStyle='rgba(255,255,255,.3)'; g.fillRect(x+4,yt+4,w-8,Math.min(9,h/4)); g.fillStyle='rgba(0,0,0,.14)'; g.fillRect(x+3,yb-7,w-6,5); }
     g.fillStyle=o.black?'#fff':'#10161E'; g.font='800 '+Math.round(Math.max(13,Math.min(26,w*.46)))+'px sans-serif'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(GM_PCN[b.m%12],x+w/2,yb-Math.min(h,minH)/2);
@@ -11511,6 +11558,9 @@ function gmDraw(){
   GM.pop=Math.max(0,GM.pop-dt*5);
   for(const q of GM.pops){ q.t+=dt; const a=Math.max(0,1-q.t/.8), o=gmX(q.m,lw); g.globalAlpha=a; g.font='900 '+(q.mul>1?20:16)+'px sans-serif'; g.textAlign='center'; g.fillStyle=q.mul>2?'#ff8af0':(q.mul>1?'#ffb347':'#fff'); g.fillText(q.txt,Math.min(W-30,Math.max(30,o.cx)),lineY-118-q.t*60); g.globalAlpha=1; }
   GM.pops=GM.pops.filter(q=>q.t<.8);
+  if(GM.started&&GM.mode==='duel'){ const nx=GM.blocks.find(b=>!b.hit&&!b.gone), ow=nx?gmOwner(nx):0; g.save(); g.textAlign='left'; g.textBaseline='top'; g.font='900 20px sans-serif'; g.fillStyle=ow?'#ff4d5e':'#3d8bff'; g.fillText(ow?'🔴 2P 차례':'🔵 1P 차례',10,12); g.font='800 14px sans-serif'; g.fillStyle='#fff'; g.fillText('1P '+GM.ds[0]+'  :  2P '+GM.ds[1],10,38); g.restore(); }
+  if(GM.started&&GM.swap){ g.save(); g.textAlign='left'; g.textBaseline='bottom'; g.font='800 15px sans-serif'; g.fillStyle='rgba(255,255,255,.9)'; g.fillText((GM_SWAP[(GM.swapI+GM_SWAP.length-1)%GM_SWAP.length]||GM_SWAP[0])[1],10,lineY-10); g.restore(); }
+  if(GM.started&&GM.mode==='rhythm'&&GM.T<1){ g.save(); g.textAlign='center'; g.font='800 15px sans-serif'; g.fillStyle='rgba(255,255,255,.85)'; g.fillText('아무 건반이나 박자에 맞춰 눌러요!',W/2,H*.55); g.restore(); }
   if(GM.fever>1&&GM.started){ GM.feverPop=Math.max(0,GM.feverPop-dt*2); g.save(); g.textAlign='right'; g.textBaseline='top'; g.font='900 '+Math.round(18+GM.feverPop*10)+'px sans-serif'; g.fillStyle=GM.fever===3?'#ff8af0':'#ffb347'; g.fillText((GM.fever===3?'🌈 슈퍼 피버 ×3':'🔥 피버 ×2'),W-10,12); g.restore(); }
   if(GM.combo>=2&&GM.started){ const s=1+GM.pop*.35; g.save(); g.translate(W/2,H*.2); g.scale(s,s); g.textAlign='center'; g.textBaseline='middle'; g.font='900 40px sans-serif'; g.lineWidth=6; g.strokeStyle='rgba(0,0,0,.5)'; g.fillStyle='#ffe27a'; g.strokeText(GM.combo,0,0); g.fillText(GM.combo,0,0); g.font='800 13px sans-serif'; g.fillStyle='rgba(255,255,255,.85)'; g.fillText('콤보',0,26); g.restore(); }
   if(GM.started&&GM.T<0){ const n=Math.ceil(-GM.T), fr=-GM.T-Math.floor(-GM.T), sc=1+(1-fr)*.5; g.save(); g.translate(W/2,H*.38); g.scale(sc,sc); g.fillStyle='rgba(255,255,255,'+(.4+fr*.6)+')'; g.font='900 72px sans-serif'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(n>3?'3':String(n),0,0); g.restore(); }
@@ -11539,9 +11589,10 @@ function gmSongList(){
   const lv=GM.level; let cleared=0; GM_SONGS.forEach(s=>{ if(Object.keys(GM_LEVELS).some(k=>{ const b=gmBest(s.id,k); return b&&b.stars>=1; }))cleared++; });
   $('gmpoptitle').innerHTML='곡 고르기 <small>클리어 '+cleared+' / '+GM_SONGS.length+'</small>';
   $('gmtabs').innerHTML=GM_CATS.map(c=>'<button class="btn gmtab'+(c===GM.cat?' on':'')+'" data-c="'+c+'" type="button">'+c+'</button>').join('');
-  const list=GM_SONGS.filter(s=>GM.cat==='전체'||s.cat===GM.cat);
+  const my=gmMySong(), list=(my&&(GM.cat==='전체'||GM.cat==='내 노래')?[my]:[]).concat(GM_SONGS.filter(s=>GM.cat==='전체'||s.cat===GM.cat));
   $('gmpopbody').innerHTML=list.map(s=>{ const b=gmBest(s.id,lv);
-    return '<button class="btn gmrow'+(s===GM.song?' cur':'')+'" data-id="'+s.id+'" type="button"><span class="no">'+s.no+'</span><span class="nm"><b>'+s.name+'</b><small>'+s.cat+' · 난이도 '+'●'.repeat(s.lv)+'○'.repeat(5-s.lv)+' · '+s.n.split(/\s+/).filter(x=>x&&x!=='r'&&!x.startsWith('r:')).length+'음</small></span><span class="st">'+(b?'★'.repeat(b.stars)+'☆'.repeat(3-b.stars):'☆☆☆')+'</span></button>'; }).join('')||'<p class="tnpopnote">이 분류에 곡이 없어요.</p>';
+    return '<button class="btn gmrow'+(s===GM.song||(s.id==='mysong'&&GM.song&&GM.song.id==='mysong')?' cur':'')+'" data-id="'+s.id+'" type="button"><span class="no">'+(s.no||'🎙')+'</span><span class="nm"><b>'+s.name+'</b><small>'+s.cat+' · 난이도 '+'●'.repeat(s.lv)+'○'.repeat(5-s.lv)+' · '+s.n.split(/\s+/).filter(x=>x&&x!=='r'&&!x.startsWith('r:')).length+'음</small></span><span class="st">'+(b?'★'.repeat(b.stars)+'☆'.repeat(3-b.stars):'☆☆☆')+'</span></button>'; }).join('')||'<p class="tnpopnote">'+(GM.cat==='내 노래'?'아직 만든 노래가 없어요 — 홈의 「🎙 노래 만들기」에서 흥얼거려 만들어 보세요.':'이 분류에 곡이 없어요.')+'</p>';
+  { const dp=gmDailyPick(), r=gmDailyRec(); $('gmpopbody').insertAdjacentHTML('afterbegin','<button class="btn gmrow gmdailyrow" data-daily="1" type="button"><span class="no">📅</span><span class="nm"><b>오늘의 도전 · '+dp.song.name+'</b><small>'+GM_LEVELS[dp.level].label+(dp.swap?' · 악기 바꿔 치기':'')+(dp.mode==='rhythm'?' · 리듬 모드':'')+' · 날마다 바뀌어요</small></span><span class="st">'+(r?'★'.repeat(r.stars)+'☆'.repeat(3-r.stars):'NEW')+'</span></button>'); }
   $('gmpop').hidden=false;
   const cur=$('gmpopbody').querySelector('.cur'); if(cur)cur.scrollIntoView({block:'center'});
 }
@@ -11557,6 +11608,9 @@ function gmLevelList(){
   $('gmbg').onclick=()=>{ GM.bg=!GM.bg; try{ localStorage.setItem('konti:gmbg',GM.bg?'1':'0'); }catch(e){} gmOptUI(); };
   $('gmguide').onclick=()=>{ GM.guide=!GM.guide; try{ localStorage.setItem('konti:gmguide',GM.guide?'1':'0'); }catch(e){} gmOptUI(); };
   $('gmdemo').onclick=()=>{ if(GM.demo)gmDemoStop(); else gmDemo(); };
+  document.querySelectorAll('.gmmodes [data-mode]').forEach(b=>b.onclick=()=>{ GM.mode=b.dataset.mode; GM.daily=false; try{ localStorage.setItem('konti:gmmode',GM.mode); }catch(e){} gmReset(); });
+  $('gmswap').onclick=()=>{ GM.swap=!GM.swap; GM.daily=false; if(!GM.swap)KB.inst='piano'; try{ localStorage.setItem('konti:gmswap',GM.swap?'1':'0'); }catch(e){} gmReset(); };
+  $('gmdaily').onclick=gmDailyStart;
   $('gmother').onclick=()=>{ $('gmend').hidden=true; gmReset(); gmSongList(); };
   const halt=()=>{ if(GM.started){ GM.started=false; cancelAnimationFrame(GM.raf); gmClearHints(); } };
   $('gmsong').onclick=()=>{ halt(); gmSongList(); };
@@ -11565,21 +11619,23 @@ function gmLevelList(){
   const closeS=()=>{ $('gmpop').hidden=true; if(!GM.started&&!GM.done)gmReset(); };
   $('gmpopx').onclick=closeS; $('gmpop').onclick=e=>{ if(e.target===$('gmpop'))closeS(); };
   $('gmtabs').onclick=e=>{ const b=e.target.closest('[data-c]'); if(!b)return; GM.cat=b.dataset.c; gmSongList(); $('gmpopbody').scrollTop=0; };
-  $('gmpopbody').onclick=e=>{ const b=e.target.closest('[data-id]'); if(!b)return; GM.song=GM_SONGS.find(s=>s.id===b.dataset.id); $('gmpop').hidden=true; gmReset(); };
+  $('gmpopbody').onclick=e=>{ if(e.target.closest('[data-daily]')){ gmDailyStart(); return; } const b=e.target.closest('[data-id]'); if(!b)return; GM.daily=false; GM.song=b.dataset.id==='mysong'?gmMySong():GM_SONGS.find(s=>s.id===b.dataset.id); $('gmpop').hidden=true; gmReset(); };
   const closeL=()=>{ $('gmlvpop').hidden=true; if(!GM.started&&!GM.done)gmReset(); };
   $('gmlvx').onclick=closeL; $('gmlvpop').onclick=e=>{ if(e.target===$('gmlvpop'))closeL(); };
   $('gmlvbody').onclick=e=>{ const b=e.target.closest('[data-k]'); if(!b)return; GM.level=b.dataset.k; try{ localStorage.setItem('konti:gmlevel',GM.level); }catch(_){} $('gmlvpop').hidden=true; GM.done=false; gmReset(); };
   const keys=$('gmkeys');
   keys.addEventListener('pointerdown',e=>{ const k=e.target.closest('.gk'); if(!k)return; e.preventDefault();
-    const m=+k.dataset.m, r=k.getBoundingClientRect(); k.classList.add('on');
+    let m=+k.dataset.m; const r=k.getBoundingClientRect(); k.classList.add('on');
+    if(GM.mode==='rhythm'&&GM.started){ const tb=gmRhythmTarget(); if(tb)m=tb.m; }
+    if(GM.swap){ KB.inst=GM_SWAP[GM.swapI%GM_SWAP.length][0]; GM.swapI++; }
     const h=kbNoteOn(m,.5+.5*Math.max(0,Math.min(1,(e.clientY-r.top)/Math.max(1,r.height))));
     GM.held.set(e.pointerId,{h,k,m}); gmPress(m); });
   const up=e=>{ const o=GM.held.get(e.pointerId); if(!o)return; GM.held.delete(e.pointerId); gmRelease(o.m); if(!GM.down.get(o.m))o.k.classList.remove('on'); kbRelease(o.h); };
   keys.addEventListener('pointerup',up); keys.addEventListener('pointercancel',up); keys.addEventListener('pointerleave',up);
   keys.addEventListener('contextmenu',e=>e.preventDefault());
   const downK=new Set();
-  addEventListener('keydown',e=>{ if(KB.shown!=='gm'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return; const c=e.key.toLowerCase(), m=GM.kmap[c]; if(m===undefined||downK.has(c))return; downK.add(c);
-    const k=gmKey(m); if(k)k.classList.add('on'); const h=kbNoteOn(m,.8); GM.held.set('k'+c,{h,k,m}); gmPress(m); });
+  addEventListener('keydown',e=>{ if(KB.shown!=='gm'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return; const c=e.key.toLowerCase(); let m=GM.kmap[c]; if(c===' '&&GM.mode==='rhythm')m=GM.rng?gmWMidi(GM.rng.a):60; if(m===undefined||downK.has(c))return; downK.add(c); if(c===' ')e.preventDefault();
+    const k=gmKey(m); if(k)k.classList.add('on'); if(GM.mode==='rhythm'&&GM.started){ const tb=gmRhythmTarget(); if(tb)m=tb.m; } if(GM.swap){ KB.inst=GM_SWAP[GM.swapI%GM_SWAP.length][0]; GM.swapI++; } const h=kbNoteOn(m,.8); GM.held.set('k'+c,{h,k,m}); gmPress(m); });
   addEventListener('keyup',e=>{ const c=e.key.toLowerCase(); if(downK.delete(c)){ const o=GM.held.get('k'+c); if(o){ GM.held.delete('k'+c); gmRelease(o.m); if(o.k&&!GM.down.get(o.m))o.k.classList.remove('on'); kbRelease(o.h); } } });
   addEventListener('resize',()=>{ if(KB.shown==='gm')gmSized(); });
   addEventListener('orientationchange',()=>setTimeout(()=>{ if(KB.shown==='gm')gmSized(); },250));
@@ -12067,6 +12123,7 @@ function smEnter(){ if(!SM.notes.length&&smLoad()){ $('smlyric').value=SM.lyric|
   $('smsens').onchange=()=>{ try{ localStorage.setItem('konti:smsens',$('smsens').value); }catch(e){} if(SM.boost)SM.boost.gain.value=+$('smsens').value; };
   $('smfile').onchange=e=>{ smFile(e.target.files[0]); e.target.value=''; };
   $('smchpng').onclick=smChartPng; $('smtitle').oninput=smChartRender; $('smchprint').onclick=()=>{ const w=window.open('','_blank'); if(!w){ toast('팝업이 막혔어요 — 그림 저장을 쓰세요'); return; } w.document.write('<meta charset=utf-8><title>코드 악보</title><style>body{font-family:sans-serif;margin:24px;color:#111}.smchead b{font-size:28px;margin-right:14px}.smchead span{color:#555}.smcgrid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:16px}.smcbar{border-left:2px solid #222;padding:4px 10px 12px;display:flex;flex-direction:column;gap:4px;min-height:96px}.smcbar i{font-size:11px;color:#999;font-style:normal}.smcbar b{font-size:24px;color:#c62828}.smcbar span{font-size:18px;font-weight:700}.smcbar small{color:#777}</style>'+$('smchart').innerHTML); w.document.close(); setTimeout(()=>{ try{ w.print(); }catch(e){} },300); };
+  $('smgame').onclick=()=>{ smStop(); const sg=gmMySong(); if(!sg){ toast('먼저 노래를 만들어 주세요'); return; } showScreen('gm'); try{ history.pushState({v:'gm'},''); }catch(e){} GM.daily=false; GM.song=sg; gmReset(); toast('내 노래로 게임을 시작해요 — ▶ 시작!'); };
   $('smplay').onclick=()=>{ try{ const c=AC(); c&&c.resume(); }catch(e){} smPlay(); }; $('smwav').onclick=smExportWav; $('smmidi').onclick=smExportMidi; $('smscore').onclick=smToScore;
   $('smstyles').onclick=e=>{ const b=e.target.closest('[data-s]'); if(!b)return; SM.style=b.dataset.s; SM.lead=SM_STYLES[SM.style].lead; const was=!!SM.play; smStop(); smRender(); smSave(); smPrewarm(); if(was)smPlay(); };
   $('smlead').onchange=()=>{ SM.lead=$('smlead').value; smStop(); smSave(); smPrewarm(); };
