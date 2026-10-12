@@ -14,13 +14,13 @@ export default async function vbTest(){
     VB.song='school';
     window.vbHear=()=>{ const q=VB.pipes.find(p=>!p.done); const p=q?q.p:3.5; return 60+[0,2,4,5,7,9,11,12][Math.round(p)]+(p%1?1:0); };
     await vbStart(); let t0=performance.now(); while(!VB.over&&performance.now()-t0<120000)await W(100);
-    ok('완벽하게 부르면 끝까지 다 통과',VB.over&&VB.stars===VB.total&&VB.hearts===3,[VB.stars,VB.total,VB.hearts]);
+    ok('완벽하게 부르면 끝까지 다 통과',VB.over&&VB.clean===VB.total&&VB.stars>=VB.total&&VB.hearts===3,[VB.clean,VB.stars,VB.total,VB.hearts]);
     ok('곡 따라 부르기: 학교종이 음 순서로 파이프',VB.seq.slice(0,7).join(',')==='4,4,5,5,4,4,2',VB.seq.slice(0,7));
-    await W(700); ok('끝나면 결과 창',!document.getElementById('vbend').hidden&&/★★★/.test(document.getElementById('vbstars').textContent));
+    await W(1700); ok('끝나면 결과 창',!document.getElementById('vbend').hidden&&/★★★/.test(document.getElementById('vbstars').textContent));
     // 소리를 안 내면
     VB.song='random'; window.vbHear=()=>null;
     await vbStart(); t0=performance.now(); while(!VB.over&&performance.now()-t0<60000)await W(100);
-    ok('소리를 안 내면 떨어져 부딪히고 끝난다',VB.over&&VB.hearts<=0&&VB.stars<VB.total,[VB.hearts,VB.stars]);
+    ok('소리를 안 내면 떨어져 부딪히고 끝난다',VB.over&&VB.hearts<=0&&VB.clean<VB.total,[VB.hearts,VB.clean]);
     showScreen('home'); ok('나가면 멈춘다',!VB.started);
   }finally{
     window.vbHear=realHear; window.vbMic=realMic; Object.assign(VB,st); VB.started=false; cancelAnimationFrame(VB.raf);
