@@ -892,7 +892,7 @@ header{padding-top:8px!important;padding-left:10px!important}
 <div id="vb" hidden>
   <div class="vbtop">
     <button class="btn homebtn" id="vbhome" type="button" aria-label="처음으로">⌂</button>
-    <span class="vbchip">⭐ <b id="vbstarsn">0</b></span><span class="vbchip" id="vbhearts">❤️❤️❤️</span>
+    <span class="vbchip">⭐ <b id="vbstarsn">0</b></span><span class="vbchip" id="vbhearts">❤️❤️❤️❤️❤️</span>
     <div class="vbbar"><i id="vbprog"></i></div>
     <span class="vbchip" id="vbtarget">–</span>
     <div class="vbmic" title="마이크 소리 크기"><i id="vblevel"></i></div>
@@ -903,6 +903,7 @@ header{padding-top:8px!important;padding-left:10px!important}
       <div class="vbopts"><label>난이도 <select id="vblv"><option value="easy">쉬움 (틈 넓게·느리게)</option><option value="normal">보통</option><option value="hard">어려움 (틈 좁게·빠르게)</option></select></label>
       <label>노래 <select id="vbsong"></select></label>
       <label><input type="checkbox" id="vbhint" checked> 음 미리 듣기 (파이프가 나올 때 목표음 소리)</label>
+      <label>마이크 감도 <select id="vbsens"><option value="5">보통</option><option value="12" selected>높음 (기본)</option><option value="25">아주 높음 (작은 목소리·멀리서)</option></select></label>
       <label>배경음악 <select id="vbbgm"><option value="beat">🥁 신나는 리듬 (스피커도 OK)</option><option value="full">🎶 리듬 + 반주 (이어폰 낄 때)</option><option value="off">끔</option></select></label></div>
       <div class="gmbtns"><button class="btn cta" id="vbgo" type="button">🎤 시작 (마이크 켜기)</button></div>
       <small>이어폰을 끼면 「음 미리 듣기」 소리를 새가 따라가지 않아 더 잘 돼요.</small></div></div>
@@ -950,7 +951,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "114";
+const APP_VER = "115";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -12201,7 +12202,7 @@ const VB_LV={easy:{label:'쉬움',gap:.95,sp:.15,every:2.6},normal:{label:'보�
 const VB_STEP=[0,0.5,1,1.5,2,3,3.5,4,4.5,5,5.5,6];   // 반음 → 도레미 자리(검은 건반은 사이)
 const VB_NM=['도','레','미','파','솔','라','시','도'];
 const VB={on:false,stream:null,an:null,buf:null,raf:0,last:0,lv:'normal',song:'random',hint:true,
-  bgm:'beat',bus:null,bt:0,b8:-1,cd:0,combo:0,aura:0,flash:0,sparks:[],W:400,H:300,pos:3.5,vy:0,voice:null,mute:0,pipes:[],seq:[],si:0,t:0,next:0,stars:0,hearts:3,inv:0,total:20,passed:0,over:false,started:false,paused:false,flap:0,clouds:[],shake:0,fx:[],floor:.002};
+  bgm:'beat',bus:null,bt:0,b8:-1,cd:0,combo:0,aura:0,flash:0,sparks:[],W:400,H:300,pos:3.5,vy:0,voice:null,mute:0,pipes:[],seq:[],si:0,t:0,next:0,stars:0,hearts:5,inv:0,total:20,passed:0,over:false,started:false,paused:false,flap:0,clouds:[],shake:0,fx:[],floor:.002};
 function vbPosOfMidi(mf,near){   // 반음(실수) → 도~도 자리(0~7), 옥타브는 near 에 가장 가까운 것으로
   let best=null;
   for(let k=-4;k<=4;k++){ const rel=mf-(60+12*k); if(rel<-1.5||rel>13.5)continue; const sb=Math.floor(rel), fr=rel-sb, a=VB_STEP[((sb%12)+12)%12]+7*Math.floor(sb/12), b=VB_STEP[(((sb+1)%12)+12)%12]+7*Math.floor((sb+1)/12), p=a+(b-a)*fr;
@@ -12215,7 +12216,7 @@ function vbSeq(){
   const out=[]; let p=Math.floor(Math.random()*5)+1; for(let i=0;i<VB.total;i++){ p=Math.max(0,Math.min(7,p+[-2,-1,-1,0,1,1,2,3,-3][Math.floor(Math.random()*9)])); out.push(p); } return out;
 }
 function vbReset(){
-  const L=VB_LV[VB.lv]; VB.seq=vbSeq(); VB.total=VB.seq.length; VB.si=0; VB.pipes=[]; VB.t=0; VB.next=1.2; VB.stars=0; VB.hearts=3; VB.inv=0; VB.passed=0; VB.over=false; VB.pos=3.5; VB.vy=0; VB.fx=[]; VB.voice=null; VB.combo=0; VB.clean=0; VB.sparks=[]; VB.cd=3.2; VB.bt=0; VB.b8=-1; VB.flash=0;
+  const L=VB_LV[VB.lv]; VB.seq=vbSeq(); VB.total=VB.seq.length; VB.si=0; VB.pipes=[]; VB.t=0; VB.next=1.2; VB.stars=0; VB.hearts=5; VB.inv=0; VB.passed=0; VB.over=false; VB.pos=3.5; VB.vy=0; VB.fx=[]; VB.voice=null; VB.combo=0; VB.clean=0; VB.sparks=[]; VB.cd=3.2; VB.bt=0; VB.b8=-1; VB.flash=0;
   if(!VB.clouds.length)for(let i=0;i<7;i++)VB.clouds.push({x:Math.random(),y:.08+Math.random()*.45,s:.5+Math.random()*.9});
   $('vbend').hidden=true; $('vbstart').hidden=false; vbDraw();
 }
@@ -12224,10 +12225,10 @@ async function vbMic(){
   const ctx=AC(); if(!ctx)return false; try{ await ctx.resume(); }catch(e){}
   try{ VB.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}}); }
   catch(e){ toast('마이크를 쓸 수 없어요 — 주소창 옆 🔒 에서 마이크를 허용해 주세요'); return false; }
-  const src=ctx.createMediaStreamSource(VB.stream), g=ctx.createGain(); g.gain.value=5; const an=ctx.createAnalyser(); an.fftSize=2048;
-  src.connect(g); g.connect(an); VB.src=src; VB.g=g; VB.an=an; VB.buf=new Float32Array(2048); VB.floor=.002; return true;
+  const src=ctx.createMediaStreamSource(VB.stream), g=ctx.createGain(); g.gain.value=+($('vbsens').value||12); const lim=ctx.createDynamicsCompressor(); lim.threshold.value=-12; lim.ratio.value=8; lim.attack.value=.003; lim.release.value=.15; const an=ctx.createAnalyser(); an.fftSize=2048;
+  src.connect(g); g.connect(lim); lim.connect(an); VB.lim=lim;   /* 작은 목소리(v115): 크게 키우고 큰 소리는 눌러 찢어지지 않게 */ VB.src=src; VB.g=g; VB.an=an; VB.buf=new Float32Array(2048); VB.floor=.002; return true;
 }
-function vbMicOff(){ if(!VB.stream)return; try{ VB.stream.getTracks().forEach(t=>t.stop()); VB.src.disconnect(); VB.g.disconnect(); }catch(e){} VB.stream=null; VB.an=null; try{ smFreshAudio(); }catch(e){} }
+function vbMicOff(){ if(!VB.stream)return; try{ VB.stream.getTracks().forEach(t=>t.stop()); VB.src.disconnect(); VB.g.disconnect(); VB.lim&&VB.lim.disconnect(); }catch(e){} VB.stream=null; VB.an=null; try{ smFreshAudio(); }catch(e){} }
 async function vbStart(){
   if(!(await vbMic()))return;
   vbReset(); $('vbstart').hidden=true; VB.started=true; VB.paused=false; VB.last=performance.now();
@@ -12240,9 +12241,9 @@ function vbHear(){
   VB.an.getFloatTimeDomainData(VB.buf);
   let r0=0; for(let i=0;i<VB.buf.length;i+=4)r0+=VB.buf[i]*VB.buf[i]; r0=Math.sqrt(r0/(VB.buf.length/4));
   VB.floor=r0<VB.floor?VB.floor*.8+r0*.2:VB.floor*.997+r0*.003;
-  const r=yinPitch(VB.buf,AC().sampleRate,Math.max(.002,VB.floor*2.2));
+  const r=yinPitch(VB.buf,AC().sampleRate,Math.max(.0008,VB.floor*1.8));
   VB.level=r.rms;
-  if(!r.f||r.prob<.6||r.f<70||r.f>1100)return null;
+  if(!r.f||r.prob<.5||r.f<70||r.f>1100)return null;
   return 69+12*Math.log2(r.f/440);
 }
 function vbTone(p){   // 도~도 자리 → 소리
@@ -12382,7 +12383,7 @@ function vbDraw(dt){
   if(VB.started&&VB.cd>0&&!VB.over){ const n=Math.ceil(VB.cd), fr=VB.cd-Math.floor(VB.cd), sc=1+(fr)*.4; g.save(); g.translate(W/2,H*.42); g.scale(sc,sc); g.textAlign='center'; g.textBaseline='middle'; g.font='900 72px sans-serif'; g.lineWidth=8; g.strokeStyle='#5a3b00'; g.fillStyle='#ffd23f'; g.strokeText(String(n),0,0); g.fillText(String(n),0,0); g.restore();
     g.textAlign='center'; g.font='800 16px sans-serif'; g.fillStyle='#fff'; g.strokeStyle='rgba(0,0,0,.5)'; g.lineWidth=4; g.strokeText('지금 소리를 내 보세요 — 새가 따라와요!',W/2,H*.62); g.fillText('지금 소리를 내 보세요 — 새가 따라와요!',W/2,H*.62); g.textAlign='left'; }
   // 위 막대
-  $('vbstarsn').textContent=VB.stars; $('vbhearts').textContent='❤️'.repeat(Math.max(0,VB.hearts))+'🤍'.repeat(Math.max(0,3-VB.hearts));
+  $('vbstarsn').textContent=VB.stars; $('vbhearts').textContent='❤️'.repeat(Math.max(0,VB.hearts))+'🤍'.repeat(Math.max(0,5-VB.hearts));
   $('vbprog').style.width=(VB.passed/Math.max(1,VB.total)*100)+'%';
   const nq=VB.pipes.find(q=>!q.done); $('vbtarget').textContent=nq?'다음 '+VB_NM[nq.p]:'–';
   $('vblevel').style.width=Math.min(100,Math.sqrt(VB.level||0)*200)+'%';
@@ -12397,6 +12398,7 @@ function vbDraw(dt){
   $('vbsong').onchange=()=>{ VB.song=$('vbsong').value; try{ localStorage.setItem('konti:vbsong',VB.song); }catch(e){} };
   try{ VB.bgm=localStorage.getItem('konti:vbbgm')||'beat'; }catch(e){} $('vbbgm').value=VB.bgm;
   $('vbbgm').onchange=()=>{ VB.bgm=$('vbbgm').value; try{ localStorage.setItem('konti:vbbgm',VB.bgm); }catch(e){} if(VB.bgm==='full')toast('🎧 반주는 이어폰을 끼고 하세요 — 스피커 소리를 새가 따라갈 수 있어요'); };
+  try{ $('vbsens').value=localStorage.getItem('konti:vbsens')||'12'; }catch(e){} $('vbsens').onchange=()=>{ try{ localStorage.setItem('konti:vbsens',$('vbsens').value); }catch(e){} if(VB.g)VB.g.gain.value=+$('vbsens').value; };
   $('vbhint').onchange=()=>{ VB.hint=$('vbhint').checked; try{ localStorage.setItem('konti:vbhint',VB.hint?'1':'0'); }catch(e){} };
   $('vbgo').onclick=vbStart; $('vbagain').onclick=vbStart; $('vbmenu').onclick=()=>{ $('vbend').hidden=true; vbReset(); };
   $('vbpause').onclick=()=>{ if(!VB.started||VB.over)return; VB.paused=!VB.paused; $('vbpause').textContent=VB.paused?'▶':'⏸'; };
