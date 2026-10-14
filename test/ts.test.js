@@ -66,6 +66,21 @@ export default async function tsTest(){
     let hit=0; for(const n of r2.notes){ const o=res2.notes.find(q=>Math.abs(q.t-n.t)<.15); if(o&&mod(o.m-n.m)===0)hit++; }
     ok('3/4 멜로디 음 70% 이상',hit>=r2.notes.length*.7,hit+'/'+r2.notes.length);
   }
+  // 5) 화음 음표 글(v118): 읽고 다시 쓰면 그대로 · 조옮김도 같이
+  { const nts=parseMelody('♪ E5+C5:1 G4+E4+C4:2 r:1'); ok('E5+C5 → 주인 음 E5 + 쌓인 C5',nts[0].midi===76&&nts[0].ch&&nts[0].ch[0]===72&&nts[1].ch.length===2,nts);
+    const back=melLine(nts,0,'sharp','treble'); ok('다시 쓰면 그대로',back==='♪ E5+C5:1 G4+E4+C4:2 r:1',back);
+    ok('조옮김 +2 하면 쌓인 음도 같이',melLine(nts,2,'sharp','treble').startsWith('♪ F#5+D5:1'),melLine(nts,2,'sharp','treble')); }
+  // 6) 4성부: S≥A≥T≥B · 위 세 성부는 코드음 · 악보로 옮기면 낮은음자리표 줄이 생기고 마디 수 그대로
+  if(r1){ const rs=await tsAnalyze(r1.buf,{parts:'satb'},()=>{}); const vs=rs.notes.filter(n=>n.A!=null);
+    ok('4성부 순서 S≥A≥T≥B',vs.length>10&&vs.every(n=>n.m>=n.A&&n.A>=n.T&&n.T>=n.B),vs.slice(0,6).map(n=>[n.m,n.A,n.T,n.B]));
+    ok('알토·테너·베이스 음역',vs.every(n=>n.B>=40&&n.B<=60&&n.T>=45&&n.T<=67&&n.A>=50&&n.A<=74),vs.map(n=>[n.A,n.T,n.B]));
+    const raw=tsToRaw(rs), bl=parseChart(raw); let N=0,pm=null; for(const b of bl){ if(b.k==='mel'){ if(b.clef!=='bass')pm=b; continue; } if(b.k==='pairs'){ N+=measuresOfBlock(pm,b).N; pm=null; } }
+    ok('4성부 악보: ♫ 줄이 있고 마디 수 그대로',bl.some(b=>b.k==='mel'&&b.clef==='bass')&&N===rs.bars.length,[N,rs.bars.length]);
+    ok('쌓인 머리(+)가 실제로 적힌다',/[A-G][#b]?\d\+[A-G]/.test(raw),raw.slice(0,200));
+    const rb=await tsAnalyze(r1.buf,{parts:'bass'},()=>{}); const want=['G'].concat(song1.ch.split(' '));
+    let bm=0; rb.bars.forEach((b,i)=>{ const tk=(b.btoks||[]).find(x=>!/^r:/.test(x)); if(!tk||!want[i])return; const pc=PC[tk[0]]+(tk[1]==='#'?1:tk[1]==='b'?-1:0); if(mod(pc)===parseCh(want[i])[0].root)bm++; });
+    ok('베이스 줄: 마디 첫 음이 코드 근음(9마디 중 7 이상)',bm>=7,rb.bars.map(b=>(b.btoks||[]).join(' ')));
+  }
   // 4) 박자를 정해 주면 그대로 쓴다
   if(r1){ const r3=await tsAnalyze(r1.buf,{meter:3,bpm:100,grid:.5},()=>{});
     ok('박자·빠르기를 정해 주면 그대로',r3.meter===3&&r3.bpm===100,[r3.meter,r3.bpm]);
