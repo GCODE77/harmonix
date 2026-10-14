@@ -326,7 +326,7 @@ body.focus #focusout{display:block}
 
 /* ===== 첫 화면 · 건반 연주 ===== */
 html.hm,html.hm body{overflow:hidden;height:100%;overscroll-behavior:none}
-html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):not(#tnpop):not(#toast):not(#errbar):not(script):not(style){display:none!important}
+html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):not(#ts):not(#tnpop):not(#toast):not(#errbar):not(script):not(style){display:none!important}
 #home{position:fixed;inset:0;height:100vh;height:100dvh;overscroll-behavior:none;touch-action:pan-y;z-index:80;background:var(--ink);display:flex;align-items:flex-start;justify-content:center;padding:calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom));overflow-x:hidden;overflow-y:auto}
 #home[hidden],#kb[hidden]{display:none}
 #home .hbox{width:min(760px,100%);text-align:center;margin:auto 0}
@@ -554,6 +554,24 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 @media (max-height:500px){.vbov .gmbox{padding:10px 14px;gap:6px}.vbov .gmbox small{font-size:12.5px}}
 .vbopts{display:flex;flex-direction:column;gap:8px;text-align:left;font-size:14px;width:100%}.vbopts select{width:100%;margin-top:3px;padding:6px;border-radius:8px;background:var(--bg,#0e1520);color:inherit;border:1px solid var(--line)}
 .vbstars{font-size:46px;letter-spacing:6px;color:#ffd54a;text-shadow:0 0 14px rgba(255,213,74,.6)}
+/* 노래 파일 채보 (v117) — 노래 만들기의 카드 모양(.smbody·.smcard·.smrow)을 같이 쓴다 */
+#ts{position:fixed;inset:0;height:100vh;height:100dvh;z-index:70;background:var(--bg,#0e1520);display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#ts[hidden]{display:none}
+#ts .smtop{flex:none;align-items:center;gap:10px;padding:6px 8px}
+#tsfilename{font-weight:800;color:var(--brass);overflow-wrap:anywhere}
+#tsaudio{width:100%;height:40px}
+.tsopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px 14px;font-size:14px;color:var(--dim)}
+.tsopts label{display:flex;flex-direction:column;gap:4px}
+.tsopts select,.tsopts input{padding:6px 8px;border-radius:9px;background:var(--bg,#0e1520);color:inherit;border:1px solid var(--line);font-size:14px}
+.tsrange{display:flex;gap:6px;align-items:center}.tsrange input{width:72px}
+#tsprog{height:10px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}#tsprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4fc3f7,#81c784);transition:width .2s}
+#tsstatus{font-size:14px;line-height:1.5}#tsstatus.ok{color:var(--mint,#66bb6a)}#tsstatus.err{color:#ff7a7a}
+.tschips{display:flex;flex-wrap:wrap;gap:6px}.tschips span{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:13.5px;font-weight:700}
+.tschips span.warn{border-color:#fdd835;color:#fdd835}
+#tsbars{background:#fbfaf6;color:#111;border-radius:12px;padding:10px 10px 4px;display:grid;grid-template-columns:repeat(4,1fr);max-height:46vh;overflow-y:auto}
+@media (max-width:520px){#tsbars{grid-template-columns:repeat(2,1fr)}}
+.tsbar{border-left:2px solid #333;padding:2px 7px 9px;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tsbar i{font-size:10px;color:#999;font-style:normal}.tsbar b{font-size:19px;color:#c62828;font-weight:900}.tsbar small{font-size:11.5px;color:#555;overflow-wrap:anywhere;line-height:1.35}
 /* 노래 만들기 (v108) */
 #sm .smstaffbox{background:#fbfaf6;border-radius:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;min-height:40px}
 #sm .smstf{display:block}
@@ -718,6 +736,7 @@ header{padding-top:8px!important;padding-left:10px!important}
       <button class="hcard" id="h-kb" type="button"><span class="hi">🎹</span><span><b>건반 연주</b><br><small>건반을 직접 눌러 연주해요<br>피아노·트럼펫·바이올린·드럼 …</small></span></button>
       <button class="hcard" id="h-tn" type="button"><span class="hi">🎤</span><span><b>튜너 · 음 찾기</b><br><small>악기 소리를 듣고 음 이름과<br>음정이 맞는지 알려 줘요</small></span></button>
       <button class="hcard" id="h-mt" type="button"><span class="hi">⏱</span><span><b>메트로놈</b><br><small>박자·쪼개기·탭 템포로<br>연습 박자를 맞춰요</small></span></button>
+      <button class="hcard wide" id="h-ts" type="button"><span class="hi">🎧</span><span><b>노래 파일 채보</b><br><small>노래 파일을 넣으면 멜로디·박자·코드를 악보로 옮겨 줘요 · 악보에서 바로 고쳐요</small></span></button>
       <button class="hcard wide" id="h-sm" type="button"><span class="hi">🎙</span><span><b>노래 만들기</b><br><small>흥얼거리거나 노래하면 코드·반주를 붙여 노래로 만들어 줘요</small></span></button>
       <button class="hcard wide" id="h-vb" type="button"><span class="hi">🐤</span><span><b>노래하는 새</b><br><small>목소리 높이로 새를 날려 파이프 틈을 통과해요 · 도레미 음정 놀이</small></span></button>
       <button class="hcard wide" id="h-gm" type="button"><span class="hi">🎮</span><span><b>건반 게임</b><br><small>내려오는 블록을 맞춰 눌러요 · 동요·클래식 100판</small></span></button>
@@ -889,6 +908,39 @@ header{padding-top:8px!important;padding-left:10px!important}
   </div>
   <div id="smpop" class="gmov" hidden role="dialog"><div class="gmpopbox"><div class="tnpophd"><b id="smpoptitle">코드</b><button class="btn" id="smpopx" type="button">닫기</button></div><div id="smpopbody" class="smpopbody"></div></div></div>
 </div>
+<div id="ts" hidden>
+  <div class="tnrow smtop">
+    <button class="btn homebtn" id="tshome" type="button">⌂ 처음</button>
+    <b class="smh">🎧 노래 파일 채보</b>
+  </div>
+  <div class="smbody">
+    <section class="smcard">
+      <h3>① 노래 파일 넣기 <small>mp3 · m4a · wav · ogg 등 · 컴퓨터(폰) 안에서만 계산해요(인터넷으로 안 보내요)</small></h3>
+      <div class="smrow">
+        <label class="btn cta smbig smfilebtn">📂 노래 파일 고르기<input id="tsfile" type="file" accept="audio/*,.mp3,.m4a,.wav,.ogg,.flac,.aac" hidden></label>
+        <span id="tsfilename"></span>
+      </div>
+      <audio id="tsaudio" controls hidden></audio>
+      <div class="tsopts">
+        <label>멜로디는 <select id="tsvocal"><option value="1" selected>노래(목소리)</option><option value="0">악기 연주(피아노·바이올린 등)</option></select></label>
+        <label>박자 <select id="tsmeter"><option value="0" selected>자동으로 찾기</option><option value="4">4/4</option><option value="3">3/4 (왈츠·찬송가)</option></select></label>
+        <label>빠르기(BPM) <input id="tsbpm" type="number" min="40" max="220" placeholder="자동" inputmode="numeric"></label>
+        <label>음표 <select id="tsgrid"><option value=".25" selected>자세히 (16분음표·점음표까지)</option><option value=".5">간단히 (8분음표까지)</option></select></label>
+        <label>구간(초) <span class="tsrange"><input id="tst0" type="number" min="0" placeholder="처음" inputmode="decimal"> ~ <input id="tst1" type="number" min="0" placeholder="끝" inputmode="decimal"></span></label>
+      </div>
+      <div class="smrow"><button class="btn cta smbig" id="tsgo" type="button" disabled>▶ 채보 시작</button><button class="btn" id="tscancel" type="button" hidden>멈추기</button></div>
+      <div id="tsprog"><i></i></div>
+      <div id="tsstatus" class="smnote">노래 파일을 고르면 시작할 수 있어요. 3분 노래는 보통 10~30초 걸려요.</div>
+    </section>
+    <section class="smcard" id="tsres" hidden>
+      <h3>② 채보 결과 <small>코드(빨강) · 멜로디 음 · 마디 번호</small></h3>
+      <div id="tschips" class="tschips"></div>
+      <div class="smrow"><button class="btn cta smbig" id="tsopen" type="button">📝 악보로 열기 (고치기·연주)</button><button class="btn" id="tsagain" type="button">↻ 다른 설정으로 다시</button></div>
+      <div id="tsbars"></div>
+      <div class="smnote" id="tsnote"></div>
+    </section>
+  </div>
+</div>
 <div id="vb" hidden>
   <div class="vbtop">
     <button class="btn homebtn" id="vbhome" type="button" aria-label="처음으로">⌂</button>
@@ -951,7 +1003,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "116";
+const APP_VER = "117";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -1148,6 +1200,9 @@ function parseChart(raw){
       continue;
     }
     if(/^\s*(?:TITLE|제목)\s*:/i.test(line)){continue;}   // 제목 줄은 가사·마디가 아니다
+    /* `KEY: G` · `KEY: Em` — 조를 못 박아 둔다(v117, 노래 파일 채보). 첫 코드가 으뜸화음이 아닌 곡에서 조표가 틀리지 않게. */
+    { const km=line.match(/^\s*(?:KEY|조)\s*:\s*([A-Ga-g])([#♯b♭]?)(m?)\s*$/i); if(km){ out._key={pc:mod(PCM[km[1].toUpperCase()]+(ACC[km[2]]||0)),minor:!!km[3]}; continue; }
+      if(/^\s*(?:KEY|조)\s*:/i.test(line))continue; }
     if(isSection(line)){out.push({k:'sec',text:line.trim().replace(/^[[<(]|[\]>)]$/g,'').trim()});continue;}
     if(!line.trim()){out.push({k:'blank'});continue;}
     if(inline&&line.includes('[')){
@@ -1350,6 +1405,7 @@ function markSuspectNotes(){
   return n;
 }
 function detectKey(bl){
+  if(bl&&bl._key)return {pc:bl._key.pc,minor:bl._key.minor};
   for(const b of bl){ if(b.k!=='pairs')continue;
     for(const p of b.pairs) if(p.chord) return{pc:p.chord.root,minor:/^m(?!aj)/.test(p.chord.suffix)}; }
   return{pc:0,minor:false};
@@ -10786,7 +10842,7 @@ async function wakeSet(on){ try{ if(on&&!WAKE&&navigator.wakeLock){ WAKE=await n
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&['kb','tn','mt','gm'].includes(KB.shown))wakeSet(true); });
 function showScreen(which){
   wakeSet(['kb','tn','mt','gm','sm','vb'].includes(which));   // 연주·튜닝·박자 연습 중에는 화면이 꺼지지 않게
-  document.documentElement.classList.toggle('hm',which!=='score'); KB.shown=which; $('home').hidden=which!=='home'; $('kb').hidden=which!=='kb'; $('tn').hidden=which!=='tn'; $('mt').hidden=which!=='mt'; $('gm').hidden=which!=='gm'; $('sm').hidden=which!=='sm'; $('vb').hidden=which!=='vb';
+  document.documentElement.classList.toggle('hm',which!=='score'); KB.shown=which; $('home').hidden=which!=='home'; $('kb').hidden=which!=='kb'; $('tn').hidden=which!=='tn'; $('mt').hidden=which!=='mt'; $('gm').hidden=which!=='gm'; $('sm').hidden=which!=='sm'; $('vb').hidden=which!=='vb'; if($('ts'))$('ts').hidden=which!=='ts';
   if(which!=='vb'&&typeof vbStop==='function')vbStop();
   if(which==='vb'&&typeof vbEnter==='function')vbEnter();
   if(which!=='sm'&&typeof smLeave==='function')smLeave();
@@ -12708,6 +12764,423 @@ function mtSetBpm(v,restart){ v=Math.max(30,Math.min(300,Math.round(v||90))); MT
   window.addEventListener('resize',()=>{ if(KB.shown==='tn')tnGraph(performance.now()); });
   $('h-tn').onclick=()=>{ showScreen('tn'); try{ history.pushState({v:'tn'},''); }catch(e){} tnStart(); };   // 들어가면 바로 듣기 시작(정지·다시 시작 단추는 그대로)
   $('h-mt').onclick=()=>{ showScreen('mt'); try{ history.pushState({v:'mt'},''); }catch(e){} };
+})();
+</script>
+<script>
+/* ============ 🎧 노래 파일 채보 (v117) ============
+   사용자 요청: *"노래 파일을 넣으면 알아서 채보되는 악보를 만들어라 — 채보된 악보는 우리가 고칠 수 있어야 하고,
+   음표·기호 등이 자세히 나오면 좋겠다."*
+   반주가 섞인 음원에서 ① 멜로디(가장 두드러진 선율) ② 박·빠르기·마디 첫 박 ③ 코드(자리바꿈 포함) ④ 조를 뽑아
+   ♪ 줄 + 코드 줄로 적고 '악보 연주' 오선보로 보낸다 — 거기 음표 편집기로 고친다(높이·길이·넣기·지우기·마디선).
+   전부 기기 안에서 계산한다(인터넷·AI 없음 — EXE 오프라인에서도 된다).
+   방법(전부 직접 구현):
+   · 멜로디: 짧은 푸리에 변환 봉우리 → 배음 합 살리언스(Melodia 식, 20센트 칸) → 비터비로 이어진 선율 + 무성 구간
+     → 노래 만들기의 음 나누기(smSegment: 전체 음정 보정·같은 음 다시 내기)
+   · 박: 스펙트럼 변화량(onset) 자기상관으로 빠르기 → 엘리스 동적계획 박 추적(빠르기가 흔들려도 따라감)
+   · 코드: 박마다 크로마(12음) + 저음 크로마 → 코드 틀 맞대기 → 비터비(마디 첫 박에서 바뀌기 쉽게) · 베이스가 3·5음이면 /자리바꿈
+   · 마디 첫 박: 코드가 바뀌는 자리가 가장 많이 모이는 위상
+   ★ 한계(숨기지 말 것): 반주가 크거나 여러 사람이 부르면 멜로디가 반주 쪽으로 새고, 붙임줄·셋잇단은 아직 안 적는다. */
+const TS={buf:null,name:'',res:null,busy:false,url:null,cancel:false};
+
+function tsFFT(re,im){   // 제자리 기수 2 FFT
+  const n=re.length;
+  for(let i=1,j=0;i<n;i++){ let b=n>>1; for(;j&b;b>>=1)j^=b; j^=b; if(i<j){ let t=re[i];re[i]=re[j];re[j]=t; t=im[i];im[i]=im[j];im[j]=t; } }
+  for(let len=2;len<=n;len<<=1){ const a=-2*Math.PI/len, wr=Math.cos(a), wi=Math.sin(a), h=len>>1;
+    for(let i=0;i<n;i+=len){ let cr=1,ci=0; for(let k=0;k<h;k++){ const p=i+k,q=p+h, tr=re[q]*cr-im[q]*ci, ti=re[q]*ci+im[q]*cr; re[q]=re[p]-tr; im[q]=im[p]-ti; re[p]+=tr; im[p]+=ti; const t=cr*wr-ci*wi; ci=cr*wi+ci*wr; cr=t; } } }
+}
+function tsMono(buf,target,t0,t1){   // 모노 + 대략 target Hz 로 줄이기(평균 — 앞단 저역 통과 겸)
+  const sr0=buf.sampleRate, f=Math.max(1,Math.round(sr0/target)), sr=sr0/f, ch=buf.numberOfChannels;
+  const a=Math.max(0,Math.floor((t0||0)*sr0)), b=Math.min(buf.length,t1?Math.floor(t1*sr0):buf.length), n=Math.max(0,Math.floor((b-a)/f)), x=new Float32Array(n);
+  for(let c=0;c<ch;c++){ const d=buf.getChannelData(c); for(let i=0;i<n;i++){ let s=0; const o=a+i*f; for(let k=0;k<f;k++)s+=d[o+k]||0; x[i]+=s/f/ch; } }
+  return {x,sr};
+}
+/* 한 신호를 프레임마다 봉우리 목록으로: {f,a}(주파수·크기). onset 변화량·에너지도 같이 낸다. */
+async function tsPeaks(x,sr,N,hop,fmin,fmax,maxP,prog,p0,p1,bands){
+  const win=new Float32Array(N); for(let i=0;i<N;i++)win[i]=.5-.5*Math.cos(2*Math.PI*i/N);
+  const re=new Float64Array(N), im=new Float64Array(N), H=N/2, mag=new Float32Array(H), prev=new Float32Array(H), prev2=new Float32Array(H);
+  const nf=Math.max(0,Math.floor((x.length-N)/hop)+1), frames=new Array(nf), flux=new Float32Array(nf), en=new Float32Array(nf);
+  const bfl=(bands||[]).map(()=>new Float32Array(nf)), bk=(bands||[]).map(([f0,f1])=>[Math.max(1,Math.floor(f0*N/sr)),Math.min(H-1,Math.ceil(f1*N/sr))]);
+  const kmin=Math.max(2,Math.floor(fmin*N/sr)), kmax=Math.min(H-2,Math.ceil(fmax*N/sr)), kfl=Math.min(H,Math.ceil(4000*N/sr));
+  let tick=performance.now();
+  for(let t=0;t<nf;t++){
+    const o=t*hop; for(let i=0;i<N;i++){ re[i]=x[o+i]*win[i]; im[i]=0; }
+    tsFFT(re,im);
+    let mx=0, e=0; for(let k=0;k<H;k++){ const v=Math.sqrt(re[k]*re[k]+im[k]*im[k]); mag[k]=v; if(v>mx)mx=v; e+=v*v; }
+    en[t]=Math.sqrt(e/H);
+    let fl=0; for(let k=1;k<kfl;k++){ const d=Math.log(1+60*mag[k])-Math.log(1+60*prev[k]); if(d>0)fl+=d; prev[k]=mag[k]; }
+    flux[t]=fl;
+    for(let b=0;b<bk.length;b++){ let s=0; for(let k=bk[b][0];k<=bk[b][1];k++){ const d=Math.log(1+60*mag[k])-Math.log(1+60*prev2[k]); if(d>0)s+=d; } bfl[b][t]=s; }
+    if(bk.length)prev2.set(mag);
+    const pk=[], th=mx*.012;
+    for(let k=kmin;k<=kmax;k++){ const v=mag[k]; if(v<=th||v<=mag[k-1]||v<mag[k+1])continue;
+      const A=Math.log(mag[k-1]+1e-12), B=Math.log(v+1e-12), C=Math.log(mag[k+1]+1e-12), den=A-2*B+C, p=den<0?.5*(A-C)/den:0;
+      pk.push({f:(k+p)*sr/N,a:Math.exp(B-.25*(A-C)*p)}); }
+    if(pk.length>maxP){ pk.sort((u,v)=>v.a-u.a); pk.length=maxP; }
+    frames[t]=pk;
+    if(prog&&performance.now()-tick>60){ tick=performance.now(); prog(p0+(p1-p0)*t/nf); await new Promise(r=>setTimeout(r,0)); if(TS.cancel)throw new Error('취소');
+    }
+  }
+  return {frames,flux,en,nf,dt:hop/sr,bfl};
+}
+const TS_LO=43, TS_HI=88, TS_BS=5, TS_NB=(TS_HI-TS_LO)*TS_BS+1;   // 멜로디 칸: G2~E6, 20센트
+/* 배음 합 살리언스(Melodia 식): 봉우리 하나가 자기를 1·2·…·8 배음으로 갖는 바탕음 후보에 표를 준다.
+   ★ 150Hz 아래는 깎는다(등청감 곡선 흉내) — 안 그러면 베이스의 둘째 배음이 멜로디로 뽑힌다. */
+function tsSalience(frames,vocal){
+  const nf=frames.length, S=new Float32Array(nf*TS_NB), fmax=new Float32Array(nf);
+  const hw=[1,.8,.64,.512,.41,.33,.26,.21];
+  for(let t=0;t<nf;t++){ const o=t*TS_NB;
+    for(const p of frames[t]){ if(p.f<80||p.f>5000)continue;
+      const w=p.a/(1+Math.pow(150/p.f,2))/(1+Math.pow(p.f/(vocal?3500:5000),2)), aw=Math.sqrt(w);
+      for(let h=1;h<=8;h++){ const m=69+12*Math.log2(p.f/h/440); if(m<TS_LO-1)break; if(m>TS_HI+1)continue;
+        const c=(m-TS_LO)*TS_BS, b0=Math.max(0,Math.ceil(c-TS_BS)), b1=Math.min(TS_NB-1,Math.floor(c+TS_BS));
+        for(let b=b0;b<=b1;b++){ const d=Math.abs(b-c)/TS_BS; if(d>=1)continue; const cw=Math.cos(d*Math.PI/2); S[o+b]+=cw*cw*hw[h-1]*aw; } } }
+    let mx=0; for(let b=0;b<TS_NB;b++)if(S[o+b]>mx)mx=S[o+b]; fmax[t]=mx; }
+  // 사람이 부르는 음역을 조금 더 믿는다(G3~A5)
+  if(vocal)for(let b=0;b<TS_NB;b++){ const m=TS_LO+b/TS_BS, pr=m<55?.8+.2*(m-43)/12:m>81?Math.max(.6,1-(m-81)*.05):1; if(pr!==1)for(let t=0;t<nf;t++)S[t*TS_NB+b]*=pr; }
+  return {S,fmax};
+}
+/* 비터비: 이어진 선율 하나 + "부르지 않음". 이웃 칸(±6반음)은 거리만큼 벌점, 그보다 먼 도약은 고정 벌점. */
+async function tsTrack(S,fmax,nf,prog,p0,p1){
+  const NB=TS_NB, U=NB, srt=Array.from(fmax).filter(v=>v>0).sort((a,b)=>a-b), G=srt[Math.floor(srt.length*.9)]||1;
+  const VOI=Math.log(.2), SW=1.4, JMP=3.2, R=6*TS_BS;
+  let cur=new Float32Array(NB+1), nxt=new Float32Array(NB+1); const back=new Int16Array(nf*(NB+1));
+  const em=(t,b)=>Math.log(S[t*NB+b]/G+.004);
+  for(let b=0;b<NB;b++)cur[b]=em(0,b); cur[U]=VOI;
+  let tick=performance.now();
+  for(let t=1;t<nf;t++){
+    let gb=-1e30,gi=0; for(let b=0;b<NB;b++)if(cur[b]>gb){ gb=cur[b]; gi=b; }
+    const o=t*(NB+1);
+    for(let b=0;b<NB;b++){
+      let best=cur[U]-SW, bi=U; if(gb-JMP>best){ best=gb-JMP; bi=gi; }
+      const a0=Math.max(0,b-R), a1=Math.min(NB-1,b+R);
+      for(let a=a0;a<=a1;a++){ const d=Math.abs(a-b), v=cur[a]-(d<=2?0:.05*(d-2)); if(v>best){ best=v; bi=a; } }
+      nxt[b]=best+em(t,b); back[o+b]=bi; }
+    { let best=cur[U], bi=U; if(gb-SW>best){ best=gb-SW; bi=gi; } nxt[U]=best+VOI; back[o+U]=bi; }
+    const tmp=cur; cur=nxt; nxt=tmp;
+    if(prog&&performance.now()-tick>60){ tick=performance.now(); prog(p0+(p1-p0)*t/nf); await new Promise(r=>setTimeout(r,0)); if(TS.cancel)throw new Error('취소'); }
+  }
+  let s=U, bv=-1e30; for(let b=0;b<=NB;b++)if(cur[b]>bv){ bv=cur[b]; s=b; }
+  const path=new Int16Array(nf); for(let t=nf-1;t>=0;t--){ path[t]=s; if(t)s=back[t*(NB+1)+s]; }
+  return {path,G};
+}
+/* 박: 엘리스(2007) 동적계획. o=변화량 곡선, fps=초당 프레임. bpmFix 가 있으면 그 빠르기로. */
+function tsBeats(flux,dt,bpmFix){
+  const n=flux.length, o=new Float32Array(n), W=Math.max(1,Math.round(.4/dt));
+  let s=0; for(let i=0;i<n;i++){ s+=flux[i]; if(i>=2*W)s-=flux[i-2*W]; }
+  { const pre=new Float64Array(n+1); for(let i=0;i<n;i++)pre[i+1]=pre[i]+flux[i];
+    for(let i=0;i<n;i++){ const a=Math.max(0,i-W), b=Math.min(n,i+W+1); o[i]=Math.max(0,flux[i]-(pre[b]-pre[a])/(b-a)); } }
+  let sd=0; for(let i=0;i<n;i++)sd+=o[i]*o[i]; sd=Math.sqrt(sd/Math.max(1,n))||1; for(let i=0;i<n;i++)o[i]/=sd;
+  let per;
+  const acAt=L=>{ let c=0; for(let i=L;i<n;i++)c+=o[i]*o[i-L]; return c/(n-L); };
+  if(bpmFix)per=60/bpmFix/dt;
+  else{ let best=-1; for(let bpm=55;bpm<=190;bpm+=.5){ const L=60/bpm/dt, l0=Math.floor(L), fr=L-l0, c=acAt(l0)*(1-fr)+acAt(l0+1)*fr,
+      w=Math.exp(-.5*Math.pow(Math.log2(bpm/105)/.85,2)), v=c*w; if(v>best){ best=v; per=L; } } }
+  const sc=new Float32Array(n), bk=new Int32Array(n).fill(-1), A=400;
+  for(let t=0;t<n;t++){ let bv=0, bi=-1; const a=Math.max(0,Math.round(t-2*per)), b=Math.round(t-per/2);
+    for(let p=a;p<=b;p++){ const v=sc[p]-A*Math.pow(Math.log((t-p)/per),2); if(bi<0||v>bv){ bv=v; bi=p; } }
+    sc[t]=o[t]+(bi>=0?Math.max(0,bv):0); bk[t]=bv>0?bi:-1; }
+  let t=n-1, bv=-1e30; for(let i=Math.max(0,Math.floor(n-per));i<n;i++)if(sc[i]>bv){ bv=sc[i]; t=i; }
+  const beats=[]; while(t>=0){ beats.push(t*dt); t=bk[t]; } beats.reverse();
+  // 앞쪽 빈 자리도 같은 간격으로 채운다(곡이 박 추적보다 먼저 시작하는 일)
+  while(beats.length&&beats[0]-per*dt>-1e-6)beats.unshift(beats[0]-per*dt);
+  return {beats,per:per*dt,o};
+}
+const TS_KS_MAJ=[6.35,2.23,3.48,2.33,4.38,4.09,2.52,5.19,2.39,3.66,2.29,2.88], TS_KS_MIN=[6.33,2.68,3.52,5.38,2.60,3.53,2.54,4.75,3.98,2.69,3.34,3.17];
+const TS_Q=[['',[0,4,7],0],['m',[0,3,7],0],['7',[0,4,7,10],.045],['m7',[0,3,7,10],.05],['maj7',[0,4,7,11],.07],['sus4',[0,5,7],.11]];   // 7·maj7·sus4 는 증거가 뚜렷할 때만(멜로디의 지나가는 음이 sus4·maj7 로 잘 보인다)
+/* 박마다 코드: 크로마 틀 맞대기 + 저음 + 조 + 비터비. pos[i]=박 i 가 마디 안 몇째 박인지(모르면 null). */
+function tsChordsOnBeats(chr,bas,key,pos,meter){
+  const nb=chr.length, cands=[];
+  const dia=key?(key.minor?[0,2,3,5,7,8,10]:[0,2,4,5,7,9,11]).map(i=>mod(i+key.pc)):null;
+  for(let r=0;r<12;r++)for(const [q,iv,pen] of TS_Q){ const tones=iv.map(i=>mod(i+r)); cands.push({root:r,suffix:q,tones,pen,
+    dia:dia?tones.every(p=>dia.includes(p)):true}); }
+  const em=cands.map(()=>new Float32Array(nb));
+  for(let i=0;i<nb;i++){ const c=chr[i], b=bas[i]; let cn=0; for(let k=0;k<12;k++)cn+=c[k]*c[k]; cn=Math.sqrt(cn)||1; let bm=0; for(let k=0;k<12;k++)if(b[k]>bm)bm=b[k]; bm=bm||1;
+    cands.forEach((cd,j)=>{ let s=0; for(let k=0;k<12;k++)s+=c[k]*(cd.tones.includes(k)?1:-.25); s/=cn*Math.sqrt(cd.tones.length);
+      s+=.32*b[cd.root]/bm+.08*cd.tones.slice(1).reduce((a,p)=>a+b[p],0)/bm/(cd.tones.length-1);
+      s-=cd.pen; if(!cd.dia)s-=.06; em[j][i]=s; }); }
+  const C=cands.length; let cur=new Float32Array(C); for(let j=0;j<C;j++)cur[j]=em[j][0];
+  const back=[]; for(let i=1;i<nb;i++){ const bkI=new Int16Array(C); let gb=-1e9,gi=0; for(let j=0;j<C;j++)if(cur[j]>gb){ gb=cur[j]; gi=j; }
+    const p=pos?pos[i]:null, sw=p==null?.3:(p===0?.06:(meter===4&&p===2)?.22:.36);   // 마디를 모를 땐 잘 안 바뀌게(박마다 깜빡이는 것은 첫 박 찾기를 흐린다)
+    const nx=new Float32Array(C); for(let j=0;j<C;j++){ let v=cur[j], k=j; if(gb-sw>v){ v=gb-sw; k=gi; } nx[j]=v+em[j][i]; bkI[j]=k; }
+    back.push(bkI); cur=nx; }
+  let s=0; for(let j=1;j<C;j++)if(cur[j]>cur[s])s=j;
+  const out=new Array(nb); out[nb-1]=s; for(let i=nb-1;i>0;i--){ s=back[i-1][s]; out[i-1]=s; }
+  return out.map((j,i)=>{ const cd=cands[j]; return {root:cd.root,suffix:cd.suffix,tones:cd.tones}; });
+}
+function tsKeyOf(sum){
+  const tot=sum.reduce((a,b)=>a+b,0)||1; let best={pc:0,minor:false,s:-1e9};
+  for(let r=0;r<12;r++)for(const mi of [false,true]){ const pr=mi?TS_KS_MIN:TS_KS_MAJ; let mx=0,my=0; for(let i=0;i<12;i++){ mx+=sum[mod(i+r)]/tot; my+=pr[i]; } mx/=12; my/=12;
+    let sxy=0,sxx=0,syy=0; for(let i=0;i<12;i++){ const a=sum[mod(i+r)]/tot-mx, b=pr[i]-my; sxy+=a*b; sxx+=a*a; syy+=b*b; }
+    const s=sxy/Math.sqrt(sxx*syy||1); if(s>best.s)best={pc:r,minor:mi,s}; }
+  return best;
+}
+/* 크로마: 봉우리마다 가장 가까운 반음 칸에(크기의 제곱근) — 저음은 별도 */
+function tsChroma(pk,fmin,fmax,pw,f0){
+  /* ★ 배음 누르기: 둘째·셋째 배음(옥타브·5도 위)을 제 음으로 세면 크로마가 5도 위로 기운다 — 실측(합성 노래): 사장조가 라장조로,
+     코드가 전부 5도 위로 나왔다. 아래 1/2·1/3 자리에 더 크거나 비슷한 봉우리가 있으면 그 봉우리의 배음으로 보고 덜 센다. */
+  const c=new Float32Array(12);
+  for(const p of pk){ if(p.f<fmin||p.f>fmax)continue;
+    let mw=1; if(f0){ const r=p.f/f0, k=Math.round(r); if(k>=1&&k<=10&&Math.abs(r-k)<.03*k)mw=.3; }   /* 멜로디 자신의 배음은 덜 센다(반주가 같은 음을 칠 수도 있어 아주 빼지는 않는다) */
+    for(const q of pk){ if(q===p||q.a<p.a*.35)continue; const r=p.f/q.f; if(Math.abs(r-3)<.09){ mw*=.25; break; } if(Math.abs(r-2)<.06&&q.a>=p.a*.6){ mw*=.6; break; } }
+    const m=69+12*Math.log2(p.f/440), r=Math.round(m), d=Math.abs(m-r); if(d>.42)continue; c[mod(r)]+=Math.pow(p.a,pw)*(1-d)*mw; }
+  return c;
+}
+/* ============ 전체 ============ */
+async function tsAnalyze(buf,opt,prog){
+  opt=opt||{}; prog=prog||(()=>{}); TS.cancel=false;
+  const t0=opt.t0||0, t1=opt.t1||0;
+  prog(.01,'소리를 고르는 중…');
+  const {x,sr}=tsMono(buf,11025,t0,t1);
+  if(x.length<sr*4)throw new Error('너무 짧아요(4초 이상인 파일을 넣어 주세요)');
+  let pk_=0; for(let i=0;i<x.length;i++){ const v=Math.abs(x[i]); if(v>pk_)pk_=v; } if(pk_<1e-4)throw new Error('소리가 거의 없어요');
+  for(let i=0;i<x.length;i++)x[i]/=pk_;
+  prog(.03,'소리를 쪼개 보는 중…');
+  const A=await tsPeaks(x,sr,2048,256,60,5000,48,(p)=>prog(p,'소리를 쪼개 보는 중…'),.03,.38);
+  prog(.39,'저음을 듣는 중…');
+  const lo=tsMono(buf,11025/4,t0,t1); { let m=0; for(const v of lo.x)if(Math.abs(v)>m)m=Math.abs(v); if(m)for(let i=0;i<lo.x.length;i++)lo.x[i]/=m; }
+  const B=await tsPeaks(lo.x,lo.sr,1024,128,32,320,24,(p)=>prog(p,'저음을 듣는 중…'),.39,.47,[[30,100],[150,450]]);
+  prog(.48,'멜로디를 찾는 중…');
+  const {S,fmax}=tsSalience(A.frames,opt.vocal!==false);
+  const {path,G}=await tsTrack(S,fmax,A.nf,(p)=>prog(p,'멜로디를 찾는 중…'),.48,.72);
+  // 멜로디 프레임 → 노래 만들기의 음 나누기에 맞는 꼴로
+  const fr=[], NB=TS_NB;
+  for(let t=0;t<A.nf;t++){ const b=path[t], q={t:t*A.dt+1024/sr,e:0,mf:NaN};
+    if(b<NB){ const o=t*NB, v=S[o+b], l=b>0?S[o+b-1]:v, r=b<NB-1?S[o+b+1]:v, den=l-2*v+r, d=den<0?Math.max(-.5,Math.min(.5,.5*(l-r)/den)):0;
+      q.mf=TS_LO+(b+d)/TS_BS; q.e=v/G;
+      // 그 높이의 배음(1~6) 크기 합 — 같은 음을 다시 낸 순간을 이것으로 본다(북소리는 배음 자리에 잘 안 걸린다)
+      const f0=440*Math.pow(2,(q.mf-69)/12); let h=0; for(const pk of A.frames[t]){ const r=pk.f/f0, k=Math.round(r); if(k>=1&&k<=6&&Math.abs(r-k)<.035*k)h+=pk.a; } q.h=h; }
+    fr.push(q); }
+  for(let i=0;i<fr.length;i++){ if(isNaN(fr[i].mf))continue; const w=[]; for(let k=i-2;k<=i+2;k++)if(fr[k]&&!isNaN(fr[k].mf))w.push(fr[k].mf); w.sort((a,b)=>a-b); fr[i].sm=w[w.length>>1]; }
+  if(window.__TSDBG){ window.__TSDBG.fr=fr; window.__TSDBG.flux=A.flux; window.__TSDBG.dt=A.dt; }
+  let seg=tsSplitRepeats(smSegment(fr).filter(s=>s.e-s.s>=.08),fr,A.flux,A.dt);
+  if(window.__TSDBG)window.__TSDBG.seg=seg;
+  prog(.74,'박자를 세는 중…');
+  const bt=tsBeats(A.flux,A.dt,opt.bpm||0);
+  let beats=bt.beats.map(b=>b+1024/sr).filter(b=>b<x.length/sr+bt.per);
+  let spb=0; { const g=[]; for(let i=1;i<beats.length;i++)g.push(beats[i]-beats[i-1]); g.sort((a,b)=>a-b); spb=g[g.length>>1]||bt.per; }
+  // 박 하나가 4분음표가 되도록: 너무 빠르면(160 넘음) 두 박을 한 박으로, 너무 느리면(55 밑) 반으로 쪼갠다
+  let bpm=60/spb;
+  if(!opt.bpm){ if(bpm>165){ beats=beats.filter((b,i)=>i%2===0); bpm/=2; spb*=2; } else if(bpm<55){ const nb=[]; for(let i=0;i<beats.length;i++){ nb.push(beats[i]); if(i+1<beats.length)nb.push((beats[i]+beats[i+1])/2); } beats=nb; bpm*=2; spb/=2; } }
+  if(beats.length<4)throw new Error('박자를 못 찾았어요');
+  prog(.8,'코드를 듣는 중…');
+  // 박마다 크로마
+  const nbt=beats.length, chr=[], bas=[], csum=new Float32Array(12);
+  for(let i=0;i<nbt;i++){ const a=beats[i], b=i+1<nbt?beats[i+1]:a+spb, c=new Float32Array(12), d=new Float32Array(12);
+    for(let t=Math.max(0,Math.floor(a/A.dt));t<Math.min(A.nf,Math.ceil(b/A.dt));t++){ const mf=fr[t]&&fr[t].mf, v=tsChroma(A.frames[t],110,2200,.5,isNaN(mf)?0:440*Math.pow(2,(mf-69)/12)); for(let k=0;k<12;k++)c[k]+=v[k]; }
+    for(let t=Math.max(0,Math.floor((a-.2)/B.dt));t<Math.min(B.nf,Math.ceil((b-.2)/B.dt));t++){ const v=tsChroma(B.frames[t],32,260,1); for(let k=0;k<12;k++)d[k]+=v[k]; }
+    chr.push(c); bas.push(d); for(let k=0;k<12;k++)csum[k]+=c[k]+.5*d[k]; }
+  const key0=tsKeyOf(csum);
+  if(window.__TSDBG)Object.assign(window.__TSDBG,{csum:Array.from(csum),chr,bas});
+  // 1차(마디 모름) → 마디 첫 박 고르기 → 2차
+  const c1=tsChordsOnBeats(chr,bas,key0,null,4);
+  const chg=c1.map((c,i)=>i&&(c.root!==c1[i-1].root||c.suffix!==c1[i-1].suffix)?1:0);
+  // 베이스 음이 바뀌는 박도 마디 첫 박의 근거(반주 베이스는 첫 박에 근음을 친다)
+  const broot=bas.map(b=>{ let k=0; for(let q=1;q<12;q++)if(b[q]>b[k])k=q; return k; });
+  for(let i=1;i<nbt;i++)if(broot[i]!==broot[i-1]&&!chg[i])chg[i]=.5;
+  /* 낮은 소리(베이스·킥)의 시작 세기를 박마다 — 마디 첫 박은 대개 여기가 가장 세다 */
+  const bandAt=(arr,b)=>{ const k=Math.round((b-512/lo.sr)/B.dt); let m=0; for(let q=k-1;q<=k+1;q++)if(arr[q]>m)m=arr[q]; return m; };
+  const norm=v=>{ const s=v.reduce((a,b)=>a+b,0)/Math.max(1,v.length)||1; return v.map(x=>x/s); };
+  /* 킥·베이스(30~100Hz)는 첫 박(과 셋째 박)에, 스네어 몸통(150~450Hz)은 둘째·넷째 박에 몰린다 — 앞은 더하고 뒤는 뺀다.
+     ★ 한 띠(30~320Hz)로 재면 스네어가 섞여 팝에서 첫 박을 둘째 박으로 골랐다(실측) */
+  const kick=norm(beats.map(b=>bandAt(B.bfl[0],b))), snare=norm(beats.map(b=>bandAt(B.bfl[1],b)));
+  const lowOn=kick.map((k,i)=>Math.max(0,k-.7*snare[i]+.7));
+  /* 마디 첫 박 = 코드가 바뀌고 + 낮은 소리(베이스·킥)가 센 박. 위상마다 "첫 박 자리의 평균 − 나머지 자리의 평균"(대비)을 잰다.
+     ★ 합계로 견주면 3박자가 첫 박 수가 많아 늘 이긴다 — 평균의 대비로 견준다. 멜로디가 크면 코드 판정이 반 마디 일찍 바뀌는 일이
+       있어(실측: 단조 곡) 낮은 소리 쪽에도 같은 무게를 준다. */
+  const ev=chg.map((c,i)=>c+.5*lowOn[i]);
+  for(const sg of seg){ const bi=tsBeatIdx(beats,sg.s); const r=Math.round(bi); if(r>=0&&r<nbt&&Math.abs(bi-r)<.12&&sg.e-sg.s>spb*1.4)ev[r]+=.15; }   // 긴 음은 첫 박에서 시작하기 쉽다
+  const pickPhase=m=>{ let best={s:-1e9,ph:0}; for(let ph=0;ph<m;ph++){ let a=0,na=0,b=0,nb=0;
+      for(let i=0;i<nbt;i++){ if(mod(i-ph)%m===0){ a+=ev[i]; na++; } else { b+=ev[i]; nb++; } }
+      const s=a/Math.max(1,na)-b/Math.max(1,nb); if(s>best.s)best={s,ph}; } return best; };
+  if(window.__TSDBG){ Object.assign(window.__TSDBG,{lowOn,pick:pickPhase,chg,c1,beats}); }
+  let meter=opt.meter||0, ph;
+  if(!meter){ const b4=pickPhase(4), b3=pickPhase(3); if(b3.s>b4.s*1.25+.05){ meter=3; ph=b3.ph; } else { meter=4; ph=b4.ph; } }
+  else ph=pickPhase(meter).ph;
+  const pos=beats.map((b,i)=>mod(i-ph)%meter);
+  const c2=tsChordsOnBeats(chr,bas,key0,pos,meter);
+  // 자리바꿈: 그 코드가 이어지는 동안 저음이 3·5·7음 쪽이 뚜렷하면
+  for(let i=0;i<nbt;){ let j=i; while(j+1<nbt&&c2[j+1].root===c2[i].root&&c2[j+1].suffix===c2[i].suffix)j++;
+    const bs=new Float32Array(12); for(let k=i;k<=j;k++)for(let q=0;q<12;q++)bs[q]+=bas[k][q];
+    let bp=0; for(let q=1;q<12;q++)if(bs[q]>bs[bp])bp=q;
+    if(bp!==c2[i].root&&c2[i].tones.includes(bp)&&bs[bp]>bs[c2[i].root]*1.6)for(let k=i;k<=j;k++)c2[k].bass=bp;
+    i=j+1; }
+  /* 조: 크로마로 고른 조와 나란한조(같은 조표) 중 — 으뜸화음이 더 오래 · 곡 끝에 나오는 쪽.
+     ★ 크로마만으로는 가단조와 다장조가 거의 같은 점수다(같은 음 7개). 실측(합성 단조 노래): 다장조로 골랐다. */
+  let key=key0;
+  { const rel=key0.minor?{pc:mod(key0.pc+3),minor:false}:{pc:mod(key0.pc-3),minor:true};
+    const tonic=k=>c2.reduce((a,c,i)=>a+(c.root===k.pc&&(/^m(?!aj)/.test(c.suffix))===k.minor?1+(i>=nbt-6?1.5:0):0),0);
+    const a0=tonic(key0), a1=tonic(rel); if(a1>a0*1.25+1)key={...rel,s:key0.s}; }
+  prog(.9,'악보로 옮기는 중…');
+  // 소리가 처음 나는 박(전주 코드도 악보에 남긴다)
+  const ben=beats.map(b=>{ let s=0,n=0; for(let k=Math.floor(b/A.dt);k<Math.min(A.nf,Math.floor((b+spb)/A.dt));k++){ s+=A.en[k]||0; n++; } return n?s/n:0; });
+  const bmed=ben.slice().sort((a,b)=>a-b)[ben.length>>1]||0; const firstBeat=Math.max(0,ben.findIndex(v=>v>bmed*.15));
+  return tsScore({seg,beats,spb,bpm:opt.bpm?Math.round(opt.bpm):Math.round(60/spb),meter,ph,chords:c2,key,opt,dur:x.length/sr,G,firstBeat});
+}
+/* 같은 높이로 다시 낸 음 가르기 — 노래 만들기의 smSegment 는 소리가 절반 아래로 줄었다 다시 커질 때만 가른다.
+   음원에서는 앞 음이 다 줄기 전에 다음 음이 나오므로(레가토·잔향) 그 문턱을 못 넘는다(실측: 「E E F G」의 E 둘이 2박 하나로).
+   그래서 ① 그 높이의 살리언스가 바로 앞 짧은 구간 최솟값의 1.3배 넘게 오르고 ② 같은 순간 소리 변화량(onset)도 봉우리일 때 가른다. */
+function tsSplitRepeats(seg,fr,flux,dt){
+  /* 실측(합성 음원 3곡): 진짜로 다시 낸 음은 ① 소리 전체 변화량이 크게 튀고(중앙값의 3배↑) ② 그 높이의 배음 크기가
+     직전에 줄었다가(가장 컸던 때의 82% 밑) 곧 1.3배 넘게 다시 커진다. 합창·현악의 떨림은 ②만 흉내 내고(변화량은 2배 안팎),
+     팝 반주의 8분 하이햇은 ①만 흉내 낸다 — 둘 다 있어야 가른다. 확신 없으면 안 가른다(합쳐진 음은 '둘로 쪼개기' 한 번이면 고친다). */
+  const n=flux.length, med=Array.from(flux).sort((a,b)=>a-b)[n>>1]||1e-9, out=[];
+  const strong=t=>t>0&&t<n-1&&flux[t]>=flux[t-1]&&flux[t]>=flux[t+1]&&flux[t]>med*3;
+  const H=k=>{ const r=fr[k]; return r&&!isNaN(r.mf)?(r.h||0):0; };
+  const off=Math.round((fr[0]?fr[0].t:0)/dt);   // fr[i].t = i·dt + 창 절반
+  for(const sg of seg){ let s0=sg.s, run=0;
+    const ta=Math.ceil((sg.s+.1)/dt)-off, tb=Math.floor((sg.e-.08)/dt)-off;
+    for(let t=Math.max(0,Math.floor(sg.s/dt)-off);t<ta;t++)run=Math.max(run,H(t));
+    for(let t=ta;t<=tb;t++){ const q=fr[t]; if(!q||isNaN(q.mf)||Math.abs(q.mf-sg.mf)>.8)continue;
+      if(strong(t)||strong(t-1)){
+        let mn=1e9; for(let k=t-5;k<t;k++){ const v=H(k); if(v>0&&v<mn)mn=v; }
+        let mx=0; for(let k=t;k<=t+4;k++)mx=Math.max(mx,H(k));
+        if(mn<run*.82&&mx>mn*1.3&&q.t-s0>.1){ out.push({...sg,s:s0,e:q.t-dt}); s0=q.t-dt; run=mx; t+=Math.round(.1/dt); continue; } }
+      run=Math.max(run,H(t)); }
+    out.push({...sg,s:s0}); }
+  return out;
+}
+function tsBeatIdx(beats,t){   // 시각 → (소수) 박 번호
+  const n=beats.length; if(t<=beats[0]){ const g=beats[1]-beats[0]; return (t-beats[0])/g; }
+  if(t>=beats[n-1]){ const g=beats[n-1]-beats[n-2]; return n-1+(t-beats[n-1])/g; }
+  let lo=0,hi=n-1; while(hi-lo>1){ const m=(lo+hi)>>1; if(beats[m]<=t)lo=m; else hi=m; }
+  return lo+(t-beats[lo])/(beats[hi]-beats[lo]);
+}
+/* 잰 값 → 마디·음표. q=격자(0.25=16분, 0.5=8분). */
+function tsScore(r){
+  const {seg,beats,meter,ph,chords,key,opt}=r, q=opt.grid||.25;
+  /* 음 시작은 귀로 듣는 시작보다 조금 늦게 잡힌다(창 길이·흔들림). 8분 격자에 가장 잘 맞도록 곡 전체를 한 번에 당긴다. */
+  const raw=seg.map(sg=>({a:tsBeatIdx(beats,sg.s)-ph,b:tsBeatIdx(beats,sg.e)-ph,sg}));
+  let sh=0,bc=1e9; for(let d=-.35;d<=.15001;d+=.01){ let c=0; for(const r0 of raw){ const v=(r0.a+d)*2; c+=Math.abs(v-Math.round(v)); } if(c<bc){ bc=c; sh=d; } }
+  /* 격자: 8분이 기본, 16분 자리에 또렷이 붙은 음만 16분으로(16분을 다 허용하면 흔들림이 전부 16분쉼표가 된다) */
+  const snap=v=>{ const r8=Math.round(v*2)/2; if(q>=.5)return r8; const r16=Math.round(v*4)/4; return (Math.abs(v-r8)>.16&&Math.abs(v-r16)<.075)?r16:r8; };
+  let ns=raw.map(r0=>({mf:r0.sg.mf,on:snap(r0.a+sh),end:snap(r0.b+sh),len:r0.sg.e-r0.sg.s,t:r0.sg.s}));
+  ns.sort((a,b)=>a.on-b.on);
+  const u=[]; for(const n of ns){ if(n.end-n.on<q)n.end=n.on+q; const L=u[u.length-1];
+    if(L&&L.on===n.on){ if(n.len>L.len)u[u.length-1]=n; continue; } if(L&&L.end>n.on)L.end=n.on; u.push(n); }
+  // 노래의 작은 틈(숨·자음)은 앞 음에 붙인다 — 반 박 미만이거나 앞 음 길이의 절반 미만일 때
+  for(let i=0;i+1<u.length;i++){ const gap=u[i+1].on-u[i].end; if(gap>0&&(gap<.5-1e-6||gap<(u[i].end-u[i].on)*.5))u[i].end=u[i+1].on; }
+  // 길이를 악보에 있는 값으로(다음 음 앞까지 안에서): 점음표 포함
+  const NICE=[4,3,2,1.5,1,.75,.5,.25].filter(v=>v>=q-1e-9);
+  for(let i=0;i<u.length;i++){ const n=u[i], room=(u[i+1]?u[i+1].on:1e9)-n.on; let d=n.end-n.on;
+    const fit=NICE.filter(v=>v<=room+1e-6); if(!fit.length){ n.dur=room; continue; }
+    let best=fit[0], bc=1e9; for(const v of fit){ const c=Math.abs(Math.log(v/d)); if(c<bc){ bc=c; best=v; } }
+    if(room-best<q-1e-6)best=room; n.dur=best; }
+  // 음 높이: 반올림 + 조에 맞추기(조 밖 음은 확실할 때만 남긴다)
+  const sc=(key.minor?[0,2,3,5,7,8,10,11]:[0,2,4,5,7,9,11]).map(i=>mod(i+key.pc));
+  for(const n of u){ let m=Math.round(n.mf); if(!sc.includes(mod(m))){ const alt=[Math.floor(n.mf),Math.ceil(n.mf)].filter(c=>sc.includes(mod(c))); if(alt.length&&Math.abs(n.mf-m)>.28)m=alt[0]; } n.m=m; }
+  /* 반주가 새어 든 음: 멜로디 가운데 높이에서 19반음(한 옥타브 반) 넘게 떨어진 음은 쉼표로 둔다(전주·간주의 베이스·패드) */
+  { const md=u.map(n=>n.m).sort((a,b)=>a-b)[u.length>>1]||64; for(let i=u.length-1;i>=0;i--)if(Math.abs(u[i].m-md)>19)u.splice(i,1); }
+  /* 옥타브 오인(배음을 바탕음으로): 같은 높이 무리가 앞뒤 이웃과 둘 다 7반음 넘게 같은 쪽으로 떨어져 있고
+     ±12 하면 둘 다 5반음 안이 되면 옮긴다 */
+  for(let pass=0;pass<2;pass++)for(let i=0;i<u.length;){ let j=i; while(j+1<u.length&&u[j+1].m===u[i].m)j++;
+    const a=u[i-1], b=u[j+1], m=u[i].m;
+    if(a&&b&&a.m!==m&&b.m!==m){ const da=m-a.m, db=m-b.m; if(Math.abs(da)>7&&Math.abs(db)>7&&Math.sign(da)===Math.sign(db)){ const sft=da>0?-12:12;
+      if(Math.abs(m+sft-a.m)<=5&&Math.abs(m+sft-b.m)<=5)for(let k=i;k<=j;k++)u[k].m+=sft; } }
+    i=j+1; }
+  // 옥타브: 남자 목소리 등 너무 낮으면 한 옥타브 올려 적는다(높은음자리에서 덧줄이 줄줄이 붙지 않게)
+  const med=u.map(n=>n.m).sort((a,b)=>a-b)[u.length>>1]||64; let oct=0; if(med<57)oct=12; else if(med>81)oct=-12;
+  for(const n of u)n.m+=oct;
+  // 곡의 시작·끝 마디
+  const startBar=Math.min(Math.floor((u.length?u[0].on:0)/meter+1e-6),Math.floor(((r.firstBeat||0)-ph)/meter+1e-6));
+  const lastBeat=u.length?u[u.length-1].on+u[u.length-1].dur:meter;
+  const endBar=Math.ceil(lastBeat/meter-1e-6), nb=Math.max(1,endBar-startBar);
+  const pref=PREF[sigPc(key.pc,key.minor)];
+  const bars=[];
+  for(let k=0;k<nb;k++){ const b0=(startBar+k)*meter, b1=b0+meter, toks=[]; let pos=b0;
+    for(const n of u){ const s=Math.max(n.on,b0), e=Math.min(n.on+n.dur,b1); if(e<=s+1e-6)continue;
+      if(s>pos+1e-6)for(const p of kbPieces(s-pos))toks.push('r:'+p);
+      for(const p of kbPieces(e-s))toks.push(kbNoteName(n.m,pref)+':'+p);
+      pos=e; }
+    if(pos<b1-1e-6)for(const p of kbPieces(b1-pos))toks.push('r:'+p);
+    // 코드: 마디 첫 박 + (4박이면) 셋째 박에서 바뀌면 둘
+    const ci=b=>{ const i=Math.round(b+ph); return chords[Math.max(0,Math.min(chords.length-1,i))]; };
+    const cn=c=>c?showChord({root:c.root,suffix:c.suffix,bass:c.bass==null?null:c.bass},0,pref):'';
+    const cA=ci(b0), cB=meter===4?ci(b0+2):null; let ch=[cn(cA)];
+    if(cB){ const nB=cn(cB); if(nB!==ch[0]){ // 셋째·넷째 박이 둘 다 그 코드여야 바꾼다(한 박짜리 지나가는 코드는 무시)
+        if(cn(ci(b0+3))===nB&&!/sus/.test(cB.suffix)&&cB.root!==cA.root)ch.push(nB); } }   // 마디 가운데 sus·같은 근음 바뀜은 대개 멜로디 꾸밈이다
+    bars.push({toks,ch}); }
+  const notesN=u.length;
+  return {bars,key,pref,bpm:r.bpm,meter,oct,notesN,dur:r.dur,notes:u,startBar,
+    chordsN:bars.reduce((a,b)=>a+b.ch.length,0), voiced:seg.reduce((a,s)=>a+(s.e-s.s),0)/Math.max(1,r.dur)};
+}
+/* 채보 결과 → 악보 글(♪ 줄과 코드 줄을 4마디씩 번갈아) */
+function tsToRaw(res,per){
+  per=per||4; const L=[]; const kn=nm(res.key.pc,res.pref)+(res.key.minor?'m':'');
+  L.push('KEY: '+kn);
+  for(let i=0;i<res.bars.length;i+=per){ const bs=res.bars.slice(i,i+per);
+    L.push('♪ '+bs.map(b=>b.toks.join(' ')).join(' | '));
+    L.push('| '+bs.map(b=>b.ch.join(' ')).join(' | ')+' |'); }
+  return L.join('\n');
+}
+
+/* ---------- 화면 ---------- */
+function tsStatus(m,k){ const e=$('tsstatus'); e.textContent=m; e.className='smnote'+(k?' '+k:''); }
+function tsSetFile(f){
+  if(!f)return; TS.file=f; TS.name=(f.name||'노래').replace(/\.[^.]+$/,''); TS.buf=null; TS.res=null;
+  $('tsfilename').textContent='🎵 '+f.name; $('tsgo').disabled=false; $('tsres').hidden=true;
+  try{ if(TS.url)URL.revokeObjectURL(TS.url); TS.url=URL.createObjectURL(f); const a=$('tsaudio'); a.src=TS.url; a.hidden=false; }catch(e){}
+  tsStatus('준비됐어요 — 「▶ 채보 시작」을 누르세요.','');
+}
+async function tsRun(){
+  if(TS.busy||!TS.file)return; TS.busy=true; TS.cancel=false;
+  const go=$('tsgo'); go.disabled=true; $('tscancel').hidden=false; $('tsres').hidden=true;
+  const bar=$('tsprog').firstElementChild, prog=(p,m)=>{ bar.style.width=Math.round(Math.max(0,Math.min(1,p))*100)+'%'; if(m)tsStatus(m+' '+Math.round(p*100)+'%',''); };
+  try{ $('tsaudio').pause(); }catch(e){}
+  try{
+    if(!TS.buf){ prog(.005,'파일을 여는 중…'); const ab=await TS.file.arrayBuffer(); TS.buf=await AC().decodeAudioData(ab); }
+    const n=v=>{ const x=parseFloat(v); return isFinite(x)&&x>0?x:0; };
+    const opt={vocal:$('tsvocal').value==='1',meter:+$('tsmeter').value||0,bpm:n($('tsbpm').value),grid:+$('tsgrid').value||.25,t0:n($('tst0').value),t1:n($('tst1').value)};
+    if(opt.t1&&opt.t1<=opt.t0+4)throw new Error('구간이 너무 짧아요(4초 넘게 잡아 주세요)');
+    const t0=performance.now(); const res=await tsAnalyze(TS.buf,opt,prog);
+    res.secs=(performance.now()-t0)/1000; TS.res=res; prog(1,'');
+    tsShowResult(res);
+    tsStatus('완성! '+res.bars.length+'마디 · 음표 '+res.notesN+'개 · '+res.secs.toFixed(0)+'초 걸렸어요. 「📝 악보로 열기」에서 고칠 수 있어요.','ok');
+  }catch(e){
+    const m=String(e&&e.message||e);
+    if(m==='취소')tsStatus('멈췄어요.','');
+    else if(/decode|Unable|EncodingError/i.test(m))tsStatus('이 파일은 열 수 없어요 — mp3·m4a·wav 같은 소리 파일인지 확인해 주세요.','err');
+    else tsStatus('채보하지 못했어요: '+m,'err');
+    bar.style.width='0';
+  }finally{ TS.busy=false; go.disabled=!TS.file; $('tscancel').hidden=true; }
+}
+function tsShowResult(res){
+  const kn=nm(res.key.pc,res.pref)+(res.key.minor?'m':''), kname=TN_DOS[mod(res.key.pc)]+(res.key.minor?' 단조':' 장조');
+  const chips=['♩='+res.bpm,res.meter+'/4',kname+' ('+kn+')',res.bars.length+'마디','음표 '+res.notesN,'코드 '+res.chordsN];
+  const voiced=Math.round(res.voiced*100);
+  let h=chips.map(c=>'<span>'+c+'</span>').join('');
+  if(voiced<35)h+='<span class="warn">멜로디가 또렷하지 않아요(소리 난 곳 '+voiced+'%)</span>';
+  if(res.oct)h+='<span>'+(res.oct>0?'한 옥타브 올려 적음':'한 옥타브 내려 적음')+'</span>';
+  $('tschips').innerHTML=h;
+  const name=m=>TN_DOS[mod(m)].replace('♯','#');
+  $('tsbars').innerHTML=res.bars.map((b,i)=>{ const ns=b.toks.filter(x=>!/^r:/.test(x)).map(x=>{ const m=x.match(/^([A-G][#b]?)(-?\d):([\d.]+)$/); if(!m)return ''; const pc=PCM[m[1][0]]+(ACC[m[1].slice(1)]||0); return name(pc); }).join(' ');
+    return '<div class="tsbar"><i>'+(i+1)+'</i><b>'+(b.ch.join(' ')||'–')+'</b><small>'+(ns||'(쉼)')+'</small></div>'; }).join('');
+  $('tsnote').innerHTML='악보로 열면 오선보에 <b>음표·쉼표·점음표·빔·임시표·코드</b>가 그려져요. 틀린 음은 <b>메뉴 → 오선보</b>에서 음표를 눌러 ▲▼(높이)·길이·넣기·지우기·둘로 쪼개기로 고치고, 코드·가사는 <b>메뉴 → 편집</b>에서 고쳐요.<br>'+
+    '★ 반주가 크거나 여러 사람이 같이 부르면 멜로디가 반주 쪽으로 새는 곳이 있어요. 같은 음을 두 번 부른 곳이 한 음으로 합쳐질 수 있어요(오선보에서 「둘로 쪼개기」). 붙임줄·셋잇단음표는 아직 안 적어요.';
+  $('tsres').hidden=false;
+  setTimeout(()=>{ try{ $('tsres').scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} },60);
+}
+function tsOpenScore(){
+  const res=TS.res; if(!res)return;
+  try{ $('tsaudio').pause(); }catch(e){}
+  setBpm(res.bpm); P.beats=res.meter;
+  $('title').value=TS.name||'채보한 노래';
+  S.raw=tsToRaw(res); S.semis=0; S.verse=1; S.orig=null; S.photos=[]; S.feat=null; S.mode='staff'; S.sheetZoom=1;
+  showScreen('score'); try{ history.pushState({v:'score'},''); }catch(e){}
+  try{ stopPlay(); }catch(e){} reparse(); renderAll(); try{ scheduleSave(); }catch(e){}
+  toast('채보한 악보예요 — ▶ 로 들어 보고, 메뉴 → 오선보에서 음표를 눌러 고치세요');
+}
+(function tsInit(){
+  if(!$('ts'))return;
+  $('h-ts').onclick=()=>{ showScreen('ts'); try{ history.pushState({v:'ts'},''); }catch(e){} };
+  $('tshome').onclick=()=>{ try{ $('tsaudio').pause(); }catch(e){} if(history.state&&history.state.v)history.back(); else goHome(); };
+  $('tsfile').onchange=e=>{ tsSetFile(e.target.files&&e.target.files[0]); e.target.value=''; };
+  $('tsgo').onclick=tsRun; $('tsagain').onclick=()=>{ $('tsres').hidden=true; $('ts').querySelector('.smbody').scrollTop=0; };
+  $('tscancel').onclick=()=>{ TS.cancel=true; };
+  $('tsopen').onclick=tsOpenScore;
+  // 바뀐 설정은 기기에 기억한다
+  for(const id of ['tsvocal','tsmeter','tsgrid']){ try{ const v=localStorage.getItem('konti:'+id); if(v!=null)$(id).value=v; }catch(e){} $(id).onchange=e=>{ try{ localStorage.setItem('konti:'+id,e.target.value); }catch(_){} }; }
+  // 화면에 파일을 끌어 놓아도 된다(PC)
+  const box=$('ts'); box.addEventListener('dragover',e=>{ e.preventDefault(); }); box.addEventListener('drop',e=>{ e.preventDefault(); const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; if(f)tsSetFile(f); });
 })();
 </script>
 </body>
