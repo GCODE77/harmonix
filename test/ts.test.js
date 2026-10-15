@@ -81,6 +81,27 @@ export default async function tsTest(){
     let bm=0; rb.bars.forEach((b,i)=>{ const tk=(b.btoks||[]).find(x=>!/^r:/.test(x)); if(!tk||!want[i])return; const pc=PC[tk[0]]+(tk[1]==='#'?1:tk[1]==='b'?-1:0); if(mod(pc)===parseCh(want[i])[0].root)bm++; });
     ok('베이스 줄: 마디 첫 음이 코드 근음(9마디 중 7 이상)',bm>=7,rb.bars.map(b=>(b.btoks||[]).join(' ')));
   }
+  // 7) 두 보표 가로 자리 맞추기 · 성부별 고치기 (v119)
+  { const realSave=window.scheduleSave; window.scheduleSave=()=>{}; const keep={raw:S.raw,sel:S.selNote,v:S.selVoice,mode:S.mode,orig:S.orig,pb:P.playBass};
+    try{
+      S.raw=['KEY: C','♪ E5+C5:1 G5+E5:.5 F5+D5:.5 E5+C5:2','♫ C3+G3:1 C3+G3:1 G2+D3:2','| C | C G |'].join('\n'); S.semis=0; S.orig=null; S.photos=[]; S.mode='staff'; S.selNote=null; S.selVoice=0; P.playBass=true;
+      showScreen('score'); reparse(); renderAll();
+      const ell=[...document.querySelectorAll('#chart svg ellipse')].map(e=>({x:+e.getAttribute('cx'),rx:+e.getAttribute('rx'),y:+e.getAttribute('cy')}));
+      const tr=ell.filter(e=>e.rx>7).map(e=>e.x), bs=ell.filter(e=>e.rx<7).map(e=>e.x);
+      const near=(a,b)=>a.length&&b.length&&a.slice(0,2).every((x,i)=>Math.abs(x-b[i])<2.5);
+      ok('같은 박의 음은 높은음·낮은음 보표에서 같은 가로 자리',tr.length>=3&&bs.length>=3&&near(tr.filter((x,i,ar)=>ar.indexOf(x)===i),bs.filter((x,i,ar)=>ar.indexOf(x)===i)),[tr.slice(0,6),bs.slice(0,6)]);
+      ok('두 성부 음표에는 기둥이 위·아래 둘',document.querySelectorAll('#chart svg line').length>0);
+      // 알토(쌓인 음) 고치기
+      const bi=blocks.findIndex(b=>b.k==='mel'&&b.clef!=='bass'); S.selNote={bi,ni:0}; S.selVoice=1; openPanel('staff');
+      ok('성부 단추(소프라노·알토)가 나온다',document.querySelectorAll('#sheet .nvo').length===2,document.querySelectorAll('#sheet .nvo').length);
+      ok('알토를 고르면 알토 음 이름이 보인다(도 C5)',/도5?|C|도/.test(document.querySelector('#sheet .noteedit b').textContent)&&document.querySelector('#sheet .noteedit b').textContent.includes('도'),document.querySelector('#sheet .noteedit b').textContent);
+      document.getElementById('n-up').click();
+      const mLine=()=>S.raw.split(String.fromCharCode(10)).find(l=>l.startsWith('♪'));
+      ok('알토 ▲ → 주 음(소프라노)은 그대로, 쌓인 음만 +1',/^♪ E5\+C#5:1/.test(mLine()),S.raw);
+      S.selVoice=0; openPanel('staff'); document.getElementById('n-up').click();
+      ok('소프라노 ▲ → 주 음만 +1(쌓인 음 그대로)',/^♪ F5\+C#5:1/.test(mLine()),S.raw);
+      ok('화음 글은 쓰고 읽어도 안 변한다',(()=>{ const l=mLine(); return melLine(parseMelody(l),0,'sharp','treble')===l; })(),S.raw);
+    }finally{ window.scheduleSave=realSave; S.raw=keep.raw; S.selNote=keep.sel; S.selVoice=keep.v; S.mode=keep.mode; S.orig=keep.orig; P.playBass=keep.pb; reparse(); try{ closePanel(); }catch(e){} showScreen('home'); } }
   // 4) 박자를 정해 주면 그대로 쓴다
   if(r1){ const r3=await tsAnalyze(r1.buf,{meter:3,bpm:100,grid:.5},()=>{});
     ok('박자·빠르기를 정해 주면 그대로',r3.meter===3&&r3.bpm===100,[r3.meter,r3.bpm]);
