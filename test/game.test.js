@@ -11,6 +11,11 @@ export default async function gameTest(){
     // 데이터
     ok('판이 100개',GM_SONGS.length===100,GM_SONGS.length);
     ok('판 번호가 1..100 연속',GM_SONGS.every((s,i)=>s.no===i+1));
+    { const hc=GM_SONGS.find(s=>s.id==='hotcross'), e=gmBlocks(hc), tot=e.blocks.reduce((m,b)=>Math.max(m,b.beat+b.dur),0), sc=GM_SONGS.find(s=>s.id==='sc_C');
+      ok('짧은 곡은 되풀이해 48박 이상으로(v120)',e.reps>=2&&tot>=48,[e.reps,tot]);
+      ok('음 수는 되풀이 횟수만큼',e.blocks.length===gmParse(hc).length*e.reps);
+      ok('연습 곡은 그대로',gmBlocks(sc).reps===1);
+      GM.song=hc; GM.level='easy'; gmReset(); gmHarmony(); ok('끝맺음 마디에 으뜸화음',!!GM.harm[Math.round(gmEndBar()/(hc.ts||4))]); }
     ok('id 가 겹치지 않는다',new Set(GM_SONGS.map(s=>s.id)).size===100);
     ok('난이도가 쉬운 것부터 정렬',GM_SONGS.every((s,i)=>i===0||GM_SONGS[i-1].lv<=s.lv));
     let dataOk=true;
@@ -25,7 +30,7 @@ export default async function gameTest(){
     // 쉬움(연습): 맞는 건반을 누를 때까지 기다려 준다
     GM.level='easy'; GM.song=GM_SONGS.find(s=>s.id==='clair'); gmReset(); gmStart();
     let t0=performance.now(), waited=false;
-    while(!GM.done&&performance.now()-t0<60000){ await W(30); const h=document.querySelector('.gk.hint'); if(GM.waiting&&h){ waited=true; const T0=GM.T; await W(250); if(GM.T!==T0)ok('기다리는 동안 블록이 안 내려온다',false,[T0,GM.T]); press(+h.dataset.m); await W(120); } }
+    while(!GM.done&&performance.now()-t0<150000){ await W(30); const h=document.querySelector('.gk.hint'); if(GM.waiting&&h){ waited=true; const T0=GM.T; await W(250); if(GM.T!==T0)ok('기다리는 동안 블록이 안 내려온다',false,[T0,GM.T]); press(+h.dataset.m); await W(120); } }
     ok('연습: 끝까지 가고 3별',GM.done&&document.getElementById('gmstars').textContent==='★★★',document.getElementById('gmstars').textContent);
     ok('연습: 기다려 준 적이 있다',waited);
     ok('연습: 기록이 저장된다',!!gmBest('clair','easy')&&gmBest('clair','easy').stars===3);
@@ -33,7 +38,7 @@ export default async function gameTest(){
     const no0=GM.song.no; gmNext(); ok('다음 판으로 넘어간다',GM.song.no===no0+1&&GM.started===true,GM.song.no); gmStop(false);
     // 검은 건반이 있는 곡도 연습 모드로 끝까지
     GM.level='easy'; GM.song=GM_SONGS.find(s=>s.id==='bk_star'); gmReset(); gmStart(); t0=performance.now();
-    while(!GM.done&&performance.now()-t0<60000){ await W(30); const h=document.querySelector('.gk.hint'); if(GM.waiting&&h){ press(+h.dataset.m); await W(120); } }
+    while(!GM.done&&performance.now()-t0<150000){ await W(30); const h=document.querySelector('.gk.hint'); if(GM.waiting&&h){ press(+h.dataset.m); await W(120); } }
     ok('검은 건반 곡(작은 별 ♯)을 연습 모드로 끝낸다',GM.done&&GM.wrong===0,[GM.done,GM.wrong]);
     // 보통: 박자대로 누르면 퍼펙트
     GM.level='normal'; GM.song=GM_SONGS.find(s=>s.id==='school'); gmReset(); gmStart();
@@ -74,7 +79,7 @@ export default async function gameTest(){
       SM.notes=keepSM; }
     // 아무것도 안 누르면 전부 미스
     GM.song=GM_SONGS.find(s=>s.id==='hotcross'); gmReset(); gmStart(); t0=performance.now();
-    while(!GM.done&&performance.now()-t0<60000)await W(100);
+    while(!GM.done&&performance.now()-t0<150000)await W(100);
     ok('안 누르면 전부 미스 · 별 0',GM.done&&GM.miss===GM.blocks.length&&document.getElementById('gmstars').textContent==='☆☆☆',[GM.miss,GM.blocks.length]);
     // 팝업: 곡 목록은 화면 전체를 덮는 팝업이고 스크롤된다
     gmReset(); document.getElementById('gmsong').click(); await W(100);

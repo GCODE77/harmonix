@@ -1004,7 +1004,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "119";
+const APP_VER = "120";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -11499,13 +11499,25 @@ function gmBuildKeys(){
 }
 const gmKey=m=>document.querySelector('.gk[data-m="'+m+'"]');
 function gmClearHints(){ document.querySelectorAll('.gk.hint').forEach(e=>e.classList.remove('hint')); }
+/* v120(사용자: "건반 게임 노래가 너무 짧다. 연주하다가 급마무리된 느낌 — 끝까지 완주하면 좋겠다"):
+   ① 짧은 곡(연습이 아닌 곡이 48박 미만)은 **2~3절로 되풀이**해 48박 넘게 늘린다(마디 끝에서 이어 붙임, 최대 3번) — 동요·캐럴은 원래 절을 되풀이하는 노래다.
+   ② 마지막 음 뒤에 **끝맺음 한 마디**: 으뜸화음이 길게 울리고 「🎼 끝!」이 뜬 뒤에야 결과 창이 나온다(예전엔 마지막 음 0.8박 뒤에 반주가 툭 끊겼다). */
+function gmBlocks(sg){
+  const b0=gmParse(sg); if(!b0.length||sg.cat==='연습')return {blocks:b0,reps:1};
+  const ts=sg.ts||4, tot=b0.reduce((m,x)=>Math.max(m,x.beat+x.dur),0), per=Math.ceil(tot/ts-1e-6)*ts;
+  let reps=1; while(reps<3&&per*reps<48)reps++;
+  if(reps===1)return {blocks:b0,reps:1};
+  const out=[]; for(let r=0;r<reps;r++)for(const b of b0)out.push({...b,beat:b.beat+per*r});
+  return {blocks:out,reps};
+}
+function gmEndBar(){ const ts=GM.song.ts||4; return Math.ceil(GM.total/ts-1e-6)*ts; }
 function gmReset(){
   const sg=GM.song, lv=GM_LEVELS[GM.level];
-  GM.blocks=gmParse(sg); GM.rng=gmRangeOf(GM.blocks); gmBuildKeys();
+  { const e=gmBlocks(sg); GM.blocks=e.blocks; GM.reps=e.reps; } GM.rng=gmRangeOf(GM.blocks); gmBuildKeys();
   GM.T=-3; GM.score=GM.combo=GM.maxCombo=GM.perfect=GM.good=GM.miss=GM.wrong=0; GM.fx=[]; GM.parts=[]; GM.flash.clear(); GM.shake=GM.pulse=GM.pop=GM.missFlash=0; GM.done=false; GM.started=false; GM.waiting=false;
-  const tot=GM.blocks.reduce((m,b)=>Math.max(m,b.beat+b.dur),1); GM.total=tot;
+  const tot=GM.blocks.reduce((m,b)=>Math.max(m,b.beat+b.dur),1); GM.total=tot; GM.outroFx=false;
   $('gmscore').textContent='0'; $('gmend').hidden=true; $('gmstart').hidden=false;
-  $('gmtitle').textContent=sg.name; const b=gmBest(sg.id,GM.level);
+  $('gmtitle').textContent=sg.name+(GM.reps>1?' ×'+GM.reps:''); const b=gmBest(sg.id,GM.level);
   $('gmstage').textContent=(GM.daily?'📅 오늘의 도전 · ':'')+(sg.no?'STAGE '+sg.no+' / '+GM_SONGS.length+' · '+sg.cat+' · '+'●'.repeat(sg.lv)+'○'.repeat(5-sg.lv):'🎙 노래 만들기에서 만든 내 노래');
   gmModeUI();
   $('gmdesc').innerHTML=lv.icon+' <b>'+lv.label+'</b> — '+lv.desc+({rhythm:'<br>🥁 <b>리듬 모드</b> — 아무 건반이나 박자에 맞춰 누르면 맞는 음이 나요',duel:'<br>⚔ <b>대결 모드</b> — 2마디씩 🔵1P · 🔴2P 번갈아 쳐요'}[GM.mode]||'')+(GM.swap?'<br>🎲 누를 때마다 악기가 바뀌어요':'')+(b?'<br>내 기록 '+'★'.repeat(b.stars)+'☆'.repeat(3-b.stars)+' '+b.score+'점':'');
@@ -11520,7 +11532,8 @@ function gmSized(){
 }
 function gmStart(){
   if(GM.demo)gmDemoStop(); AC();
-  GM.blocks=gmParse(GM.song); GM.rng=gmRangeOf(GM.blocks); if(!gmKey(GM.blocks[0].m))gmBuildKeys();
+  { const e=gmBlocks(GM.song); GM.blocks=e.blocks; GM.reps=e.reps; GM.total=GM.blocks.reduce((m,b)=>Math.max(m,b.beat+b.dur),1); GM.outroFx=false; }
+  GM.rng=gmRangeOf(GM.blocks); if(!gmKey(GM.blocks[0].m))gmBuildKeys();
   GM.T=-3; GM.score=GM.combo=GM.maxCombo=GM.perfect=GM.good=GM.miss=GM.wrong=0; GM.fx=[]; GM.parts=[]; GM.pops=[]; GM.fever=1; GM.feverPop=0; GM.ds=[0,0]; GM.swapI=0; GM.done=false; GM.started=true;
   if(GM.swap)for(const [k] of GM_SWAP){ const f=SAMPLE_MAP[k]; if(f)for(const b of GM.blocks.slice(0,40))try{ warmSample(f,mod(b.m),Math.floor(b.m/12)-1); }catch(e){} } GM.last=performance.now(); GM.lastBeat=-4;
   $('gmstart').hidden=true; $('gmend').hidden=true; $('gmscore').textContent='0';
@@ -11542,6 +11555,7 @@ function gmHarmony(){
   for(let i=0;i<bars.length;i++)bars[i]=bars[i]||[];
   const key=guessKeyFromMelody(GM.blocks.map(b=>({midi:b.m,beats:b.dur})));
   try{ GM.harm=guessChords(bars,key.pc,key.minor,{}); }catch(e){ GM.harm=[]; }
+  GM.harm=GM.harm||[]; GM.harm[Math.round(gmEndBar()/ts)]={root:key.pc,suffix:key.minor?'m':''};   // 끝맺음 마디: 으뜸화음
 }
 function gmBusNew(){
   try{ const ctx=AC(); if(GM.bus){ const o=GM.bus; o.gain.setTargetAtTime(0,ctx.currentTime,.15); setTimeout(()=>{ try{o.disconnect();}catch(e){} },1200); }
@@ -11588,7 +11602,9 @@ function gmLoop(ts){
   if(!lv.wait){ const win=.34*gmSpeedBeats(); for(const b of GM.blocks)if(!b.hit&&!b.gone&&GM.T-b.beat>win){ b.gone=true; GM.miss++; GM.combo=0; GM.fever=1; GM.missFlash=1; GM.shake=Math.max(GM.shake,.5); gmFx(b.m,'미스',false); } }
   gmClearHints(); if(lv.wait&&GM.waiting&&next){ const e=gmKey(next.m); if(e)e.classList.add('hint'); }
   gmDraw();
-  if(!GM.blocks.some(b=>!b.hit&&!b.gone)&&GM.T>GM.total+.8){ gmFinish(); return; }
+  const allDone=!GM.blocks.some(b=>!b.hit&&!b.gone);
+  if(allDone&&GM.T>=GM.total&&!GM.outroFx){ GM.outroFx=true; GM.fx.push({m:GM.blocks[GM.blocks.length-1].m,text:'🎼 끝!',good:true,big:true,t:0}); try{ gmChime(30); }catch(e){} }
+  if(allDone&&GM.T>gmEndBar()+ts3*.95){ gmFinish(); return; }
   GM.raf=requestAnimationFrame(gmLoop);
 }
 function gmFx(m,text,good,big){ GM.fx.push({m,text,good,big,t:0}); }
@@ -11725,7 +11741,7 @@ function gmDemo(){
   const ctx=AC(); if(!ctx)return; gmDemoStop();
   const bus=ctx.createGain(); bus.gain.value=KB.vol*1.05; bus.connect(master); const real=master, base=ctx.currentTime+.15, spb=60/GM.song.bpm, timers=[];
   master=bus;
-  try{ for(const b of gmParse(GM.song)){ voice(ctx,'piano',b.m,base+b.beat*spb,Math.max(.2,b.dur*spb*.95),.8,undefined);
+  try{ for(const b of GM.blocks){ voice(ctx,'piano',b.m,base+b.beat*spb,Math.max(.2,b.dur*spb*.95),.8,undefined);
       timers.push(setTimeout(()=>{ const k=gmKey(b.m); if(k)k.classList.add('on'); },150+b.beat*spb*1000));
       timers.push(setTimeout(()=>{ const k=gmKey(b.m); if(k)k.classList.remove('on'); },150+(b.beat+Math.min(b.dur,.8))*spb*1000)); } }
   finally{ master=real; }
@@ -12312,7 +12328,9 @@ function smEnter(){ if(!SM.notes.length&&smLoad()){ $('smlyric').value=SM.lyric|
    · 소리를 안 내면 새가 천천히 떨어진다. 틈을 못 맞추면 부딪혀 하트가 준다(하트 3개, 부딪힌 뒤 잠깐 무적).
    · 곡 따라 부르기: 파이프가 곡의 음 순서대로 나온다(도 장조·도~높은 도 안의 곡). 「음 미리 듣기」는 파이프가 나타날 때 목표음을 들려준다(그동안은 마이크를 안 듣는다 — 스피커 소리를 새가 따라가지 않게).
    음높이는 튜너·노래 만들기와 같은 yinPitch. 마이크는 화면을 나가면 끄고, 끝나면 소리 엔진을 새로 띄운다(통화 모드 방지, smFreshAudio). */
-const VB_LV={easy:{label:'쉬움',gap:.95,sp:.15,every:2.6},normal:{label:'보통',gap:.72,sp:.19,every:2.2},hard:{label:'어려움',gap:.55,sp:.24,every:1.8}};
+/* v120(사용자: "쉬운 버전도 어렵다 · 무적·생명·보너스"): 쉬움은 틈을 아주 넓게(±1.4칸)·느리게·간격 넓게·하트 8·충돌 뒤 무적 길게·떨어지는 속도 느리게. fall=떨어지는 가속, maxH=하트 상한 */
+const VB_LV={easy:{label:'쉬움',gap:1.4,sp:.12,every:3.3,hearts:8,inv:2.6,fall:.8,vmax:1.2,hit:.2},normal:{label:'보통',gap:.95,sp:.16,every:2.7,hearts:6,inv:2.0,fall:1.2,vmax:1.7,hit:.24},hard:{label:'어려움',gap:.62,sp:.22,every:1.9,hearts:5,inv:1.6,fall:1.6,vmax:2.2,hit:.28}};
+const VB_MAXH=10;
 const VB_STEP=[0,0.5,1,1.5,2,3,3.5,4,4.5,5,5.5,6];   // 반음 → 도레미 자리(검은 건반은 사이)
 const VB_NM=['도','레','미','파','솔','라','시','도'];
 const VB={on:false,stream:null,an:null,buf:null,raf:0,last:0,lv:'normal',song:'random',hint:true,
@@ -12330,7 +12348,7 @@ function vbSeq(){
   const out=[]; let p=Math.floor(Math.random()*5)+1; for(let i=0;i<VB.total;i++){ p=Math.max(0,Math.min(7,p+[-2,-1,-1,0,1,1,2,3,-3][Math.floor(Math.random()*9)])); out.push(p); } return out;
 }
 function vbReset(){
-  const L=VB_LV[VB.lv]; VB.seq=vbSeq(); VB.total=VB.seq.length; VB.si=0; VB.pipes=[]; VB.t=0; VB.next=1.2; VB.stars=0; VB.hearts=5; VB.inv=0; VB.passed=0; VB.over=false; VB.pos=3.5; VB.vy=0; VB.fx=[]; VB.voice=null; VB.combo=0; VB.clean=0; VB.sparks=[]; VB.cd=3.2; VB.bt=0; VB.b8=-1; VB.flash=0;
+  const L=VB_LV[VB.lv]; VB.seq=vbSeq(); VB.total=VB.seq.length; VB.si=0; VB.pipes=[]; VB.t=0; VB.next=1.2; VB.stars=0; VB.hearts=L.hearts||5; VB.inv=0; VB.shield=0; VB.shieldN=0; VB.lastHeal=0; VB.passed=0; VB.over=false; VB.pos=3.5; VB.vy=0; VB.fx=[]; VB.voice=null; VB.combo=0; VB.clean=0; VB.sparks=[]; VB.cd=3.2; VB.bt=0; VB.b8=-1; VB.flash=0;
   if(!VB.clouds.length)for(let i=0;i<7;i++)VB.clouds.push({x:Math.random(),y:.08+Math.random()*.45,s:.5+Math.random()*.9});
   $('vbend').hidden=true; $('vbstart').hidden=false; vbDraw();
 }
@@ -12355,9 +12373,14 @@ function vbHear(){
   VB.an.getFloatTimeDomainData(VB.buf);
   let r0=0; for(let i=0;i<VB.buf.length;i+=4)r0+=VB.buf[i]*VB.buf[i]; r0=Math.sqrt(r0/(VB.buf.length/4));
   VB.floor=r0<VB.floor?VB.floor*.8+r0*.2:VB.floor*.997+r0*.003;
-  const r=yinPitch(VB.buf,AC().sampleRate,Math.max(.0008,VB.floor*1.8));
+  /* ★ 반응이 느렸던 이유(v120): 음높이 재기(YIN)가 2048칸을 통째로 돌려 폰에서 한 번에 수십 ms 걸렸다 → 두 칸씩 평균내 절반 길이(1024칸, 약 22kHz)로 재면 4배 가볍다.
+     목소리(70~1100Hz)에는 충분하다. 그리고 매 프레임 잰다. */
+  if(!VB.half)VB.half=new Float32Array(1024); const hb=VB.half, b=VB.buf; for(let i=0;i<1024;i++)hb[i]=(b[2*i]+b[2*i+1])*.5;
+  const r=yinPitch(hb,AC().sampleRate/2,Math.max(.0006,VB.floor*1.5));
   VB.level=r.rms;
-  if(!r.f||r.prob<.5||r.f<70||r.f>1100)return null;
+  /* 자동 감도: 목소리가 작으면 조금씩 키우고 너무 크면 줄인다(처음 「높음」에서 출발, 3~60배) */
+  if(VB.g){ const gg=VB.g.gain.value; if(r.rms>0&&r.rms<.04&&r.rms>VB.floor*1.4)VB.g.gain.value=Math.min(60,gg*1.015); else if(r.rms>.45)VB.g.gain.value=Math.max(3,gg*.96); }
+  if(!r.f||r.prob<.42||r.f<70||r.f>1100)return null;
   return 69+12*Math.log2(r.f/440);
 }
 function vbTone(p){   // 도~도 자리 → 소리
@@ -12401,26 +12424,33 @@ function vbLoop(ts){
   const dt=Math.min(.05,(ts-VB.last)/1000); VB.last=ts;
   if(!VB.paused&&!VB.over&&VB.cd>0){   // 3·2·1 날아라!
     const before=Math.ceil(VB.cd); VB.cd-=dt; const now=Math.ceil(VB.cd); if(now!==before)vbSfx(now>0?'count':'go');
-    VB.flap+=dt*8; VB.frame=(VB.frame||0)+1; if(VB.frame%2===0){ const mf=vbHear(), v=mf==null?null:vbPosOfMidi(mf,VB.pos); VB.voice=v; if(v!=null)VB.pos+=(v-VB.pos)*Math.min(1,dt*9); }
+    VB.flap+=dt*8; VB.frame=(VB.frame||0)+1; { const mf=vbHear(), v=mf==null?null:vbPosOfMidi(mf,VB.pos); VB.voice=v; if(v!=null)VB.pos+=(v-VB.pos)*Math.min(1,dt*18); }
     vbBgm(dt); vbDraw(dt); VB.raf=requestAnimationFrame(vbLoop); return; }
   if(!VB.paused&&!VB.over){
     const L=VB_LV[VB.lv]; VB.t+=dt; vbBgm(dt); VB.mute=Math.max(0,VB.mute-dt); VB.inv=Math.max(0,VB.inv-dt); VB.flap+=dt*(VB.voice!=null?14:6);
     // 목소리 → 새 높이
     VB.frame=(VB.frame||0)+1;
-    if(VB.frame%2===0){ const mf0=vbHear(), ok2=mf0!=null&&VB.prevMf!=null&&Math.abs(mf0-VB.prevMf)<1.2; VB.prevMf=mf0; const mf=(ok2||(VB.voice!=null&&mf0!=null))?mf0:null, v=mf==null?null:vbPosOfMidi(mf,VB.pos); if(v!=null){   /* 새로 잡힌 음은 두 번 연달아 비슷해야 인정 — 배경 드럼의 한순간 잡음을 거른다 */ VB.voice=v; VB.heard=mf; VB.lastV=VB.t; } else if(VB.t-(VB.lastV||0)>.2)VB.voice=null; }   // 한순간 못 잡아도 0.2초는 버틴다
-    if(VB.voice!=null){ VB.pos+=(VB.voice-VB.pos)*Math.min(1,dt*9); VB.vy=0; }
-    else{ VB.vy=Math.min(2.2,VB.vy+dt*1.6); VB.pos=Math.max(-.6,VB.pos-VB.vy*dt); }
+    { const mf0=vbHear(), ok2=mf0!=null&&VB.prevMf!=null&&Math.abs(mf0-VB.prevMf)<1.6; VB.prevMf=mf0; const mf=(ok2||(VB.voice!=null&&mf0!=null))?mf0:null, v=mf==null?null:vbPosOfMidi(mf,VB.pos); if(v!=null){   /* 새로 잡힌 음은 두 번 연달아 비슷해야 인정 — 배경 드럼의 한순간 잡음을 거른다 */ VB.voice=v; VB.heard=mf; VB.lastV=VB.t; } else if(VB.t-(VB.lastV||0)>.3)VB.voice=null; }   // 한순간 못 잡아도 0.3초는 버틴다
+    if(VB.voice!=null){ VB.pos+=(VB.voice-VB.pos)*Math.min(1,dt*18); VB.vy=0; }   // 따라가기 2배 빠르게(v120)
+    else{ VB.vy=Math.min(L.vmax||2.2,VB.vy+dt*(L.fall||1.6)); VB.pos=Math.max(-.6,VB.pos-VB.vy*dt); }
     // 파이프
     if(VB.t>=VB.next&&VB.si<VB.seq.length){ const p=VB.seq[VB.si++]; VB.pipes.push({x:VB.W+40,p,done:false,hit:false,gold:VB.si%6===0}); VB.next=VB.t+L.every;
-      if(VB.hint){ setTimeout(()=>{ if(VB.started&&!VB.over){ VB.mute=.55; vbTone(p); } },350); } }
-    const sp=VB.W*L.sp, bx=VB.W*.24, br=vbRow()*.3, pw=Math.max(46,VB.W*.075);
+    }   // 음 힌트는 파이프가 생길 때가 아니라 '새 바로 앞의 다음 장애물'이 다가올 때 들려준다(아래, v120 — 예전엔 화면 끝에 생길 때 울려 지금 앞 파이프와 어긋났다)
+    const sp=VB.W*L.sp, bx=VB.W*.24, br=vbRow()*.3, hr=vbRow()*(L.hit||.24), pw=Math.max(46,VB.W*.075);   // 부딪힘 판정은 그린 새보다 작게(v120)
+    VB.shield=Math.max(0,(VB.shield||0)-dt);
     for(const q of VB.pipes){ q.x-=sp*dt;
       const gh=vbRow()*L.gap, gy=vbY(q.p), by=vbY(VB.pos);
-      if(!q.done&&!q.hit&&bx+br>q.x-pw/2&&bx-br<q.x+pw/2&&(by-br<gy-gh||by+br>gy+gh)){
-        if(VB.inv<=0){ q.hit=true; VB.hearts--; VB.inv=1.4; VB.shake=1; VB.flash=1; VB.combo=0; vbSfx('crash'); vbSpark(bx,by,'#ff5a5a',18); VB.fx.push({t:0,txt:'쿵!',bad:true}); if(navigator.vibrate)try{navigator.vibrate(80);}catch(e){} if(VB.hearts<=0){ vbEnd(); break; } } }
+      if(!q.done&&!q.hit&&bx+hr>q.x-pw/2&&bx-hr<q.x+pw/2&&(by-hr<gy-gh||by+hr>gy+gh)){
+        if(VB.shield>0){ q.hit=true; vbSpark(bx,by,'#7fe3ff',14); VB.fx.push({t:0,txt:'🛡 막았어요!',bad:false}); }
+        else if(VB.inv<=0){ q.hit=true; VB.hearts--; VB.inv=L.inv||1.4; VB.shake=1; VB.flash=1; VB.combo=0; vbSfx('crash'); vbSpark(bx,by,'#ff5a5a',18); VB.fx.push({t:0,txt:'쿵!',bad:true}); if(navigator.vibrate)try{navigator.vibrate(80);}catch(e){} if(VB.hearts<=0){ vbEnd(); break; } } }
       if(!q.done&&q.x+pw/2<bx-br){ q.done=true; VB.passed++; if(!q.hit){ VB.combo++; VB.clean++; const gold=q.gold, add=gold?3:1; VB.stars+=add;
+          /* 보너스(v120): 금색 파이프 하트 +1 · 연속 8번마다 하트 +1 · 연속 5번마다 🛡 방패 4초(부딪혀도 안 다친다) */
+          if(gold&&VB.hearts<VB_MAXH){ VB.hearts++; VB.fx.push({t:0,txt:'❤️ +1',bad:false}); }
+          else if(VB.combo%8===0&&VB.hearts<VB_MAXH){ VB.hearts++; VB.fx.push({t:0,txt:'❤️ 하트 +1!',bad:false}); }
+          if(VB.combo%5===0){ VB.shield=4; VB.fx.push({t:0,txt:'🛡 방패 4초!',bad:false}); }
           VB.fx.push({t:0,txt:(gold?'🌟 +3 ':'★ ')+VB_NM[q.p]+'!'+(VB.combo>=3?'  '+VB.combo+' 연속':''),bad:false}); vbTone(q.p); vbSfx(gold||VB.combo%5===0?'bonus':'pass'); vbSpark(bx,by,gold?'#ffd700':'#fff36b',gold?36:16); VB.mute=Math.max(VB.mute,.5); } }
     }
+    if(VB.hint){ const nq=VB.pipes.find(q=>!q.done&&!q.hit); if(nq&&!nq.hinted&&(nq.x-bx)/sp<=1.5){ nq.hinted=true; VB.mute=.55; vbTone(nq.p); } }   // 1.5초 앞에서 '이 음을 내세요'
     VB.pipes=VB.pipes.filter(q=>q.x>-80);
     if(VB.si>=VB.seq.length&&!VB.pipes.length&&!VB.over)vbEnd(true);
   }
@@ -12476,6 +12506,7 @@ function vbDraw(dt){
   const onT=tgt!=null&&VB.voice!=null&&Math.abs(VB.pos-tgt)<.3; VB.aura=Math.max(0,Math.min(1,VB.aura+(onT?dt*5:-dt*4)));
   if(VB.aura>0){ g.save(); g.globalAlpha=VB.aura*.8; const ag=g.createRadialGradient(bx,by,br*.5,bx,by,br*2.4); ag.addColorStop(0,'rgba(255,240,120,.9)'); ag.addColorStop(1,'rgba(255,240,120,0)'); g.fillStyle=ag; g.beginPath(); g.arc(bx,by,br*2.4,0,7); g.fill(); g.restore();
     if(Math.random()<VB.aura*.5)VB.sparks.push({x:bx-br,y:by+(Math.random()-.5)*br,vx:-80-Math.random()*60,vy:(Math.random()-.5)*30,t:0,life:.5,c:'#fff36b',s:3}); }
+  if(VB.shield>0){ g.save(); g.globalAlpha=.35+.15*Math.sin(VB.t*10); g.strokeStyle='#7fe3ff'; g.fillStyle='rgba(127,227,255,.25)'; g.lineWidth=3; g.beginPath(); g.arc(bx,by,br*1.9,0,7); g.fill(); g.stroke(); g.restore(); }
   if(!(VB.inv>0&&Math.floor(VB.t*10)%2)){
     g.save(); g.translate(bx,by); g.rotate(Math.max(-.5,Math.min(.6,VB.vy*.25-(VB.voice!=null?.1:0))));
     g.fillStyle='#ffd23f'; g.strokeStyle='#5a3b00'; g.lineWidth=2.5; g.beginPath(); g.ellipse(0,0,br*1.15,br,0,0,7); g.fill(); g.stroke();
@@ -12497,7 +12528,7 @@ function vbDraw(dt){
   if(VB.started&&VB.cd>0&&!VB.over){ const n=Math.ceil(VB.cd), fr=VB.cd-Math.floor(VB.cd), sc=1+(fr)*.4; g.save(); g.translate(W/2,H*.42); g.scale(sc,sc); g.textAlign='center'; g.textBaseline='middle'; g.font='900 72px sans-serif'; g.lineWidth=8; g.strokeStyle='#5a3b00'; g.fillStyle='#ffd23f'; g.strokeText(String(n),0,0); g.fillText(String(n),0,0); g.restore();
     g.textAlign='center'; g.font='800 16px sans-serif'; g.fillStyle='#fff'; g.strokeStyle='rgba(0,0,0,.5)'; g.lineWidth=4; g.strokeText('지금 소리를 내 보세요 — 새가 따라와요!',W/2,H*.62); g.fillText('지금 소리를 내 보세요 — 새가 따라와요!',W/2,H*.62); g.textAlign='left'; }
   // 위 막대
-  $('vbstarsn').textContent=VB.stars; $('vbhearts').textContent='❤️'.repeat(Math.max(0,VB.hearts))+'🤍'.repeat(Math.max(0,5-VB.hearts));
+  $('vbstarsn').textContent=VB.stars; $('vbhearts').textContent='❤️'.repeat(Math.max(0,VB.hearts))+'🤍'.repeat(Math.max(0,(VB_LV[VB.lv].hearts||5)-VB.hearts))+(VB.shield>0?' 🛡'+Math.ceil(VB.shield):'');
   $('vbprog').style.width=(VB.passed/Math.max(1,VB.total)*100)+'%';
   const nq=VB.pipes.find(q=>!q.done); $('vbtarget').textContent=nq?'다음 '+VB_NM[nq.p]:'–';
   $('vblevel').style.width=Math.min(100,Math.sqrt(VB.level||0)*200)+'%';
