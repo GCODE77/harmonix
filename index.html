@@ -964,7 +964,7 @@ header{padding-top:8px!important;padding-left:10px!important}
       <div id="sminfo" class="smnote"></div>
       <div class="smrow smplayrow"><button class="btn cta smbig" id="smplay" type="button">▶ 노래 듣기</button><span id="smwhere"></span></div>
       <div class="smprog"><i id="smprog"></i></div>
-      <div class="smlab">🎵 멜로디 오선보 <small>음표를 누르면 아래에서 고칠 수 있어요</small></div>
+      <div class="smlab">🎵 멜로디 오선보 <small>주황 선 = 내가 흥얼거린 실제 음높이 · 음표를 누르면 아래에서 고칠 수 있어요</small></div>
       <div id="smscorestaff" class="smstaffbox"></div>
       <div class="smlab">🎼 코드 악보 <small>코드·가사·멜로디 음 이름 · 고치면 바로 바뀌어요</small></div>
       <div id="smchart"></div>
@@ -1108,7 +1108,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "125";
+const APP_VER = "126";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -11948,7 +11948,7 @@ const SM={stream:null,src:null,proc:null,an:null,chunks:[],recOn:false,recSr:441
   tr:{voice:true,lead:true,harm:true,drums:true,intro:true,verse2:true},volV:1,volA:.8,transp:0,sel:-1,play:null,voiceBuf:null,voiceAt:0,lyric:'',trace:[]};
 function smSave(){ try{ localStorage.setItem('konti:smlast',JSON.stringify({bpm:SM.bpm,recBpm:SM.recBpm,ts:SM.ts,key:SM.key,notes:SM.notes,chords:SM.chords,style:SM.style,lead:SM.lead,tr:SM.tr,volV:SM.volV,volA:SM.volA,lyric:SM.lyric,transp:SM.transp})); }catch(e){} }
 function smLoad(){ try{ const o=JSON.parse(localStorage.getItem('konti:smlast')||'null'); if(!o||!o.notes||!o.notes.length)return false; Object.assign(SM,o); SM.tr=Object.assign({voice:true,lead:true,harm:true,drums:true,intro:true,verse2:true},o.tr); SM.voiceBuf=null; smFixBars(); return true; }catch(e){ return false; } }
-const smSpb=()=>60/SM.bpm;
+const smSpb=()=>60/(SM.bpm*(smVoiceOk()?(SM.vrate||1):1));   // 목소리를 음정 보정해 틀 때는 반주도 같은 비율로
 const smPref=()=>PREF[mod(SM.key.pc)]||'sharp';
 const smName=m=>{ const pc=mod(m); return TN_DOS[pc]+' '+kbNoteName(m,smPref()); };
 function smScale(){ return SM.key.minor?[0,2,3,5,7,8,10,11]:[0,2,4,5,7,9,11]; }
@@ -12015,12 +12015,17 @@ function smLive(){
    남자 목소리처럼 낮으면 한 옥타브 올려 그리고 높은음자리표 밑에 8 을 단다(악보 관례). 끝나고 분석한 멜로디도 같은 오선지로 보여 준다. */
 function smStaffSvg(ns,cur,opt){
   opt=opt||{}; const LS=9, top=22, gapX=opt.gap||34, x0=46, ms=ns.map(n=>n.m), med=ms.length?ms.slice().sort((a,b)=>a-b)[ms.length>>1]:67, oct=med<57?12:0;
-  const W=Math.max(opt.minW||320,x0+ns.length*gapX+20), H=top+LS*4+70, bot=top+LS*4;
+  const W=opt.width?Math.max(opt.minW||320,opt.width):Math.max(opt.minW||320,x0+ns.length*gapX+20), H=top+LS*4+70, bot=top+LS*4;
   const st=m=>{ const pc=mod(m); return Math.floor(m/12)*7+[0,0,1,1,2,3,3,4,4,5,5,6][pc]; }, E4=st(64);
   let s='<svg class="smstf" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">';
   for(let i=0;i<5;i++)s+='<line x1="4" x2="'+(W-4)+'" y1="'+(top+i*LS)+'" y2="'+(top+i*LS)+'" stroke="#333" stroke-width="1.3"/>';
   s+='<text x="6" y="'+(bot+9)+'" font-size="'+(LS*6.2)+'" fill="#222">𝄞</text>'+(oct?'<text x="16" y="'+(bot+30)+'" font-size="11" fill="#222" font-weight="700">8</text>':'');
-  ns.forEach((n,i)=>{ const m=n.m+oct, sp=st(m)-E4, y=bot-sp*LS/2, x=x0+i*gapX+gapX/2, on=i===cur, col=on?'#e53935':'#111', sh=[1,3,6,8,10].includes(mod(m));
+  if(opt.bars)for(const bx of opt.bars)s+='<line x1="'+bx+'" x2="'+bx+'" y1="'+top+'" y2="'+bot+'" stroke="#8a8a8a" stroke-width="1.3"/>';
+  /* v126: 흥얼거린 실제 음높이 곡선(주황) — 반음 사이도 그대로 그려서, 음표가 어떻게 잡혔는지 눈으로 견줄 수 있다 */
+  if(opt.curve){ const stp=mf=>{ const lo=Math.floor(mf), f=mf-lo; return st(lo)+(st(lo+1)-st(lo))*f; }; let d='',pen=false;
+    for(const pt of opt.curve){ if(!pt){ pen=false; continue; } const y=Math.max(6,Math.min(H-34,bot-(stp(pt.m+oct)-E4)*LS/2)); d+=(pen?'L':'M')+pt.x.toFixed(1)+' '+y.toFixed(1); pen=true; }
+    if(d)s+='<path d="'+d+'" fill="none" stroke="rgba(232,120,40,.72)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'; }
+  ns.forEach((n,i)=>{ const m=n.m+oct, sp=st(m)-E4, y=bot-sp*LS/2, x=opt.xs?opt.xs[i]:x0+i*gapX+gapX/2, on=i===cur, col=on?'#e53935':'#111', sh=[1,3,6,8,10].includes(mod(m));
     for(let k=-2;k>=sp;k-=2){ const yy=bot-k*LS/2; s+='<line x1="'+(x-10)+'" x2="'+(x+10)+'" y1="'+yy+'" y2="'+yy+'" stroke="#333" stroke-width="1.3"/>'; }
     for(let k=10;k<=sp;k+=2){ const yy=bot-k*LS/2; s+='<line x1="'+(x-10)+'" x2="'+(x+10)+'" y1="'+yy+'" y2="'+yy+'" stroke="#333" stroke-width="1.3"/>'; }
     if(sh)s+='<text x="'+(x-18)+'" y="'+(y+4)+'" font-size="13" fill="'+col+'">♯</text>';
@@ -12033,18 +12038,19 @@ function smStaffSvg(ns,cur,opt){
   return s+'</svg>';
 }
 function smLiveNote(mf,rms){   // 녹음 중 실시간 음표
-  const L=SM.lv||(SM.lv={notes:[],cur:null,cand:null,quiet:0});
+  const L=SM.lv||(SM.lv={notes:[],cur:null,cand:null,quiet:0,t0:performance.now(),curve:[]}), tn=(performance.now()-L.t0)/1000;
+  if(mf==null){ if(L.curve.length&&L.curve[L.curve.length-1])L.curve.push(null); } else L.curve.push({t:tn,m:mf}); if(L.curve.length>1500)L.curve.splice(0,300);
   if(mf==null){ if(++L.quiet>=1){ L.cur=null; L.cand=null; } return; }
   L.quiet=0;
   if(L.cur&&rms<L.cur.pk*.45){ L.cur=null; L.cand=null; }   // 소리가 확 줄면 그 음은 끝 — 같은 음을 다시 부르면 새 음표
   if(L.cur&&Math.abs(mf-L.cur.mf)<.6){ L.cur.pk=Math.max(L.cur.pk,rms); L.cur.mf=L.cur.mf*.7+mf*.3; L.cur.m=Math.round(L.cur.mf); return; }
-  if(L.cand&&Math.abs(mf-L.cand.mf)<.6){ L.cand.n++; L.cand.mf=(L.cand.mf+mf)/2; if(L.cand.n>=2){ L.cur={m:Math.round(L.cand.mf),mf:L.cand.mf,pk:rms}; L.notes.push(L.cur); if(L.notes.length>60)L.notes.shift(); L.cand=null; } return; }
-  L.cand={mf,n:1};
+  if(L.cand&&Math.abs(mf-L.cand.mf)<.6){ L.cand.n++; L.cand.mf=(L.cand.mf+mf)/2; if(L.cand.n>=2){ L.cur={m:Math.round(L.cand.mf),mf:L.cand.mf,pk:rms,t:L.cand.t}; L.notes.push(L.cur); if(L.notes.length>160)L.notes.shift(); L.cand=null; } return; }
+  L.cand={mf,n:1,t:tn};
 }
 function smLiveStaff(){
   const L=SM.lv; if(!L)return; const el=$('smstaff'); if(!el)return;
-  const show=L.notes.slice(-40), cur=L.cur?show.indexOf(L.cur):-1;
-  el.innerHTML=smStaffSvg(show,cur,{minW:el.clientWidth-4}); el.scrollLeft=el.scrollWidth;
+  const PS=64, show=L.notes.slice(-120), cur=L.cur?show.indexOf(L.cur):-1, now=(performance.now()-L.t0)/1000;
+  el.innerHTML=smStaffSvg(show,cur,{minW:el.clientWidth-4,xs:show.map(n=>46+(n.t||0)*PS),width:46+now*PS+60,curve:L.curve.map(q=>q?{x:46+q.t*PS,m:q.m}:null)}); el.scrollLeft=el.scrollWidth;
 }
 function smSttStart(){
   SM.sttText=''; SM.stt=null; if(!SM.sttOn)return;
@@ -12108,7 +12114,7 @@ function smSegment(fr){
   close(fr.length?fr[fr.length-1].t:0);
   // 같은 높이로 아주 짧게 끊긴 것은 한 음으로
   const out=[]; for(const nt of notes){ const L=out[out.length-1]; if(L&&!nt.re&&Math.round(L.mf)===Math.round(nt.mf)&&nt.s-L.e<.025){ L.e=nt.e; continue; } out.push(nt); }
-  return out;
+  out.off=off; return out;
 }
 function smTempo(ons,bpm0){   // 메트로놈 없이 부른 것: 시작 음들이 8분 격자에 가장 잘 맞는 빠르기·위상
   let best={cost:1e9,bpm:bpm0||90,ph:0};
@@ -12139,6 +12145,10 @@ async function smFromBuffer(buf,beat0,fromFile){
   const first=q[0].on, bar0=SM.metro&&!fromFile?Math.floor(first/SM.ts)*SM.ts:first;
   for(const n of q)n.on-=bar0;
   SM.voiceAt=b0+bar0*spb;          // 녹음 안에서 노래 0박이 놓인 자리(초)
+  /* v126: 내 목소리가 통째로 조금 높거나 낮게 녹음됐으면(노래하는 사람은 보통 그렇다) 악보 음은 보정했는데 **녹음 소리는 그대로**라 반주 코드와 부딪혔다.
+     → 재생할 때 목소리를 그만큼 되돌려(재생 속도 2^(-보정/12), 최대 ±5%) 코드와 음정을 맞추고, 반주 빠르기도 같은 비율로 맞춘다(smSpb). */
+  SM.vrate=Math.abs(seg.off||0)<.04?1:Math.max(.95,Math.min(1.05,Math.pow(2,-(seg.off||0)/12)));
+  SM.curve=[]; { let gap=false; for(let i=0;i<fr.length&&SM.curve.length<2400;i+=2){ const q=fr[i]; if(q.sm===undefined||isNaN(q.mf)){ if(!gap)SM.curve.push(null); gap=true; continue; } gap=false; SM.curve.push({b:(q.t-b0)/spb-bar0,m:q.sm-(seg.off||0)}); } }   // 허밍 음높이 곡선(오선보에 그대로 그린다)
   // 조·음계
   const raw=q.map(n=>({midi:Math.round(n.mf),beats:n.dur}));
   SM.key=guessKeyFromMelody(raw);
@@ -12161,6 +12171,7 @@ function smFixBars(reguess){
     const bars=Array.from({length:SM.nb},()=>[]); for(const n of SM.notes){ const i=Math.min(SM.nb-1,Math.floor(n.on/SM.ts+1e-6)); bars[i].push({midi:n.m,beats:n.dur}); }
     let g=[]; try{ g=guessChords(bars,SM.key.pc,SM.key.minor,{}); }catch(e){}
     if(reguess||!SM.chords)SM.chords=g; else for(let i=SM.chords.length;i<SM.nb;i++)SM.chords[i]=g[i];
+    if(reguess)try{ smSplitChords(); }catch(e){}
   }
   SM.chords.length=SM.nb;
 }
@@ -12172,6 +12183,24 @@ function smApplyLyric(quiet){
 }
 
 /* ---------- ③ 편곡 ---------- */
+/* v126: 한 마디에 코드 하나만 붙이면 마디 안에서 멜로디가 다른 화음으로 옮겨 가는 곡(도미솔→시레솔 등)이 부딪힌다.
+   마디의 음이 코드에 안 맞는데(chordFit 낮음) **앞 절반·뒤 절반을 따로 고르면 훨씬 맞을 때만** 둘로 쪼갠다(`c2` = 뒤 절반 코드). 고치기 창에서 코드를 바꾸면 c2 는 사라진다. */
+function smSplitChords(){
+  const ts=SM.ts; if(ts%2||ts<4)return; const half=ts/2, base=chordCandidates(mod(SM.key.pc),SM.key.minor);
+  for(let i=0;i<SM.nb;i++){ const c=SM.chords[i]; if(!c)continue; delete c.c2;
+    const A=[],B=[],all=[];
+    for(const n of SM.notes){ const o=n.on-i*ts, e=o+n.dur; if(e<=1e-6||o>=ts-1e-6)continue;
+      const a=Math.max(0,o), b=Math.min(ts,e), first=Math.max(0,Math.min(half,b)-a), second=Math.max(0,b-Math.max(a,half));
+      if(first>.24)A.push({midi:n.m,beats:first}); if(second>.24)B.push({midi:n.m,beats:second}); all.push({midi:n.m,beats:b-a}); }
+    if(A.length<1||B.length<1)continue;
+    const cur=base.find(x=>x.root===c.root&&x.sfx===(c.suffix||''))||{root:c.root,sfx:c.suffix||'',pcs:hxIvs(c.suffix||'').map(v=>mod(c.root+v))};
+    const full=chordFit(all,cur,SM.key.pc,SM.key.minor);
+    const best=(L,pref)=>{ let bc=null,bs=-9; for(const x of base){ const f=chordFit(L,x,SM.key.pc,SM.key.minor)+(pref&&x.root===pref.root&&x.sfx===pref.sfx?.12:0)+([.08,0,0,.1,.12,.03,.12][x.deg]||0); /* 으뜸·버금딸림·딸림 화음을 조금 더 좋아한다 */ if(f>bs){ bs=f; bc=x; } } return {c:bc,s:chordFit(L,bc,SM.key.pc,SM.key.minor)}; };
+    const b1=best(A,cur), b2=best(B,null); if(b1.c.root===b2.c.root&&b1.c.sfx===b2.c.sfx)continue;
+    const wa=A.reduce((m,x)=>m+x.beats,0), wb=B.reduce((m,x)=>m+x.beats,0), split=(b1.s*wa+b2.s*wb)/(wa+wb);
+    if(split-full>=.4&&b2.s>=.35&&b1.s>=.35){ c.root=b1.c.root; c.suffix=b1.c.sfx; c.bass=null; c.c2={root:b2.c.root,suffix:b2.c.sfx}; }
+  }
+}
 function smEvents(){
   const spb=smSpb(), ts=SM.ts, nb=SM.nb, st=SM.style, tr=SM.tr, T=SM.transp, ev=[], dr=[], secs=[];
   const ch=i=>{ const c=SM.chords[Math.max(0,Math.min(nb-1,i))]||{root:SM.key.pc,suffix:SM.key.minor?'m':''}; return {root:mod(c.root+T),suffix:c.suffix,bass:c.bass==null?null:mod(c.bass+T)}; };
@@ -12202,7 +12231,7 @@ function smEvents(){
   let t=0; const barLen=ts*spb;
   if(tr.intro){ secs.push({k:'intro',t,len:2*barLen}); bar(t,ch(nb-2>=0?nb-2:0),.75,'intro'); bar(t+barLen,ch(nb-1),.8,'intro'); if(tr.drums)D('crash',t+2*barLen,.35); t+=2*barLen; }
   const verse=(sec,I)=>{ secs.push({k:sec,t,len:nb*barLen});
-    for(let i=0;i<nb;i++)bar(t+i*barLen,ch(i),I,sec);
+    for(let i=0;i<nb;i++){ const cc=SM.chords[i], c2=cc&&cc.c2; if(c2&&ts>=4&&ts%2===0){ bar(t+i*barLen,ch(i),I,sec,ts/2); bar(t+i*barLen+ts/2*spb,{root:mod(c2.root+T),suffix:c2.suffix,bass:null},I,sec,ts/2); } else bar(t+i*barLen,ch(i),I,sec); }
     const lv=sec==='v1'?(tr.voice&&SM.voiceBuf&&SM.bpm===SM.recBpm&&!SM.transp?.32:.62):.68;
     if(tr.lead){ const lst=sec==='v2'?smEmbellish(notes):notes; for(const n of lst)N(SM.lead,n.m+leadUp,t+n.on*spb,n.dur*spb*.95,lv,.1); }
     if(tr.harm&&(sec==='v2'||!tr.lead||lv<.4))for(const n of notes){ const h=smThird(n.m); N('choir',h,t+n.on*spb,n.dur*spb*.97,.22,-.15); }
@@ -12249,7 +12278,7 @@ async function smPlay2(){
   const base=ctx.currentTime+.25, real=master, srcs=[];
   master=bus;
   try{ for(const e of A.ev)voice(ctx,e.inst,e.m,base+e.t,e.d,e.v,e.pan); for(const d of A.dr)drumHit(d.k,d.v,base+d.t,true); }finally{ master=real; }
-  if(smVoiceOk())for(const s of A.secs){ if(s.k!=='v1'&&!(s.k==='v2'&&SM.tr.voice2!==false))continue; const src=ctx.createBufferSource(); src.buffer=SM.voiceBuf; src.connect(vb);
+  if(smVoiceOk())for(const s of A.secs){ if(s.k!=='v1'&&!(s.k==='v2'&&SM.tr.voice2!==false))continue; const src=ctx.createBufferSource(); src.buffer=SM.voiceBuf; src.playbackRate.value=SM.vrate||1; src.connect(vb);
     const off=SM.voiceAt; if(off>=0)src.start(base+s.t,off,s.len+.4); else src.start(base+s.t-off,0,s.len+.4); srcs.push(src); }
   SM.play={base,total:A.total,bus,vb,srcs,secs:A.secs,barLen:A.barLen};
   $('smplay').textContent='■ 멈추기'; $('smplay').classList.add('on');
@@ -12294,7 +12323,7 @@ async function smExportWav(){
     const real=master; master=bus; DRUM_CTX=off;
     try{ for(const e of A.ev)voice(off,e.inst,e.m,e.t+.05,e.d,e.v,e.pan); for(const d of A.dr)drumHit(d.k,d.v,d.t+.05,true); }finally{ master=real; DRUM_CTX=null; }
     if(smVoiceOk()){ const vb=off.createGain(); vb.gain.value=SM.volV*1.4; vb.connect(mst);
-      for(const s of A.secs){ if(s.k!=='v1'&&s.k!=='v2')continue; const src=off.createBufferSource(); src.buffer=SM.voiceBuf; src.connect(vb); const o=SM.voiceAt; if(o>=0)src.start(s.t+.05,o,s.len+.4); else src.start(s.t+.05-o,0,s.len+.4); } }
+      for(const s of A.secs){ if(s.k!=='v1'&&s.k!=='v2')continue; const src=off.createBufferSource(); src.buffer=SM.voiceBuf; src.playbackRate.value=SM.vrate||1; src.connect(vb); const o=SM.voiceAt; if(o>=0)src.start(s.t+.05,o,s.len+.4); else src.start(s.t+.05-o,0,s.len+.4); } }
     const out=await off.startRendering();
     smDownload(smWav(out),smFileName()+'.wav'); toast('노래 파일(WAV)을 저장했어요');
   }catch(e){ toast('저장하지 못했어요: '+(e&&e.message||e)); }
@@ -12325,7 +12354,9 @@ function smToScore(){
   for(let i=0;i<SM.nb;i++){ const toks=[], ly=[]; let pos=i*ts;
     for(const n of SM.notes){ if(n.on<i*ts-1e-6||n.on>=(i+1)*ts-1e-6)continue; if(n.on>pos+1e-6)toks.push('r:'+(n.on-pos)); const d=Math.min(n.dur,(i+1)*ts-n.on); toks.push(kbNoteName(n.m+T,pref)+':'+d); pos=n.on+d; if(n.ly)ly.push(n.ly); }
     if(pos<(i+1)*ts-1e-6)toks.push('r:'+((i+1)*ts-pos));
-    mel.push(toks.join(' ')); const c=SM.chords[i]; chl.push('|['+(c?showChord({root:mod(c.root+T),suffix:c.suffix,bass:c.bass==null?null:mod(c.bass+T)},0,pref):'C')+']'+ly.join('')+' '); }
+    mel.push(toks.join(' ')); const c=SM.chords[i], nm=x=>showChord({root:mod(x.root+T),suffix:x.suffix,bass:x.bass==null?null:mod(x.bass+T)},0,pref);
+    if(c&&c.c2){ const l1=[],l2=[]; for(const n of SM.notes){ if(n.on<i*ts-1e-6||n.on>=(i+1)*ts-1e-6||!n.ly)continue; (n.on<i*ts+ts/2-1e-6?l1:l2).push(n.ly); } chl.push('|['+nm(c)+']'+l1.join('')+'['+nm(c.c2)+']'+l2.join('')+' '); }
+    else chl.push('|['+(c?nm(c):'C')+']'+ly.join('')+' '); }
   setBpm(SM.bpm); P.beats=ts;
   $('title').value=($('smtitle').value||'').trim()||'내 노래';
   S.raw='♪ '+mel.join(' | ')+'\n'+chl.join('').trim(); S.semis=0; S.verse=1; S.orig=null; S.photos=[]; S.feat=null; S.mode='staff'; S.sheetZoom=1;
@@ -12338,7 +12369,7 @@ function smToScore(){
 function smChartBars(){
   const T=SM.transp, ts=SM.ts, pref=smPref(), out=[];
   for(let i=0;i<SM.nb;i++){ const c=SM.chords[i], ns=SM.notes.filter(n=>n.on>=i*ts-1e-6&&n.on<(i+1)*ts-1e-6);
-    out.push({ch:c?showChord({root:mod(c.root+T),suffix:c.suffix,bass:c.bass==null?null:mod(c.bass+T)},0,pref):'',ly:ns.map(n=>n.ly||'').join(''),mel:ns.map(n=>TN_DOS[mod(n.m+T)].replace('♯','#')).join(' ')}); }
+    out.push({ch:c?showChord({root:mod(c.root+T),suffix:c.suffix,bass:c.bass==null?null:mod(c.bass+T)},0,pref)+(c.c2?' → '+showChord({root:mod(c.c2.root+T),suffix:c.c2.suffix,bass:null},0,pref):''):'',ly:ns.map(n=>n.ly||'').join(''),mel:ns.map(n=>TN_DOS[mod(n.m+T)].replace('♯','#')).join(' ')}); }
   return out;
 }
 function smChartRender(){
@@ -12369,7 +12400,7 @@ function smRender(){
   let s='<svg id="smsvg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">';
   for(let m=lo;m<=hi;m++){ const y=top+(hi-m)*SM_RH, blk=[1,3,6,8,10].includes(mod(m)); s+='<rect x="0" y="'+y+'" width="'+W+'" height="'+SM_RH+'" fill="'+(blk?'rgba(0,0,0,.18)':(mod(m)===0?'rgba(240,185,94,.07)':'rgba(255,255,255,.02)'))+'"/>'; if(mod(m)===0)s+='<text x="3" y="'+(y+SM_RH-3)+'" class="smoct">도'+(Math.floor(m/12)-1)+'</text>'; }
   for(let b=0;b<=SM.nb*ts;b++){ const x=b*SM_BW; s+='<line x1="'+x+'" y1="'+top+'" x2="'+x+'" y2="'+(H-22)+'" stroke="'+(b%ts===0?'rgba(240,185,94,.55)':'rgba(255,255,255,.08)')+'" stroke-width="'+(b%ts===0?2:1)+'"/>'; }
-  for(let i=0;i<SM.nb;i++){ const c=SM.chords[i], x=i*ts*SM_BW; s+='<g class="smch" data-bar="'+i+'"><rect x="'+(x+4)+'" y="4" width="'+(ts*SM_BW-8)+'" height="24" rx="8"/><text x="'+(x+12)+'" y="21">'+(i+1)+'  '+(c?showChord({root:mod(c.root+T),suffix:c.suffix,bass:c.bass==null?null:mod(c.bass+T)},0,smPref()):'코드?')+' ▾</text></g>'; }
+  for(let i=0;i<SM.nb;i++){ const c=SM.chords[i], x=i*ts*SM_BW; s+='<g class="smch" data-bar="'+i+'"><rect x="'+(x+4)+'" y="4" width="'+(ts*SM_BW-8)+'" height="24" rx="8"/><text x="'+(x+12)+'" y="21">'+(i+1)+'  '+(c?showChord({root:mod(c.root+T),suffix:c.suffix,bass:c.bass==null?null:mod(c.bass+T)},0,smPref())+(c.c2?'→'+showChord({root:mod(c.c2.root+T),suffix:c.c2.suffix,bass:null},0,smPref()):''):'코드?')+' ▾</text></g>'; }
   SM.notes.forEach((n,i)=>{ const x=n.on*SM_BW+1, y=top+(hi-(n.m+T))*SM_RH, w=Math.max(8,n.dur*SM_BW-2), col=GM_PCC[mod(n.m+T)];
     s+='<g class="smn'+(i===SM.sel?' sel':'')+'" data-i="'+i+'"><rect x="'+x+'" y="'+(y+1)+'" width="'+w+'" height="'+(SM_RH-2)+'" rx="4" fill="'+col+'"/>'+(n.ly?'<text x="'+(x+2)+'" y="'+(H-6)+'" class="smly">'+n.ly.replace(/</g,'')+'</text>':'')+'</g>'; });
   s+='<line id="smph" x1="0" y1="'+top+'" x2="0" y2="'+H+'" stroke="#fff" stroke-width="2" style="display:none"/></svg>';
@@ -12381,7 +12412,8 @@ function smRender(){
   document.querySelectorAll('#smstyles .btn').forEach(b=>b.classList.toggle('on',b.dataset.s===SM.style));
   for(const k2 of Object.keys(SM.tr)){ const b=$('smtr_'+k2); if(b){ b.classList.toggle('on',!!SM.tr[k2]); } }
   smChartRender();
-  { const T=SM.transp, el=$('smscorestaff'); el.innerHTML=smStaffSvg(SM.notes.map(n=>({m:n.m+T,dur:n.dur,ly:n.ly})),SM.sel,{minW:el.clientWidth-4,gap:38});
+  { const T=SM.transp, el=$('smscorestaff'); const bw=44, cv=(SM.curve||[]).map(q=>q?{x:46+q.b*bw,m:q.m+T}:null);
+    el.innerHTML=smStaffSvg(SM.notes.map(n=>({m:n.m+T,dur:n.dur,ly:n.ly})),SM.sel,{minW:el.clientWidth-4,xs:SM.notes.map(n=>46+n.on*bw+6),width:46+SM.nb*SM.ts*bw+20,bars:Array.from({length:SM.nb+1},(_,b)=>46+b*SM.ts*bw),curve:cv});
     el.querySelectorAll('ellipse').forEach((e,i)=>{ e.style.cursor='pointer'; e.onclick=()=>{ SM.sel=i; smRender(); $('smnotebar').scrollIntoView({block:'nearest'}); }; }); }
   $('smlead').value=SM.lead; $('smbpm2').value=SM.bpm; $('smvolv').value=SM.volV; $('smvola').value=SM.volA;
 }

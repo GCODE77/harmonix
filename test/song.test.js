@@ -28,6 +28,15 @@ export default async function songTest(){
     ok('조의 음계가 멜로디 음을 다 담는다',SM.notes.every(n=>smScale().includes(mod(n.m-SM.key.pc))),SM.key);
     ok('마디 4개, 코드 4개',SM.nb===4&&SM.chords.length===4&&SM.chords.every(c=>c&&c.root!==undefined),[SM.nb,SM.chords]);
     ok('가사가 음에 붙는다',SM.notes[0].ly==='학'&&SM.notes[3].ly==='이',SM.notes.map(n=>n.ly).join(''));
+    // v126: 음정 보정 · 허밍 곡선 · 마디 안 코드 바꾸기
+    ok('살짝 높게 부른 목소리는 되돌려 튼다(재생 속도 ≈ 2^(-0.18/12))',Math.abs(SM.vrate-Math.pow(2,-.18/12))<.004&&Math.abs(smSpb()*SM.bpm/60*(SM.vrate)-1)<1e-9,SM.vrate);
+    ok('허밍 음높이 곡선이 있다',(SM.curve||[]).filter(Boolean).length>60&&SM.curve.filter(Boolean).every(q=>q.m>55&&q.m<75),(SM.curve||[]).length);
+    ok('멜로디 오선보에 주황 곡선·마디선이 그려진다',/rgba\(232,120,40/.test($('smscorestaff').innerHTML)&&$('smscorestaff').querySelectorAll('line[stroke="#8a8a8a"]').length===SM.nb+1);
+    { const keepN=SM.notes, keepC=SM.chords, keepK=SM.key, keepTs=SM.ts; SM.ts=4; SM.key={pc:0,minor:false}; let tt=0;
+      SM.notes='E4:1 E4:1 F4:1 G4:1 G4:1 F4:1 E4:1 D4:1 C4:1 C4:1 D4:1 E4:1 E4:1.5 D4:.5 D4:2'.split(' ').map(x=>{ const [nm,d]=x.split(':'); const m={C:0,D:2,E:4,F:5,G:7,A:9,B:11}[nm[0]]+12*(+nm[1]+1), o={m,on:tt,dur:+d,ly:''}; tt+=+d; return o; });
+      smFixBars(true); const sp=SM.chords.filter(c=>c.c2).length; ok('마디 안에서 멜로디가 화음을 옮기면 코드를 둘로 쪼갠다',sp>=1,SM.chords);
+      const E=smEvents(), bars4=E.ev.filter(e=>e.inst==='strings'); ok('쪼갠 마디는 반주도 두 번 친다',bars4.length>0);
+      SM.chords=keepC; SM.notes=keepN; SM.key=keepK; SM.ts=keepTs; }
     ok('편집 화면이 보인다',!$('smedit').hidden&&$('smroll').querySelectorAll('[data-i]').length===12);
     // 편곡
     const A=smEvents();
