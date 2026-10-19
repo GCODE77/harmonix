@@ -326,7 +326,7 @@ body.focus #focusout{display:block}
 
 /* ===== 첫 화면 · 건반 연주 ===== */
 html.hm,html.hm body{overflow:hidden;height:100%;overscroll-behavior:none}
-html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):not(#ts):not(#tnpop):not(#toast):not(#errbar):not(script):not(style){display:none!important}
+html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):not(#dr):not(#ts):not(#tnpop):not(#toast):not(#errbar):not(script):not(style){display:none!important}
 #home{position:fixed;inset:0;height:100vh;height:100dvh;overscroll-behavior:none;touch-action:pan-y;z-index:80;background:var(--ink);display:flex;align-items:flex-start;justify-content:center;padding:calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom));overflow-x:hidden;overflow-y:auto}
 #home[hidden],#kb[hidden]{display:none}
 #home .hbox{width:min(760px,100%);text-align:center;margin:auto 0}
@@ -336,13 +336,14 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 #home .hlogo{font-size:34px;font-weight:800;letter-spacing:.02em;color:var(--brass)}
 #home p{margin:6px 0 22px;color:var(--dim);font-size:15px}
 #home .hcards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+#home .hgrp{grid-column:1/-1;margin:8px 2px 0;font-size:15px;font-weight:800;color:var(--brass);text-align:left;letter-spacing:.02em}#home .hgrp:first-child{margin-top:0}
 .hcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:230px;padding:22px 14px;border-radius:22px;border:2px solid var(--line);background:var(--raise);color:var(--paper);cursor:pointer;font-family:inherit;transition:transform .12s,border-color .12s}
 .hcard:hover,.hcard:focus-visible{border-color:var(--brass);transform:translateY(-2px)}
 .hcard:active{transform:scale(.98)}
 .hcard .hi{font-size:64px;line-height:1}
 .hcard b{font-size:21px}
 .hcard small{color:var(--dim);font-size:13.5px;line-height:1.45}
-@media (max-width:520px){#home .hcards{grid-template-columns:1fr}.hcard{min-height:150px;flex-direction:row;gap:16px;text-align:left;justify-content:flex-start;padding:16px 20px}.hcard .hi{font-size:48px}.hcard>span:last-child{display:flex;flex-direction:column;gap:4px}}
+@media (max-width:520px){#home .hcards{grid-template-columns:1fr;gap:10px}.hcard{min-height:104px;flex-direction:row;gap:16px;text-align:left;justify-content:flex-start;padding:16px 20px}.hcard .hi{font-size:48px}.hcard>span:last-child{display:flex;flex-direction:column;gap:4px}}
 @media (orientation:landscape) and (max-height:520px){#home .hcards{grid-template-columns:1fr 1fr}.hcard{min-height:150px;flex-direction:column;text-align:center}#home p{margin-bottom:12px}}
 #kb{position:fixed;inset:0;height:100vh;height:100dvh;z-index:70;background:var(--ink);display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);user-select:none;-webkit-user-select:none;touch-action:none;overscroll-behavior:none}
 /* 건반 돌리기: 폰이 세로여도 화면을 시계/반시계로 눕힌다(자동 회전을 꺼 둔 폰·고정된 폰용) */
@@ -351,6 +352,11 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 #kb .kbrow{display:flex;align-items:center;gap:7px;padding:6px 10px;border-bottom:1px solid var(--line);flex:none}
 @media (max-width:560px){#kb .kbtop{flex-wrap:wrap}#kb .kbtop .grow{display:none}}
 #kb .kbopt{flex-wrap:wrap}
+/* v121: 작은 화면에서 도구 줄 둘이 건반을 화면 밖으로 밀어냈다(건반이 잘려 '화면이 깨짐') → 도구는 접어 두고 건반이 항상 남는 높이를 갖게 한다 */
+#kb #kbtools{display:none;flex:none}#kb.tools #kbtools{display:block;max-height:46vh;max-height:46dvh;overflow-y:auto}
+#kb #kbtoolsbtn{background:var(--raise);font-weight:700}#kb.tools #kbtoolsbtn{border-color:var(--brass);color:var(--brass)}
+#kb #kbstaff{max-height:min(220px,24vh)}
+#kb #kbkeys{min-height:min(190px,32vh)}
 #kb .kbopt::-webkit-scrollbar{display:none}
 #kb .kbact{flex-wrap:wrap}
 #kb .btn{white-space:nowrap;flex:none;min-height:40px}
@@ -537,6 +543,37 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 #tngtr .peg b em{font-size:.62em;font-style:normal;color:var(--dim);font-weight:700}
 #tngtr .peg.det b em{color:#3a2a08}
 #tnroll .wk{font-size:10px;text-align:center;line-height:1.15;white-space:pre-line;word-break:keep-all}
+/* 드럼 연습 (v121) */
+#dr{position:fixed;inset:0;height:100vh;height:100dvh;z-index:70;background:#141a24;color:var(--paper);display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+#dr[hidden]{display:none}
+#dr .drtop{flex:none;display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid var(--line)}
+#dr .btn{white-space:nowrap;flex:none;min-height:40px}
+#dr .btn.sq{min-width:38px;padding-left:0;padding-right:0;text-align:center}
+#dr .btn.on{background:var(--brass);color:#10161E;border-color:var(--brass);font-weight:700}
+#dr .btn.cta{background:var(--mint,#4fd1a5);color:#10161E;border-color:var(--mint,#4fd1a5);font-weight:800}
+.drtabs{display:flex;gap:6px;flex:1;min-width:0}.drtabs .btn{flex:1;padding-left:6px;padding-right:6px}
+.drchip{flex:none;background:var(--raise);border:1px solid var(--line);border-radius:12px;padding:4px 10px;font-weight:800}
+#dr .drctl{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:6px 8px;border-bottom:1px solid var(--line)}
+#dr select{min-height:40px;border-radius:10px;background:var(--raise);color:inherit;border:1px solid var(--line);padding:4px 8px;max-width:100%;flex:1 1 150px}
+.drbpm{display:inline-flex;align-items:center;gap:6px}.drbpm b{min-width:34px;text-align:center;font-size:18px}.drbpm small{color:var(--dim);font-size:11px}
+#drfield{position:relative;flex:1;min-height:150px;overflow:hidden}
+#drcv{position:absolute;inset:0;width:100%;height:100%;display:block}
+.drov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(10,14,22,.62);padding:14px}
+.drov[hidden]{display:none}.drov .gmbox{max-height:100%;overflow-y:auto;box-sizing:border-box}
+.drov .gmbtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;width:100%}.drov .btn.cta{flex:1 1 140px;font-size:17px;min-height:50px}
+#drgrid{display:none;flex:1;min-height:120px;padding:10px 12px;overflow:auto;flex-direction:column;gap:8px;justify-content:center}
+#dr.free #drfield{display:none}#dr.free #drgrid{display:flex}
+#dr.free #drlv,#dr.free .drchip{display:none}#dr:not(.free) #drbeat{display:none}
+.drrow{display:flex;align-items:center;gap:8px}.drrow>b{flex:none;width:72px;font-size:13px;text-align:right;color:var(--dim)}
+.drcells{display:flex;flex:1;gap:3px}.drcell{flex:1;aspect-ratio:1;max-height:34px;border-radius:7px;background:#232b38;border:1px solid #2f3a4a;display:block}
+.drcell.q{border-color:#4a5a70}.drcell.on{background:var(--c,#ffd23f);border-color:var(--c,#ffd23f)}.drcell.now{outline:3px solid #fff;outline-offset:1px}
+.drhelp{color:var(--dim);font-size:13px;text-align:center;line-height:1.5}
+#drpads{flex:none;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;height:clamp(110px,26vh,200px);touch-action:none}
+#dr.free #drpads{flex:1;height:auto;grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr}
+.drpad{border-radius:18px;border:3px solid var(--c,#4a5a70);background:#1d2532;color:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:800;font-size:17px;touch-action:none;position:relative;min-height:64px}
+.drpad small{font-size:11px;color:var(--dim);font-weight:600}.drpad .ic{font-size:26px;line-height:1}
+.drpad.on{background:var(--c,#ffd23f);color:#10161E;transform:scale(.97)}.drpad.on small{color:#10161E}
+@media (max-height:520px){#dr .drctl{padding:3px 8px}#dr .btn{min-height:34px;padding:3px 10px;font-size:13px}#drpads{height:clamp(80px,34vh,160px)}#dr select{min-height:34px}}
 /* 노래하는 새 (v113) */
 #vb{position:fixed;inset:0;height:100vh;height:100dvh;z-index:70;background:#5f9fd8;display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);user-select:none;-webkit-user-select:none;touch-action:manipulation}
 #vb[hidden]{display:none}
@@ -552,6 +589,8 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 .vbov[hidden]{display:none}
 .vbov .gmbox{max-height:100%;overflow-y:auto;box-sizing:border-box}
 @media (max-height:500px){.vbov .gmbox{padding:10px 14px;gap:6px}.vbov .gmbox small{font-size:12.5px}}
+#vb .btn.cta{background:var(--mint,#4fd1a5);color:#10161E;border-color:var(--mint,#4fd1a5);font-weight:800;font-size:18px;min-height:52px;padding:10px 26px;width:100%}
+.vbsum{color:var(--dim);font-size:12.5px}.vbdet{width:100%;text-align:left}.vbdet summary{cursor:pointer;color:var(--brass,#f2b84b);font-size:14px;padding:8px 0;min-height:36px}.vbdet[open] summary{margin-bottom:6px}
 .vbopts{display:flex;flex-direction:column;gap:8px;text-align:left;font-size:14px;width:100%}.vbopts select{width:100%;margin-top:3px;padding:6px;border-radius:8px;background:var(--bg,#0e1520);color:inherit;border:1px solid var(--line)}
 .vbstars{font-size:46px;letter-spacing:6px;color:#ffd54a;text-shadow:0 0 14px rgba(255,213,74,.6)}
 /* 노래 파일 채보 (v117) — 노래 만들기의 카드 모양(.smbody·.smcard·.smrow)을 같이 쓴다 */
@@ -732,14 +771,19 @@ header{padding-top:8px!important;padding-left:10px!important}
     <div class="hlogo">하모닉스</div>
     <p>무엇을 하시겠어요?</p>
     <div class="hcards">
+      <h2 class="hgrp">🎼 악보 · 연주</h2>
       <button class="hcard" id="h-score" type="button"><span class="hi">🎼</span><span><b>악보 연주</b><br><small>악보 사진을 악보로 바꾸고<br>반주와 함께 연주해요</small></span></button>
-      <button class="hcard" id="h-kb" type="button"><span class="hi">🎹</span><span><b>건반 연주</b><br><small>건반을 직접 눌러 연주해요<br>피아노·트럼펫·바이올린·드럼 …</small></span></button>
+      <button class="hcard" id="h-kb" type="button"><span class="hi">🎹</span><span><b>건반 연주</b><br><small>건반을 직접 눌러 연주해요<br>피아노·바이올린·드럼 등</small></span></button>
+      <h2 class="hgrp">🎯 연습 도구</h2>
       <button class="hcard" id="h-tn" type="button"><span class="hi">🎤</span><span><b>튜너 · 음 찾기</b><br><small>악기 소리를 듣고 음 이름과<br>음정이 맞는지 알려 줘요</small></span></button>
       <button class="hcard" id="h-mt" type="button"><span class="hi">⏱</span><span><b>메트로놈</b><br><small>박자·쪼개기·탭 템포로<br>연습 박자를 맞춰요</small></span></button>
-      <button class="hcard wide" id="h-ts" type="button"><span class="hi">🎧</span><span><b>노래 파일 채보</b><br><small>노래 파일을 넣으면 멜로디·박자·코드를 악보로 옮겨 줘요 · 악보에서 바로 고쳐요</small></span></button>
-      <button class="hcard wide" id="h-sm" type="button"><span class="hi">🎙</span><span><b>노래 만들기</b><br><small>흥얼거리거나 노래하면 코드·반주를 붙여 노래로 만들어 줘요</small></span></button>
+      <button class="hcard wide" id="h-dr" type="button"><span class="hi">🥁</span><span><b>드럼 연습</b><br><small>박자를 따라 치며 드럼을 배워요 · 쿵짝 기본부터 8비트까지 · 자유 연주</small></span></button>
+      <h2 class="hgrp">🎮 놀이 · 게임</h2>
       <button class="hcard wide" id="h-vb" type="button"><span class="hi">🐤</span><span><b>노래하는 새</b><br><small>목소리 높이로 새를 날려 파이프 틈을 통과해요 · 도레미 음정 놀이</small></span></button>
       <button class="hcard wide" id="h-gm" type="button"><span class="hi">🎮</span><span><b>건반 게임</b><br><small>내려오는 블록을 맞춰 눌러요 · 동요·클래식 100판</small></span></button>
+      <h2 class="hgrp">✨ 만들기</h2>
+      <button class="hcard wide" id="h-ts" type="button"><span class="hi">🎧</span><span><b>노래 파일 채보</b><br><small>노래 파일을 넣으면 멜로디·박자·코드를 악보로 옮겨 줘요 · 악보에서 바로 고쳐요</small></span></button>
+      <button class="hcard wide" id="h-sm" type="button"><span class="hi">🎙</span><span><b>노래 만들기</b><br><small>흥얼거리거나 노래하면 코드·반주를 붙여 노래로 만들어 줘요</small></span></button>
     </div>
     <div class="hcopy">© GLORY &nbsp;·&nbsp; All rights reserved</div>
   </div>
@@ -750,11 +794,13 @@ header{padding-top:8px!important;padding-left:10px!important}
     <button class="btn kbinstbtn" id="kbinstbtn" type="button" aria-haspopup="dialog">악기: <b id="kbinstname">피아노</b> ▾</button>
     <button class="btn sq" id="kbprev" type="button" aria-label="이전 악기">◀</button><button class="btn sq" id="kbnext" type="button" aria-label="다음 악기">▶</button>
     <span class="grow"></span>
-    <button class="btn" id="kbrot" type="button" title="폰을 돌리지 않고도 건반을 가로로 눕힙니다">⟲ 건반 돌리기</button>
+    <button class="btn rec" id="kbrec" type="button">● 녹음</button>
+    <button class="btn" id="kbtoolsbtn" type="button" aria-expanded="false" aria-controls="kbtools">⚙ 도구 ▾</button>
+    <button class="btn" id="kbrot" type="button" title="폰을 돌리지 않고도 건반을 가로로 눕힙니다">⟲ 돌리기</button>
     <button class="btn sq" id="kbfs" type="button" aria-label="전체화면">⛶</button>
   </div>
+  <div id="kbtools">
   <div class="kbrow kbact">
-    <button class="btn rec" id="kbrec" type="button">● 녹음</button>
     <button class="btn" id="kbplay" type="button" disabled>▶ 듣기</button>
     <button class="btn" id="kbclr" type="button" disabled>지우기</button>
     <button class="btn" id="kbsave" type="button" disabled>💾 저장</button>
@@ -776,6 +822,7 @@ header{padding-top:8px!important;padding-left:10px!important}
     <span class="lab">음량</span><input id="kbvol" type="range" min="10" max="100" value="80" aria-label="음량">
     <button class="btn" id="kbmidi" type="button" disabled>MIDI 저장</button>
   </div>
+  </div>
   <div id="kbprog" hidden><div id="kbprogbar"><i id="kbprogfill"></i></div><span id="kbprogt">0:00 / 0:00</span></div>
   <div id="kbstaff" aria-label="연주한 음이 적히는 악보"></div>
   <div id="kbmap" aria-label="전체 건반 — 밀어서 이동"><div id="kbmapwin"></div></div>
@@ -783,6 +830,29 @@ header{padding-top:8px!important;padding-left:10px!important}
   <div id="kbhint">건반을 누르면 위 악보에 바로 적혀요 · 위 작은 막대를 밀면 더 많은 건반 · 「건반 돌리기」로 가로로 눕혀 보세요</div>
   <div id="kbrecpop" hidden role="dialog" aria-label="내 녹음 목록"><div class="kbpopcard"><div class="kbpophead"><b>내 녹음</b><button class="btn sq" id="kbrecpopx" type="button" aria-label="닫기">✕</button></div><div id="kbrecpopbody"></div></div></div>
   <div id="kbpop" hidden role="dialog" aria-label="악기 고르기"><div class="kbpopcard"><div class="kbpophead"><b>악기 고르기</b><button class="btn sq" id="kbpopx" type="button" aria-label="닫기">✕</button></div><div id="kbpopbody"></div></div></div>
+</div>
+<div id="dr" hidden>
+  <div class="drtop">
+    <button class="btn homebtn" id="drhome" type="button" aria-label="처음으로">⌂</button>
+    <div class="drtabs" role="tablist"><button class="btn on" id="drtab-play" data-m="play" type="button" role="tab">🎮 따라 치기</button><button class="btn" id="drtab-free" data-m="free" type="button" role="tab">🥁 자유 연주</button></div>
+    <span class="drchip">⭐ <b id="drscore">0</b></span>
+  </div>
+  <div class="drctl">
+    <select id="drpat" aria-label="연습할 박자 고르기"></select>
+    <span class="drbpm"><button class="btn sq" id="drbpmd" type="button" aria-label="느리게">−</button><b id="drbpm">70</b><small>BPM</small><button class="btn sq" id="drbpmu" type="button" aria-label="빠르게">+</button></span>
+    <button class="btn" id="drlv" type="button">😊 쉬움</button>
+    <button class="btn on" id="drmetro" type="button" aria-pressed="true">🔔 박자 소리</button>
+    <button class="btn cta" id="drbeat" type="button">▶ 비트 켜기</button>
+  </div>
+  <div id="drfield"><canvas id="drcv"></canvas>
+    <div id="drstart" class="drov"><div class="gmbox"><small id="drstage"></small><b id="drtitle">드럼 연습</b><small id="drdesc"></small>
+      <div class="gmbtns"><button class="btn cta" id="drgo" type="button">▶ 시작</button><button class="btn" id="drlisten" type="button">🔊 먼저 듣기</button></div>
+      <small>떨어지는 동그라미가 아래 흰 줄에 닿을 때 그 패드를 톡! 박자 소리에 맞춰 보세요.</small></div></div>
+    <div id="drend" class="drov" hidden><div class="gmbox"><div id="drstars" class="vbstars">★★★</div><b id="drresult"></b><small id="drdetail"></small>
+      <div class="gmbtns"><button class="btn cta" id="dragain" type="button">다시 하기</button><button class="btn" id="drnext" type="button">다음 단계 ▶</button><button class="btn" id="drtofree" type="button">자유 연주로</button></div></div></div>
+  </div>
+  <div id="drgrid" aria-label="드럼 악보 — 지금 고른 박자"></div>
+  <div id="drpads"></div>
 </div>
 <div id="tn" hidden>
   <div class="tnrow">
@@ -953,12 +1023,12 @@ header{padding-top:8px!important;padding-left:10px!important}
   </div>
   <div id="vbfield"><canvas id="vbcv"></canvas>
     <div id="vbstart" class="vbov"><div class="gmbox"><b>🐤 노래하는 새</b><small>목소리 높이로 새를 날려요! 파이프 틈에 적힌 음(도·레·미…)을 소리 내면 그 높이로 날아가 통과해요. 소리를 멈추면 새가 떨어져요.<br>허밍(음~)·「라~」 모두 좋아요. 남자·여자 목소리 모두 돼요.</small>
-      <div class="vbopts"><label>난이도 <select id="vblv"><option value="easy">쉬움 (틈 넓게·느리게)</option><option value="normal">보통</option><option value="hard">어려움 (틈 좁게·빠르게)</option></select></label>
+      <div class="gmbtns"><button class="btn cta" id="vbgo" type="button">🎤 시작하기</button></div><small id="vbsum" class="vbsum"></small><details class="vbdet"><summary>⚙ 설정 바꾸기 (난이도·노래·마이크·배경음악)</summary><div class="vbopts"><label>난이도 <select id="vblv"><option value="easy">쉬움 (틈 넓게·느리게)</option><option value="normal">보통</option><option value="hard">어려움 (틈 좁게·빠르게)</option></select></label>
       <label>노래 <select id="vbsong"></select></label>
       <label><input type="checkbox" id="vbhint" checked> 음 미리 듣기 (파이프가 나올 때 목표음 소리)</label>
       <label>마이크 감도 <select id="vbsens"><option value="5">보통</option><option value="12" selected>높음 (기본)</option><option value="25">아주 높음 (작은 목소리·멀리서)</option></select></label>
       <label>배경음악 <select id="vbbgm"><option value="beat">🥁 신나는 리듬 (스피커도 OK)</option><option value="full">🎶 리듬 + 반주 (이어폰 낄 때)</option><option value="off">끔</option></select></label></div>
-      <div class="gmbtns"><button class="btn cta" id="vbgo" type="button">🎤 시작 (마이크 켜기)</button></div>
+      </details>
       <small>이어폰을 끼면 「음 미리 듣기」 소리를 새가 따라가지 않아 더 잘 돼요.</small></div></div>
     <div id="vbend" class="vbov" hidden><div class="gmbox"><div id="vbstars" class="vbstars">★★★</div><b id="vbresult"></b><small id="vbdetail"></small><div class="gmbtns"><button class="btn cta" id="vbagain" type="button">다시 하기</button><button class="btn" id="vbmenu" type="button">설정 바꾸기</button></div></div></div>
   </div>
@@ -1004,7 +1074,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "120";
+const APP_VER = "121";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -10830,6 +10900,8 @@ function kbLayout(){
   kb.classList.toggle('rot1',KB.rot===1); kb.classList.toggle('rot2',KB.rot===2);
   kb.classList.toggle('short',e.h<=560); kb.classList.toggle('portrait',!land); kb.classList.toggle('pads',KB.inst==='drums');
 }
+/* 도구 줄 접기/펴기 — 저장된 선택이 없으면 화면이 충분히 클 때(세로 800px↑)만 펴 둔다 */
+function kbToolsApply(){ let v=null; try{ v=localStorage.getItem('konti:kbtools'); }catch(e){} const open=v==null?kbEff().h>=800:v==='1'; $('kb').classList.toggle('tools',open); const b=$('kbtoolsbtn'); b.textContent=open?'⚙ 도구 ▴':'⚙ 도구 ▾'; b.setAttribute('aria-expanded',open?'true':'false'); }
 const kbKW=()=>Math.round((kbEff().w>kbEff().h?58:46)*KB.zoom);
 const kbWhiteIdx=m=>{ let i=0; while(i<KB_WH.length-1&&KB_WH[i]<m)i++; return i; };
 function kbBuild(){
@@ -10898,8 +10970,10 @@ let WAKE=null;
 async function wakeSet(on){ try{ if(on&&!WAKE&&navigator.wakeLock){ WAKE=await navigator.wakeLock.request('screen'); WAKE.addEventListener('release',()=>{ WAKE=null; }); } else if(!on&&WAKE){ await WAKE.release(); WAKE=null; } }catch(e){} }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&['kb','tn','mt','gm'].includes(KB.shown))wakeSet(true); });
 function showScreen(which){
-  wakeSet(['kb','tn','mt','gm','sm','vb'].includes(which));   // 연주·튜닝·박자 연습 중에는 화면이 꺼지지 않게
-  document.documentElement.classList.toggle('hm',which!=='score'); KB.shown=which; $('home').hidden=which!=='home'; $('kb').hidden=which!=='kb'; $('tn').hidden=which!=='tn'; $('mt').hidden=which!=='mt'; $('gm').hidden=which!=='gm'; $('sm').hidden=which!=='sm'; $('vb').hidden=which!=='vb'; if($('ts'))$('ts').hidden=which!=='ts';
+  wakeSet(['kb','tn','mt','gm','sm','vb','dr'].includes(which));   // 연주·튜닝·박자 연습 중에는 화면이 꺼지지 않게
+  document.documentElement.classList.toggle('hm',which!=='score'); KB.shown=which; $('home').hidden=which!=='home'; $('kb').hidden=which!=='kb'; $('tn').hidden=which!=='tn'; $('mt').hidden=which!=='mt'; $('gm').hidden=which!=='gm'; $('sm').hidden=which!=='sm'; $('vb').hidden=which!=='vb'; $('dr').hidden=which!=='dr'; if($('ts'))$('ts').hidden=which!=='ts';
+  if(which!=='dr'&&typeof drStop==='function')drStop();
+  if(which==='dr'&&typeof drEnter==='function')drEnter();
   if(which!=='vb'&&typeof vbStop==='function')vbStop();
   if(which==='vb'&&typeof vbEnter==='function')vbEnter();
   if(which!=='sm'&&typeof smLeave==='function')smLeave();
@@ -10910,7 +10984,7 @@ function showScreen(which){
   if(which!=='tn'&&typeof tnStop==='function')tnStop();
   if(which!=='mt'&&typeof mtStop==='function')mtStop();
   if(which==='tn'){ tnScrollTo(60,false); tnGraph(performance.now()); }
-  if(which==='kb'){ AC(); setReverb([KB.inst==='drums'?'piano':KB.inst]); kbBuild(); kbRenderStaff(); }
+  if(which==='kb'){ AC(); setReverb([KB.inst==='drums'?'piano':KB.inst]); kbToolsApply(); kbBuild(); kbRenderStaff(); }
 }
 function goHome(){ if(P.playing)try{stopPlay();}catch(e){} showScreen('home'); }
 (function kbInit(){
@@ -10930,8 +11004,9 @@ function goHome(){ if(P.playing)try{stopPlay();}catch(e){} showScreen('home'); }
   pop.onclick=e=>{ if(e.target===pop)pop.hidden=true; };
   $('kbpopbody').onclick=e=>{ const b=e.target.closest('[data-i]'); if(b){ kbSetInst(b.dataset.i); pop.hidden=true; } };
   $('kbprev').onclick=()=>step(-1); $('kbnext').onclick=()=>step(1);
+  $('kbtoolsbtn').onclick=()=>{ const open=!$('kb').classList.contains('tools'); try{ localStorage.setItem('konti:kbtools',open?'1':'0'); }catch(e){} kbToolsApply(); kbBuild(); kbRenderStaff(); };
   /* 건반 돌리기: 세로 → 오른쪽으로 눕힘 → 왼쪽으로 눕힘 → 세로 */
-  $('kbrot').onclick=()=>{ kbAllOff(); KB.rot=(KB.rot+1)%3; $('kbrot').textContent=KB.rot?'⟲ 세로로':'⟲ 건반 돌리기'; kbBuild(); kbRenderStaff(); toast(KB.rot?'건반을 눕혔어요 — 한 번 더 누르면 반대쪽, 또 누르면 세로':'세로로 돌아왔어요'); };
+  $('kbrot').onclick=()=>{ kbAllOff(); KB.rot=(KB.rot+1)%3; $('kbrot').textContent=KB.rot?'⟲ 세로로':'⟲ 돌리기'; kbBuild(); kbRenderStaff(); toast(KB.rot?'건반을 눕혔어요 — 한 번 더 누르면 반대쪽, 또 누르면 세로':'세로로 돌아왔어요'); };
   const scrollBy=n=>{ const w=$('kbkeys'); w.scrollTo?w.scrollTo({left:Math.max(0,w.scrollLeft+n*7*kbKW()),behavior:'smooth'}):(w.scrollLeft+=n*7*kbKW()); };
   $('kboctd').onclick=()=>scrollBy(-1); $('kboctu').onclick=()=>scrollBy(1);
   $('kbkeys').addEventListener('scroll',kbOnScroll);
@@ -12355,7 +12430,7 @@ function vbReset(){
 async function vbMic(){
   if(VB.stream)return true;
   const ctx=AC(); if(!ctx)return false; try{ await ctx.resume(); }catch(e){}
-  try{ VB.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}}); }
+  try{ VB.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}}); }
   catch(e){ toast('마이크를 쓸 수 없어요 — 주소창 옆 🔒 에서 마이크를 허용해 주세요'); return false; }
   const src=ctx.createMediaStreamSource(VB.stream), g=ctx.createGain(); g.gain.value=+($('vbsens').value||12); const lim=ctx.createDynamicsCompressor(); lim.threshold.value=-12; lim.ratio.value=8; lim.attack.value=.003; lim.release.value=.15; const an=ctx.createAnalyser(); an.fftSize=2048;
   src.connect(g); g.connect(lim); lim.connect(an); VB.lim=lim;   /* 작은 목소리(v115): 크게 키우고 큰 소리는 눌러 찢어지지 않게 */ VB.src=src; VB.g=g; VB.an=an; VB.buf=new Float32Array(2048); VB.floor=.002; return true;
@@ -12392,8 +12467,8 @@ function vbTone(p){   // 도~도 자리 → 소리
 function vbAt(fn){ const ctx=AC(); if(!ctx||!VB.bus)return; const real=master; master=VB.bus; try{ fn(ctx,ctx.currentTime+.01); }catch(e){} finally{ master=real; } }
 function vbSfx(k){
   vbAt((ctx,t)=>{
-    if(k==='pass'){ VB.mute=Math.max(VB.mute,.45); voice(ctx,'vibes',84,t,.25,.55); voice(ctx,'vibes',91,t+.07,.35,.5); }
-    else if(k==='bonus'){ VB.mute=Math.max(VB.mute,.7); [72,76,79,84,88].forEach((m,i)=>voice(ctx,'vibes',m,t+i*.06,.35,.55)); drumHit('crash',.35,t,true); }
+    if(k==='pass'){ VB.mute=Math.max(VB.mute,.25); voice(ctx,'vibes',84,t,.25,.55); voice(ctx,'vibes',91,t+.07,.35,.5); }
+    else if(k==='bonus'){ VB.mute=Math.max(VB.mute,.4); [72,76,79,84,88].forEach((m,i)=>voice(ctx,'vibes',m,t+i*.06,.35,.55)); drumHit('crash',.35,t,true); }
     else if(k==='crash'){ VB.mute=Math.max(VB.mute,.5); drumHit('kick',1,t,true); drumHit('toml',.9,t+.02,true); drumHit('snare',.6,t+.05,true); }
     else if(k==='count'){ VB.mute=Math.max(VB.mute,.3); voice(ctx,'vibes',76,t,.18,.5); }
     else if(k==='go'){ VB.mute=Math.max(VB.mute,.5); voice(ctx,'vibes',84,t,.4,.6); voice(ctx,'vibes',88,t,.4,.5); drumHit('crash',.3,t,true); }
@@ -12424,13 +12499,14 @@ function vbLoop(ts){
   const dt=Math.min(.05,(ts-VB.last)/1000); VB.last=ts;
   if(!VB.paused&&!VB.over&&VB.cd>0){   // 3·2·1 날아라!
     const before=Math.ceil(VB.cd); VB.cd-=dt; const now=Math.ceil(VB.cd); if(now!==before)vbSfx(now>0?'count':'go');
-    VB.flap+=dt*8; VB.frame=(VB.frame||0)+1; { const mf=vbHear(), v=mf==null?null:vbPosOfMidi(mf,VB.pos); VB.voice=v; if(v!=null)VB.pos+=(v-VB.pos)*Math.min(1,dt*18); }
+    VB.flap+=dt*8; VB.frame=(VB.frame||0)+1; VB.mute=Math.max(0,VB.mute-dt); /* v121: 카운트다운 중에는 마이크 쉬는 시간이 줄지 않아 첫 삐 소리 뒤로 내내 못 들었다 */ { const mf=vbHear(), v=mf==null?null:vbPosOfMidi(mf,VB.pos); if(v!=null||VB.mute<=0)VB.voice=v; if(v!=null)VB.pos+=(v-VB.pos)*Math.min(1,dt*18); }
     vbBgm(dt); vbDraw(dt); VB.raf=requestAnimationFrame(vbLoop); return; }
   if(!VB.paused&&!VB.over){
     const L=VB_LV[VB.lv]; VB.t+=dt; vbBgm(dt); VB.mute=Math.max(0,VB.mute-dt); VB.inv=Math.max(0,VB.inv-dt); VB.flap+=dt*(VB.voice!=null?14:6);
     // 목소리 → 새 높이
     VB.frame=(VB.frame||0)+1;
-    { const mf0=vbHear(), ok2=mf0!=null&&VB.prevMf!=null&&Math.abs(mf0-VB.prevMf)<1.6; VB.prevMf=mf0; const mf=(ok2||(VB.voice!=null&&mf0!=null))?mf0:null, v=mf==null?null:vbPosOfMidi(mf,VB.pos); if(v!=null){   /* 새로 잡힌 음은 두 번 연달아 비슷해야 인정 — 배경 드럼의 한순간 잡음을 거른다 */ VB.voice=v; VB.heard=mf; VB.lastV=VB.t; } else if(VB.t-(VB.lastV||0)>.3)VB.voice=null; }   // 한순간 못 잡아도 0.3초는 버틴다
+    if(VB.mute>0&&VB.voice!=null)VB.lastV=VB.t;   /* v121: 효과음·힌트음이 나는 동안엔 마이크를 쉬는데, 그때 새가 떨어져 '반응이 이상'했다 → 쉬는 동안엔 마지막 높이를 유지 */
+    { const mf0=vbHear(), ok2=mf0!=null&&VB.prevMf!=null&&Math.abs(mf0-VB.prevMf)<1.6; VB.prevMf=mf0; const mf=(ok2||(VB.voice!=null&&mf0!=null))?mf0:null, v=mf==null?null:vbPosOfMidi(mf,VB.pos); if(v!=null){   /* 새로 잡힌 음은 두 번 연달아 비슷해야 인정 — 배경 드럼의 한순간 잡음을 거른다 */ VB.voice=v; VB.heard=mf; VB.lastV=VB.t; } else if(VB.t-(VB.lastV||0)>.45)VB.voice=null; }   // 한순간 못 잡아도(숨·떨림) 0.45초는 버틴다
     if(VB.voice!=null){ VB.pos+=(VB.voice-VB.pos)*Math.min(1,dt*18); VB.vy=0; }   // 따라가기 2배 빠르게(v120)
     else{ VB.vy=Math.min(L.vmax||2.2,VB.vy+dt*(L.fall||1.6)); VB.pos=Math.max(-.6,VB.pos-VB.vy*dt); }
     // 파이프
@@ -12448,9 +12524,9 @@ function vbLoop(ts){
           if(gold&&VB.hearts<VB_MAXH){ VB.hearts++; VB.fx.push({t:0,txt:'❤️ +1',bad:false}); }
           else if(VB.combo%8===0&&VB.hearts<VB_MAXH){ VB.hearts++; VB.fx.push({t:0,txt:'❤️ 하트 +1!',bad:false}); }
           if(VB.combo%5===0){ VB.shield=4; VB.fx.push({t:0,txt:'🛡 방패 4초!',bad:false}); }
-          VB.fx.push({t:0,txt:(gold?'🌟 +3 ':'★ ')+VB_NM[q.p]+'!'+(VB.combo>=3?'  '+VB.combo+' 연속':''),bad:false}); vbTone(q.p); vbSfx(gold||VB.combo%5===0?'bonus':'pass'); vbSpark(bx,by,gold?'#ffd700':'#fff36b',gold?36:16); VB.mute=Math.max(VB.mute,.5); } }
+          VB.fx.push({t:0,txt:(gold?'🌟 +3 ':'★ ')+VB_NM[q.p]+'!'+(VB.combo>=3?'  '+VB.combo+' 연속':''),bad:false}); vbTone(q.p); vbSfx(gold||VB.combo%5===0?'bonus':'pass'); vbSpark(bx,by,gold?'#ffd700':'#fff36b',gold?36:16); VB.mute=Math.max(VB.mute,.3); } }
     }
-    if(VB.hint){ const nq=VB.pipes.find(q=>!q.done&&!q.hit); if(nq&&!nq.hinted&&(nq.x-bx)/sp<=1.5){ nq.hinted=true; VB.mute=.55; vbTone(nq.p); } }   // 1.5초 앞에서 '이 음을 내세요'
+    if(VB.hint){ const nq=VB.pipes.find(q=>!q.done&&!q.hit); if(nq&&!nq.hinted&&(nq.x-bx)/sp<=1.5){ nq.hinted=true; VB.mute=Math.max(VB.mute,.4); vbTone(nq.p); } }   // 1.5초 앞에서 '이 음을 내세요'
     VB.pipes=VB.pipes.filter(q=>q.x>-80);
     if(VB.si>=VB.seq.length&&!VB.pipes.length&&!VB.over)vbEnd(true);
   }
@@ -12534,13 +12610,14 @@ function vbDraw(dt){
   $('vblevel').style.width=Math.min(100,Math.sqrt(VB.level||0)*200)+'%';
 }
 (function vbInit(){
+  $('h-dr').onclick=()=>{ showScreen('dr'); try{ history.pushState({v:'dr'},''); }catch(e){} };
   $('h-vb').onclick=()=>{ showScreen('vb'); try{ history.pushState({v:'vb'},''); }catch(e){} };
   $('vbhome').onclick=()=>{ if(history.state&&history.state.v)history.back(); else goHome(); };
   $('vbsong').innerHTML='<option value="random">🎲 무작위 음</option>'+vbSongs().map(s=>'<option value="'+s.id+'">🎵 '+s.name+'</option>').join('');
   try{ VB.lv=localStorage.getItem('konti:vblv')||'normal'; VB.song=localStorage.getItem('konti:vbsong')||'random'; VB.hint=localStorage.getItem('konti:vbhint')!=='0'; }catch(e){}
   $('vblv').value=VB.lv; $('vbsong').value=VB.song; if(!$('vbsong').value){ VB.song='random'; $('vbsong').value='random'; } $('vbhint').checked=VB.hint;
-  $('vblv').onchange=()=>{ VB.lv=$('vblv').value; try{ localStorage.setItem('konti:vblv',VB.lv); }catch(e){} };
-  $('vbsong').onchange=()=>{ VB.song=$('vbsong').value; try{ localStorage.setItem('konti:vbsong',VB.song); }catch(e){} };
+  $('vblv').onchange=()=>{ VB.lv=$('vblv').value; vbSumm(); try{ localStorage.setItem('konti:vblv',VB.lv); }catch(e){} };
+  $('vbsong').onchange=()=>{ VB.song=$('vbsong').value; vbSumm(); try{ localStorage.setItem('konti:vbsong',VB.song); }catch(e){} };
   try{ VB.bgm=localStorage.getItem('konti:vbbgm')||'beat'; }catch(e){} $('vbbgm').value=VB.bgm;
   $('vbbgm').onchange=()=>{ VB.bgm=$('vbbgm').value; try{ localStorage.setItem('konti:vbbgm',VB.bgm); }catch(e){} if(VB.bgm==='full')toast('🎧 반주는 이어폰을 끼고 하세요 — 스피커 소리를 새가 따라갈 수 있어요'); };
   try{ $('vbsens').value=localStorage.getItem('konti:vbsens')||'12'; }catch(e){} $('vbsens').onchange=()=>{ try{ localStorage.setItem('konti:vbsens',$('vbsens').value); }catch(e){} if(VB.g)VB.g.gain.value=+$('vbsens').value; };
@@ -12549,7 +12626,173 @@ function vbDraw(dt){
   $('vbpause').onclick=()=>{ if(!VB.started||VB.over)return; VB.paused=!VB.paused; $('vbpause').textContent=VB.paused?'▶':'⏸'; };
   addEventListener('resize',()=>{ if(KB.shown==='vb')vbSized(); });
 })();
-function vbEnter(){ vbSized(); vbReset(); }
+function vbSumm(){ try{ const L=VB_LV[VB.lv], so=$('vbsong'), sn=so.options[so.selectedIndex]; $('vbsum').textContent=L.label+' · '+(sn?sn.textContent:'')+' · 마이크 소리를 내면 새가 날아요'; }catch(e){} }
+function vbEnter(){ vbSized(); vbReset(); vbSumm(); }
+/* ============ 🥁 드럼 연습 (v121, 사용자 요청: "하모닉스에 드럼 연습할 수 있는 어플도 같이 추가해라") ============
+   · 따라 치기: 곡 대신 「박자 틀」(킥만 → 킥+스네어 → 8비트 → 발라드·댄스·펑크·보사노바·왈츠)이 위에서 내려온다. 줄은 하이햇·스네어·킥 세 개, 아래 패드를 맞춰 톡!
+     판정은 소리 나는 순간이 아니라 **누른 순간**(performance.now) 기준: 완벽 ±90ms · 좋아요 ±160ms · 아쉬워요 ±220ms, 빠르게/늦게 쳤는지 알려 준다.
+     쉬움 = 하이햇은 반주가 대신 쳐 준다(킥·스네어만 직접), 보통 = 세 줄 다. 1마디 카운트인 뒤 8마디.
+   · 자유 연주: 패드 8개(하이햇·스네어·킥·탐 둘·크래시·라이드·클랩) + 고른 박자의 비트 반주 + 「드럼 악보」(색칠된 칸이 칠 자리, 흰 테두리가 지금 박).
+   소리는 건반 연주의 합성 드럼(drumHit) 그대로 — 내려받을 것이 없어 오프라인에서도 된다. 박은 25ms 마다 앞 120ms 치를 예약해 흔들리지 않는다. */
+const DR_LANES=[{k:'hatc',nm:'하이햇',ic:'🎩',key:'a',col:'#ffd23f'},{k:'snare',nm:'스네어',ic:'🥁',key:'s',col:'#ff7a7a'},{k:'kick',nm:'킥',ic:'🦶',key:'d',col:'#6fd3ff'}];
+const DR_LANE_OF={hatc:0,hato:0,snare:1,rim:1,kick:2};
+const DR_FREE=[['hatc','하이햇','a'],['snare','스네어','s'],['kick','킥','d'],['tomh','탐 하이','f'],['toml','플로어 탐','g'],['crash','크래시','h'],['ride','라이드','j'],['clap','클랩','k']];
+const DR_PATS=[
+  {id:'l1',name:'1단계 · 킥만 (쿵 쿵 쿵 쿵)',n:16,kick:[0,4,8,12],bpm:60,desc:'발로 밟는 큰북(킥)만! 한 박에 한 번씩 4번.'},
+  {id:'l2',name:'2단계 · 킥 + 스네어',n:16,kick:[0,8],snare:[4,12],bpm:60,desc:'쿵 — 짝 — 쿵 — 짝. 드럼의 가장 기본 박자예요.'},
+  {id:'l3',name:'3단계 · 하이햇 8비트',n:16,kick:[0,8],snare:[4,12],hatc:[0,2,4,6,8,10,12,14],bpm:70,desc:'쿵·짝에 하이햇(칙칙)이 8번 얹혀요. 쉬움에선 하이햇은 반주가 쳐 줘요.'},
+  {...KB_PATS.rock,id:'rock',bpm:80,name:'4단계 · 록 8비트',desc:'신나는 록 박자 — 킥이 한 번 더 들어가요.'},
+  {...KB_PATS.ballad,id:'ballad',bpm:70,name:'5단계 · 발라드',desc:'느리고 부드럽게. 스네어는 3박에 한 번.'},
+  {...KB_PATS.dance,id:'dance',bpm:100,name:'6단계 · 댄스 4박',desc:'킥이 네 박 모두! 하이햇은 사이사이.'},
+  {...KB_PATS.funk,id:'funk',bpm:85,name:'7단계 · 펑크',desc:'킥이 엇박으로 튀어요. 어려워요!'},
+  {...KB_PATS.bossa,id:'bossa',bpm:90,name:'8단계 · 보사노바',desc:'림샷(톡톡)과 킥이 엇갈려요.'},
+  {...KB_PATS.waltz,id:'waltz',bpm:80,name:'9단계 · 왈츠 3/4',desc:'쿵-짝-짝, 3박자.'}
+];
+const DR={mode:'play',pat:0,bpm:70,lv:'easy',metro:true,run:false,demo:false,notes:[],evs:[],ei:0,t0:0,P0:0,end:0,score:0,perf:0,good:0,close:0,miss:0,combo:0,maxCombo:0,fx:[],flash:[0,0,0],timer:null,raf:0,W:400,H:300,dpr:1,beatT:null,beatOn:false,beatS:0,beatOrigin:0};
+const DR_BARS=8, DR_FALL=1700;
+const drPat=()=>DR_PATS[DR.pat], drBpb=()=>drPat().n/4, drStepMs=()=>60000/DR.bpm/4;
+function drBest(){ try{ return JSON.parse(localStorage.getItem('konti:drbest')||'{}'); }catch(e){ return {}; } }
+function drSound(k,vel,ms){ try{ const c=AC(); if(!c)return; const at=Math.max(c.currentTime+.002,c.currentTime+(ms-performance.now())/1000); drumHit(k,vel,at,true); }catch(e){} }
+function drBuild(){   // 한 판의 내려오는 음표와 소리 일정을 만든다. demo=먼저 듣기(전부 반주가 침)
+  const p=drPat(), sm=drStepMs(), bpb=drBpb(), bm=60000/DR.bpm, now=performance.now();
+  DR.t0=now+500; DR.P0=DR.t0+bpb*bm; DR.notes=[]; DR.evs=[]; DR.ei=0;
+  for(let j=0;j<bpb;j++)DR.evs.push({t:DR.t0+j*bm,k:'cow',v:j===0?.7:.45});                // 카운트인
+  for(let b=0;b<DR_BARS;b++){
+    for(const kind of ['kick','snare','rim','hatc','hato']){ const arr=p[kind]; if(!arr)continue;
+      for(const i of arr){ const t=DR.P0+(b*p.n+i)*sm, lane=DR_LANE_OF[kind], auto=DR.demo||(DR.lv==='easy'&&lane===0);
+        DR.notes.push({t,lane,kind,auto,state:auto?'auto':0});
+        if(auto)DR.evs.push({t,k:kind,v:kind==='kick'?.95:kind==='snare'?.9:.6}); } }
+    if(DR.metro)for(let j=0;j<bpb;j++)DR.evs.push({t:DR.P0+(b*bpb+j)*bm,k:'rim',v:j===0?.4:.25}); }
+  DR.evs.sort((a,b)=>a.t-b.t); DR.notes.sort((a,b)=>a.t-b.t); DR.end=DR.P0+DR_BARS*p.n*sm+800;
+}
+function drPump(){   // 25ms 마다 앞 120ms 치 소리를 예약
+  if(!DR.run)return; const ahead=performance.now()+120;
+  while(DR.ei<DR.evs.length&&DR.evs[DR.ei].t<=ahead){ const e=DR.evs[DR.ei++]; drSound(e.k,e.v,e.t); }
+}
+function drStart(demo){
+  drStop(); try{ AC(); }catch(e){}
+  DR.demo=!!demo; DR.score=0; DR.perf=DR.good=DR.close=DR.miss=0; DR.combo=DR.maxCombo=0; DR.fx=[];
+  drBuild(); DR.run=true; $('drstart').hidden=true; $('drend').hidden=true;
+  DR.timer=setInterval(drPump,25); drPump(); cancelAnimationFrame(DR.raf); DR.raf=requestAnimationFrame(drLoop);
+}
+function drStop(){ DR.run=false; clearInterval(DR.timer); DR.timer=null; cancelAnimationFrame(DR.raf); drBeatStop(); }
+const drTotal=()=>DR.notes.filter(n=>!n.auto).length;
+function drJudge(lane,T){
+  let best=null,bd=1e9; for(const n of DR.notes){ if(n.t-T>260)break; if(n.lane!==lane||n.state!==0)continue; const d=Math.abs(n.t-T); if(d<bd){ bd=d; best=n; } }
+  if(!best||bd>220)return false;
+  const tag=T<best.t?'빨라요':'늦어요'; let txt,pt;
+  if(bd<=90){ best.state='perfect'; DR.perf++; pt=3; txt='완벽!'; }
+  else if(bd<=160){ best.state='good'; DR.good++; pt=2; txt='좋아요 · '+tag; }
+  else{ best.state='close'; DR.close++; pt=1; txt='아쉬워요 · '+tag; }
+  DR.combo++; DR.maxCombo=Math.max(DR.maxCombo,DR.combo); DR.score+=pt*(1+Math.min(4,Math.floor(DR.combo/10)));
+  DR.fx.push({t:0,txt,lane,c:pt===3?'#fff36b':pt===2?'#9be36b':'#ffb36b'}); return true;
+}
+function drPadDown(lane){
+  const T=performance.now(); DR.flash[lane]=1; drSound(DR_LANES[lane].k,.95,T);
+  if(DR.run&&!DR.demo&&T<DR.end)drJudge(lane,T);
+}
+function drLoop(){
+  if(!DR.run)return; const now=performance.now();
+  for(const n of DR.notes){ if(n.state===0&&now-n.t>220){ n.state='miss'; DR.miss++; DR.combo=0; DR.fx.push({t:0,txt:'놓침',lane:n.lane,c:'#ff6a6a'}); } }
+  drDraw(now);
+  if(now>=DR.end){ drEnd(); return; }
+  DR.raf=requestAnimationFrame(drLoop);
+}
+function drEnd(){
+  DR.run=false; clearInterval(DR.timer); DR.timer=null; drDraw(performance.now());
+  if(DR.demo){ $('drstart').hidden=false; return; }
+  const tot=Math.max(1,drTotal()), acc=(DR.perf+DR.good*.65+DR.close*.3)/tot, stars=acc>=.9?3:acc>=.7?2:acc>=.45?1:0, rank=acc>=.95?'S':acc>=.85?'A':acc>=.7?'B':acc>=.5?'C':'D';
+  const key=drPat().id+':'+DR.lv, B=drBest(), prev=B[key]||0; if(stars>prev){ B[key]=stars; try{ localStorage.setItem('konti:drbest',JSON.stringify(B)); }catch(e){} }
+  $('drstars').textContent='★'.repeat(stars)+'☆'.repeat(3-stars);
+  $('drresult').textContent=stars>=3?'🎉 완벽해요! ('+rank+')':stars===2?'👏 잘했어요! ('+rank+')':stars===1?'🙂 좋아요, 한 번 더! ('+rank+')':'💪 천천히 다시 해 봐요 ('+rank+')';
+  $('drdetail').innerHTML='완벽 '+DR.perf+' · 좋아요 '+DR.good+' · 아쉬워요 '+DR.close+' · 놓침 '+DR.miss+'<br>최고 연속 '+DR.maxCombo+' · 정확도 '+Math.round(acc*100)+'%'+(stars>prev&&stars>0?'<br>🏆 이 단계 새 기록!':'')+(stars<2?'<br>💡 어려우면 BPM을 낮추거나 「쉬움」으로 해 보세요.':'');
+  $('drnext').hidden=DR.pat>=DR_PATS.length-1; $('drnext').classList.toggle('cta',stars>=2); $('dragain').classList.toggle('cta',stars<2);
+  $('drend').hidden=false;
+}
+function drSized(){ const cv=$('drcv'), r=cv.getBoundingClientRect(), d=Math.min(2,devicePixelRatio||1); DR.W=Math.max(240,r.width); DR.H=Math.max(120,r.height); cv.width=DR.W*d; cv.height=DR.H*d; DR.dpr=d; drDraw(performance.now()); }
+function drDraw(now){
+  const cv=$('drcv'); if(!cv||DR.mode!=='play')return; const g=cv.getContext('2d'), W=DR.W, H=DR.H, hitY=H*.84, lw=W/3; g.setTransform(DR.dpr,0,0,DR.dpr,0,0);
+  g.fillStyle='#141a24'; g.fillRect(0,0,W,H);
+  for(let i=0;i<3;i++){ g.fillStyle=i%2?'rgba(255,255,255,.035)':'rgba(255,255,255,.015)'; g.fillRect(i*lw,0,lw,H); const f=DR.flash[i]; if(f>0){ g.fillStyle=DR_LANES[i].col; g.globalAlpha=f*.28; g.fillRect(i*lw,0,lw,H); g.globalAlpha=1; DR.flash[i]=Math.max(0,f-.07); } }
+  const p=drPat(), bm=60000/DR.bpm, bpb=drBpb();
+  if(DR.t0){ const first=Math.floor((now-DR.P0)/bm)-1; for(let k=first;k<first+Math.ceil(DR_FALL/bm)+3;k++){ const t=DR.P0+k*bm, y=hitY-(t-now)/DR_FALL*hitY; if(y<0||y>H)continue; const bar=((k%bpb)+bpb)%bpb===0; g.strokeStyle=bar?'rgba(255,255,255,.28)':'rgba(255,255,255,.08)'; g.lineWidth=bar?2:1; g.beginPath(); g.moveTo(0,y); g.lineTo(W,y); g.stroke(); } }
+  g.strokeStyle='#fff'; g.globalAlpha=.9; g.lineWidth=3; g.beginPath(); g.moveTo(0,hitY); g.lineTo(W,hitY); g.stroke(); g.globalAlpha=1;
+  const rad=Math.min(lw*.28,26);
+  if(DR.run)for(const n of DR.notes){ const y=hitY-(n.t-now)/DR_FALL*hitY; if(y<-rad||y>H+rad)continue; const x=n.lane*lw+lw/2, L=DR_LANES[n.lane];
+    if(n.state==='auto'){ g.globalAlpha=.35; g.fillStyle=L.col; g.beginPath(); g.arc(x,y,rad*.5,0,7); g.fill(); g.globalAlpha=1; continue; }
+    if(n.state==='perfect'||n.state==='good'||n.state==='close'){ const a=Math.max(0,1-(now-n.t)/260); if(a<=0)continue; g.globalAlpha=a; g.fillStyle='#fff'; g.beginPath(); g.arc(x,hitY,rad*(1+(1-a)*.9),0,7); g.fill(); g.globalAlpha=1; continue; }
+    if(n.state==='miss')g.globalAlpha=.3;
+    g.fillStyle=L.col; g.strokeStyle='#10161E'; g.lineWidth=3; g.beginPath(); g.arc(x,y,rad,0,7); g.fill(); g.stroke(); g.fillStyle='#10161E'; g.font='900 '+Math.round(rad*.9)+'px sans-serif'; g.textAlign='center'; g.textBaseline='middle'; g.fillText(L.ic,x,y+1); g.globalAlpha=1; }
+  for(const f of DR.fx){ f.t+=.016; const a=Math.max(0,1-f.t/.7); g.globalAlpha=a; g.font='900 18px sans-serif'; g.textAlign='center'; g.textBaseline='middle'; g.lineWidth=4; g.strokeStyle='rgba(0,0,0,.6)'; g.fillStyle=f.c; const x=f.lane*lw+lw/2, y=hitY-rad-14-f.t*50; g.strokeText(f.txt,x,y); g.fillText(f.txt,x,y); g.globalAlpha=1; }
+  DR.fx=DR.fx.filter(f=>f.t<.7);
+  if(DR.combo>=3&&DR.run&&!DR.demo){ g.font='900 22px sans-serif'; g.textAlign='right'; g.textBaseline='top'; g.lineWidth=5; g.strokeStyle='rgba(0,0,0,.5)'; g.fillStyle='#ffd600'; g.strokeText('🔥 '+DR.combo+' 연속',W-12,8); g.fillText('🔥 '+DR.combo+' 연속',W-12,8); }
+  if(DR.run&&now<DR.P0){ const n=Math.max(1,Math.ceil((DR.P0-now)/bm)), msg=DR.demo?'먼저 들어 보세요':'곧 시작해요 — 준비!'; g.textAlign='center'; g.textBaseline='middle'; g.font='900 80px sans-serif'; g.lineWidth=8; g.strokeStyle='#10161E'; g.fillStyle='#ffd23f'; g.strokeText(String(n),W/2,H*.4); g.fillText(String(n),W/2,H*.4); g.font='800 16px sans-serif'; g.lineWidth=4; g.fillStyle='#fff'; g.strokeText(msg,W/2,H*.4+58); g.fillText(msg,W/2,H*.4+58); }
+  else if(DR.run){ const bar=Math.min(DR_BARS,Math.floor((now-DR.P0)/(p.n*drStepMs()))+1); g.textAlign='left'; g.textBaseline='top'; g.font='800 14px sans-serif'; g.fillStyle='rgba(255,255,255,.7)'; g.fillText((DR.demo?'🔊 듣는 중 ':'')+bar+' / '+DR_BARS+' 마디',10,8); }
+  for(let i=1;i<3;i++){ g.strokeStyle='rgba(255,255,255,.12)'; g.lineWidth=1; g.beginPath(); g.moveTo(i*lw,0); g.lineTo(i*lw,H); g.stroke(); }
+  $('drscore').textContent=DR.score;
+}
+/* ---- 자유 연주: 비트 반주 + 드럼 악보 칸 ---- */
+function drBeatStart(){
+  drStop(); const ctx=AC(); if(!ctx)return; DR.beatOn=true; DR.beatOrigin=performance.now()+80; DR.beatS=0;
+  const p=drPat(); DR.beatT=setInterval(()=>{
+    const sm=drStepMs();
+    while(true){ const t=DR.beatOrigin+DR.beatS*sm; if(t>performance.now()+120)break; const i=DR.beatS%p.n;
+      for(const kind of ['kick','snare','rim','hatc','hato']){ if(p[kind]&&p[kind].includes(i))drSound(kind,kind==='kick'?.9:kind==='snare'?.8:.5,t); }
+      if(DR.metro&&i%4===0)drSound('rim',i===0?.35:.2,t);
+      setTimeout(()=>{ if(DR.beatOn)drGridNow(i); },Math.max(0,t-performance.now())); DR.beatS++; }
+  },25); drBeatUI();
+}
+function drBeatStop(){ clearInterval(DR.beatT); DR.beatT=null; DR.beatOn=false; drGridNow(-1); drBeatUI(); }
+function drBeatUI(){ const b=$('drbeat'); if(b)b.textContent=DR.beatOn?'■ 비트 끄기':'▶ 비트 켜기'; }
+function drGridNow(i){ document.querySelectorAll('#drgrid .drcell.now').forEach(e=>e.classList.remove('now')); if(i>=0)document.querySelectorAll('#drgrid .drcell[data-i="'+i+'"]').forEach(e=>e.classList.add('now')); }
+function drGrid(){
+  const p=drPat(), rows=[['hatc','hato'],['snare','rim'],['kick']]; let h='';
+  rows.forEach((ks,ri)=>{ const L=DR_LANES[ri]; let cells=''; for(let i=0;i<p.n;i++){ const on=ks.some(k=>p[k]&&p[k].includes(i)); cells+='<i class="drcell'+(i%4===0?' q':'')+(on?' on':'')+'" data-i="'+i+'" style="--c:'+L.col+'"></i>'; }
+    h+='<div class="drrow"><b>'+L.ic+' '+L.nm+'</b><div class="drcells">'+cells+'</div></div>'; });
+  $('drgrid').innerHTML=h+'<div class="drhelp">'+p.desc+'<br>색칠된 칸 = 칠 자리 · 맨 왼쪽이 마디의 첫 박이에요.<br>▶ 비트를 켜고 아래 패드를 자유롭게 쳐 보세요!</div>';
+}
+const DR_FCOL=['#ffd23f','#ff7a7a','#6fd3ff','#c79bff','#9be36b','#ffb36b','#7fe3ff','#ff9be0'];
+function drPadsBuild(){
+  const box=$('drpads'); box.innerHTML='';
+  if(DR.mode==='play')DR_LANES.forEach((L,i)=>{ const d=document.createElement('div'); d.className='drpad'; d.style.setProperty('--c',L.col); d.dataset.l=i; d.innerHTML='<span class="ic">'+L.ic+'</span>'+L.nm+'<small>키보드 '+L.key.toUpperCase()+'</small>'; box.appendChild(d); });
+  else DR_FREE.forEach((f,i)=>{ const d=document.createElement('div'); d.className='drpad'; d.style.setProperty('--c',DR_FCOL[i]); d.dataset.k=f[0]; d.innerHTML=f[1]+'<small>'+f[2].toUpperCase()+'</small>'; box.appendChild(d); });
+}
+function drSetMode(m){
+  drStop(); DR.mode=m; $('dr').classList.toggle('free',m==='free'); $('drtab-play').classList.toggle('on',m==='play'); $('drtab-free').classList.toggle('on',m==='free');
+  drPadsBuild(); if(m==='free'){ drGrid(); drBeatUI(); } else drReset();
+}
+function drReset(){ drStop(); DR.t0=0; DR.notes=[]; $('drstart').hidden=false; $('drend').hidden=true; DR.score=0; $('drscore').textContent=0; drInfo(); requestAnimationFrame(drSized); }
+function drInfo(){
+  const p=drPat(), b=drBest(), best=Math.max(b[p.id+':easy']||0,b[p.id+':normal']||0);
+  $('drstage').textContent=p.name.split(' · ')[0]+' / '+DR_PATS.length+'단계'+(best?'  ·  최고 '+'★'.repeat(best):''); $('drtitle').textContent=p.name.replace(/^.+? · /,''); $('drdesc').textContent=p.desc+' (BPM '+DR.bpm+' · '+(DR.lv==='easy'?'쉬움':'보통')+')';
+}
+function drSetPat(i,keepBpm){ DR.pat=Math.max(0,Math.min(DR_PATS.length-1,i)); if(!keepBpm)DR.bpm=drPat().bpm; $('drpat').value=String(DR.pat); $('drbpm').textContent=DR.bpm; try{ localStorage.setItem('konti:drpat',String(DR.pat)); }catch(e){} if(DR.mode==='free'){ const on=DR.beatOn; drGrid(); if(on)drBeatStart(); } else drReset(); }
+function drEnter(){ drSized(); drSetMode(DR.mode); }
+(function drInit(){
+  const sel=$('drpat'); sel.innerHTML=DR_PATS.map((p,i)=>'<option value="'+i+'">'+p.name+'</option>').join('');
+  try{ DR.pat=Math.min(DR_PATS.length-1,+(localStorage.getItem('konti:drpat')||0)||0); DR.lv=localStorage.getItem('konti:drlv')||'easy'; DR.metro=localStorage.getItem('konti:drmetro')!=='0'; }catch(e){}
+  DR.bpm=drPat().bpm; sel.value=String(DR.pat); $('drbpm').textContent=DR.bpm; $('drlv').textContent=DR.lv==='easy'?'😊 쉬움':'😎 보통'; $('drmetro').classList.toggle('on',DR.metro); $('drmetro').setAttribute('aria-pressed',DR.metro?'true':'false');
+  sel.onchange=()=>drSetPat(+sel.value);
+  const bpmSet=d=>{ DR.bpm=Math.max(40,Math.min(200,DR.bpm+d)); $('drbpm').textContent=DR.bpm; if(DR.mode==='free'){ if(DR.beatOn)drBeatStart(); } else drReset(); };
+  $('drbpmd').onclick=()=>bpmSet(-5); $('drbpmu').onclick=()=>bpmSet(5);
+  $('drlv').onclick=()=>{ DR.lv=DR.lv==='easy'?'normal':'easy'; $('drlv').textContent=DR.lv==='easy'?'😊 쉬움':'😎 보통'; try{ localStorage.setItem('konti:drlv',DR.lv); }catch(e){} toast(DR.lv==='easy'?'쉬움 — 하이햇은 반주가 쳐 줘요':'보통 — 하이햇·스네어·킥을 모두 직접 쳐요'); drReset(); };
+  $('drmetro').onclick=()=>{ DR.metro=!DR.metro; $('drmetro').classList.toggle('on',DR.metro); $('drmetro').setAttribute('aria-pressed',DR.metro?'true':'false'); try{ localStorage.setItem('konti:drmetro',DR.metro?'1':'0'); }catch(e){} if(DR.mode==='free'&&DR.beatOn)drBeatStart(); };
+  $('drtab-play').onclick=()=>drSetMode('play'); $('drtab-free').onclick=()=>drSetMode('free');
+  $('drbeat').onclick=()=>{ if(DR.beatOn)drBeatStop(); else drBeatStart(); };
+  $('drgo').onclick=()=>drStart(false); $('drlisten').onclick=()=>drStart(true);
+  $('dragain').onclick=()=>drStart(false); $('drnext').onclick=()=>{ drSetPat(DR.pat+1); drStart(false); }; $('drtofree').onclick=()=>drSetMode('free');
+  $('drhome').onclick=()=>goHome();
+  const pads=$('drpads');
+  pads.addEventListener('pointerdown',e=>{ const el=e.target.closest('.drpad'); if(!el)return; e.preventDefault(); try{ el.setPointerCapture(e.pointerId); }catch(x){}
+    el.classList.add('on'); if(el.dataset.l!=null)drPadDown(+el.dataset.l); else drSound(el.dataset.k,.95,performance.now()); });
+  const up=e=>{ const el=e.target.closest&&e.target.closest('.drpad'); if(el)el.classList.remove('on'); };
+  pads.addEventListener('pointerup',up); pads.addEventListener('pointercancel',up); pads.addEventListener('lostpointercapture',up);
+  addEventListener('keydown',e=>{ if(KB.shown!=='dr'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return; const k=e.key.toLowerCase(), flash=el=>{ if(el){ el.classList.add('on'); setTimeout(()=>el.classList.remove('on'),90); } };
+    if(DR.mode==='play'){ const i=DR_LANES.findIndex(L=>L.key===k); if(i>=0){ drPadDown(i); flash(pads.children[i]); } else if(k===' '&&!DR.run&&!$('drstart').hidden){ e.preventDefault(); drStart(false); } }
+    else{ const f=DR_FREE.find(x=>x[2]===k); if(f){ drSound(f[0],.95,performance.now()); flash(pads.querySelector('[data-k="'+f[0]+'"]')); } } });
+  addEventListener('resize',()=>{ if(KB.shown==='dr')drSized(); });
+})();
+
 /* ============ 튜너(음 찾기) · 메트로놈 (v96, 사용자 요청) ============
    ③ 튜너: 마이크로 들은 소리의 높이를 재서 음 이름·정확도(센트)를 보여 주고, 건반·막대·최근 기록 그래프로 시각화한다.
       목표음(기타 줄·건반으로 고른 음)에 얼마나 맞는지 알려 주고, 목표음을 소리로 들려 준다.
