@@ -28,7 +28,7 @@ export default async function drTest(){
     ok('먼저 듣기가 끝나면 시작 창',!document.getElementById('drstart').hidden&&document.getElementById('drend').hidden);
     // ⑤ 자유 연주
     drSetMode('free'); document.getElementById('drbeat').click(); await W(400);
-    ok('자유 연주 비트 켜짐 · 칸 표시',DR.beatOn&&document.querySelectorAll('#drgrid .drcell.on').length===4&&document.querySelectorAll('#drpads .drpad').length===8);
+    ok('자유 연주 비트 켜짐 · 칸 표시',DR.beatOn&&document.querySelectorAll('#drgrid .drcell.on').length===4&&document.querySelectorAll('#drpads [data-k]').length===8);
     document.getElementById('drbeat').click(); ok('비트 끄기',!DR.beatOn);
     // ⑥ 나가기
     drSetMode('play'); drStart(false); showScreen('home'); ok('나가면 멈춘다',!DR.run&&!DR.beatOn&&document.getElementById('dr').hidden);

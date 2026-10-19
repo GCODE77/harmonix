@@ -562,14 +562,20 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 .drov[hidden]{display:none}.drov .gmbox{max-height:100%;overflow-y:auto;box-sizing:border-box}
 .drov .gmbtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;width:100%}.drov .btn.cta{flex:1 1 140px;font-size:17px;min-height:50px}
 #drgrid{display:none;flex:1;min-height:120px;padding:10px 12px;overflow:auto;flex-direction:column;gap:8px;justify-content:center}
-#dr.free #drfield{display:none}#dr.free #drgrid{display:flex}
+#dr.free #drfield{display:none}#dr.free #drgrid{display:flex;flex:none;min-height:0;padding:6px 12px;gap:4px}#dr.free .drhelp{display:none}#dr.free .drcell{max-height:20px}
 #dr.free #drlv,#dr.free .drchip{display:none}#dr:not(.free) #drbeat{display:none}
 .drrow{display:flex;align-items:center;gap:8px}.drrow>b{flex:none;width:72px;font-size:13px;text-align:right;color:var(--dim)}
 .drcells{display:flex;flex:1;gap:3px}.drcell{flex:1;aspect-ratio:1;max-height:34px;border-radius:7px;background:#232b38;border:1px solid #2f3a4a;display:block}
 .drcell.q{border-color:#4a5a70}.drcell.on{background:var(--c,#ffd23f);border-color:var(--c,#ffd23f)}.drcell.now{outline:3px solid #fff;outline-offset:1px}
 .drhelp{color:var(--dim);font-size:13px;text-align:center;line-height:1.5}
 #drpads{flex:none;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;height:clamp(110px,26vh,200px);touch-action:none}
-#dr.free #drpads{flex:1;height:auto;grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr}
+#dr.free #drpads{flex:1;height:auto;display:block;padding:4px 8px 8px;min-height:0}
+#drkit{width:100%;height:100%;display:block;touch-action:none}
+#drkit .dpart{cursor:pointer;transform-box:fill-box;transform-origin:center;transition:filter .06s}
+#drkit .dpart.on{filter:brightness(1.45) drop-shadow(0 0 8px #fff);transform:scale(.97)}
+#drkit .dpole{stroke:#7c828c;stroke-width:3}
+#drkit .dlab{fill:#fff;font:700 11px sans-serif;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:rgba(0,0,0,.55);stroke-width:3px}
+#drkit .dkey{fill:#ffd23f;font-size:10px}
 .drpad{border-radius:18px;border:3px solid var(--c,#4a5a70);background:#1d2532;color:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:800;font-size:17px;touch-action:none;position:relative;min-height:64px}
 .drpad small{font-size:11px;color:var(--dim);font-weight:600}.drpad .ic{font-size:26px;line-height:1}
 .drpad.on{background:var(--c,#ffd23f);color:#10161E;transform:scale(.97)}.drpad.on small{color:#10161E}
@@ -12636,7 +12642,7 @@ function vbEnter(){ vbSized(); vbReset(); vbSumm(); }
    소리는 건반 연주의 합성 드럼(drumHit) 그대로 — 내려받을 것이 없어 오프라인에서도 된다. 박은 25ms 마다 앞 120ms 치를 예약해 흔들리지 않는다. */
 const DR_LANES=[{k:'hatc',nm:'하이햇',ic:'🎩',key:'a',col:'#ffd23f'},{k:'snare',nm:'스네어',ic:'🥁',key:'s',col:'#ff7a7a'},{k:'kick',nm:'킥',ic:'🦶',key:'d',col:'#6fd3ff'}];
 const DR_LANE_OF={hatc:0,hato:0,snare:1,rim:1,kick:2};
-const DR_FREE=[['hatc','하이햇','a'],['snare','스네어','s'],['kick','킥','d'],['tomh','탐 하이','f'],['toml','플로어 탐','g'],['crash','크래시','h'],['ride','라이드','j'],['clap','클랩','k']];
+const DR_FREE=[['hatc','하이햇','a'],['snare','스네어','s'],['kick','킥','d'],['tomh','하이 탐','f'],['tomm','미드 탐','g'],['toml','플로어 탐','h'],['crash','크래시','j'],['ride','라이드','k']];
 const DR_PATS=[
   {id:'l1',name:'1단계 · 킥만 (쿵 쿵 쿵 쿵)',n:16,kick:[0,4,8,12],bpm:60,desc:'발로 밟는 큰북(킥)만! 한 박에 한 번씩 4번.'},
   {id:'l2',name:'2단계 · 킥 + 스네어',n:16,kick:[0,8],snare:[4,12],bpm:60,desc:'쿵 — 짝 — 쿵 — 짝. 드럼의 가장 기본 박자예요.'},
@@ -12749,13 +12755,30 @@ function drGrid(){
   const p=drPat(), rows=[['hatc','hato'],['snare','rim'],['kick']]; let h='';
   rows.forEach((ks,ri)=>{ const L=DR_LANES[ri]; let cells=''; for(let i=0;i<p.n;i++){ const on=ks.some(k=>p[k]&&p[k].includes(i)); cells+='<i class="drcell'+(i%4===0?' q':'')+(on?' on':'')+'" data-i="'+i+'" style="--c:'+L.col+'"></i>'; }
     h+='<div class="drrow"><b>'+L.ic+' '+L.nm+'</b><div class="drcells">'+cells+'</div></div>'; });
-  $('drgrid').innerHTML=h+'<div class="drhelp">'+p.desc+'<br>색칠된 칸 = 칠 자리 · 맨 왼쪽이 마디의 첫 박이에요.<br>▶ 비트를 켜고 아래 패드를 자유롭게 쳐 보세요!</div>';
+  $('drgrid').innerHTML=h+'<div class="drhelp">'+p.desc+'<br>색칠된 칸 = 칠 자리 · 맨 왼쪽이 마디의 첫 박이에요.<br>▶ 비트를 켜고 아래 드럼 그림을 눌러 쳐 보세요!</div>';
+}
+
+/* 드럼 세트 그림 — 드러머 자리(1인칭)에서 본 모습. 각 부품을 누르면 그 소리가 난다(v122, 사용자: "건반처럼 실제 드럼 그림을 눌러 치게") */
+function drKitSvg(){
+  const lab=(x,y,t,k)=>'<text x="'+x+'" y="'+y+'" class="dlab">'+t+'<tspan class="dkey" x="'+x+'" dy="13">'+k+'</tspan></text>';
+  const cym=(k,cx,cy,rx,ry,t,key)=>'<g class="dpart" data-k="'+k+'"><line x1="'+cx+'" y1="'+(cy+ry)+'" x2="'+cx+'" y2="332" class="dpole"/><ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="url(#drGold)" stroke="#8a6a12" stroke-width="2"/><ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(rx*.22)+'" ry="'+(ry*.3)+'" fill="#8a6a12" opacity=".55"/>'+lab(cx,cy+ry+14,t,key)+'</g>';
+  const drum=(k,cx,cy,rx,ry,h,col,t,key)=>'<g class="dpart" data-k="'+k+'"><path d="M'+(cx-rx)+' '+cy+' v'+h+' a'+rx+' '+ry+' 0 0 0 '+(rx*2)+' 0 v-'+h+'z" fill="'+col+'" stroke="#2a0d0a" stroke-width="2"/><ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="#f4f0e6" stroke="#b9b2a2" stroke-width="4"/><ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(rx*.78)+'" ry="'+(ry*.74)+'" fill="none" stroke="#ddd6c6" stroke-width="1.5"/>'+lab(cx,cy+h+ry+14,t,key)+'</g>';
+  return '<svg id="drkit" viewBox="0 0 400 345" preserveAspectRatio="xMidYMid meet" role="group" aria-label="드럼 세트 — 눌러서 치세요">'
+   +'<defs><radialGradient id="drGold" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#ffe98a"/><stop offset=".6" stop-color="#e0b43a"/><stop offset="1" stop-color="#b98c1c"/></radialGradient>'
+   +'<radialGradient id="drKick" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="#fbf8f0"/><stop offset="1" stop-color="#d9d2c0"/></radialGradient></defs>'
+   +cym('crash',72,50,62,13,'크래시','J')+cym('ride',330,60,66,14,'라이드','K')
+   +'<g class="dpart" data-k="hatc"><line x1="52" y1="178" x2="52" y2="336" class="dpole"/><ellipse cx="52" cy="176" rx="44" ry="9" fill="#b98c1c" stroke="#8a6a12" stroke-width="2"/><ellipse cx="52" cy="170" rx="44" ry="9" fill="url(#drGold)" stroke="#8a6a12" stroke-width="2"/><circle cx="52" cy="170" r="4" fill="#8a6a12"/>'+lab(52,202,'하이햇','A')+'</g>'
+   +drum('tomh',150,108,38,13,26,'#b3261e','하이 탐','F')+drum('tomm',248,108,42,14,28,'#b3261e','미드 탐','G')
+   +drum('toml',345,212,46,16,38,'#b3261e','플로어 탐','H')
+   +'<g class="dpart" data-k="kick"><ellipse cx="225" cy="268" rx="68" ry="50" fill="#b3261e" stroke="#2a0d0a" stroke-width="3"/><ellipse cx="225" cy="268" rx="59" ry="42" fill="url(#drKick)" stroke="#9c9482" stroke-width="3"/><ellipse cx="225" cy="268" rx="23" ry="16" fill="none" stroke="#b3261e" stroke-width="3"/><text x="225" y="273" class="dlab" style="fill:#b3261e;font-size:13px;stroke:none">KICK</text>'+lab(225,328,'킥','D').replace('class="dlab"','class="dlab dlight"')+'</g>'
+   +drum('snare',112,222,46,15,22,'#8c8f94','스네어','S')
+   +'</svg>';
 }
 const DR_FCOL=['#ffd23f','#ff7a7a','#6fd3ff','#c79bff','#9be36b','#ffb36b','#7fe3ff','#ff9be0'];
 function drPadsBuild(){
   const box=$('drpads'); box.innerHTML='';
   if(DR.mode==='play')DR_LANES.forEach((L,i)=>{ const d=document.createElement('div'); d.className='drpad'; d.style.setProperty('--c',L.col); d.dataset.l=i; d.innerHTML='<span class="ic">'+L.ic+'</span>'+L.nm+'<small>키보드 '+L.key.toUpperCase()+'</small>'; box.appendChild(d); });
-  else DR_FREE.forEach((f,i)=>{ const d=document.createElement('div'); d.className='drpad'; d.style.setProperty('--c',DR_FCOL[i]); d.dataset.k=f[0]; d.innerHTML=f[1]+'<small>'+f[2].toUpperCase()+'</small>'; box.appendChild(d); });
+  else box.innerHTML=drKitSvg();
 }
 function drSetMode(m){
   drStop(); DR.mode=m; $('dr').classList.toggle('free',m==='free'); $('drtab-play').classList.toggle('on',m==='play'); $('drtab-free').classList.toggle('on',m==='free');
@@ -12783,9 +12806,9 @@ function drEnter(){ drSized(); drSetMode(DR.mode); }
   $('dragain').onclick=()=>drStart(false); $('drnext').onclick=()=>{ drSetPat(DR.pat+1); drStart(false); }; $('drtofree').onclick=()=>drSetMode('free');
   $('drhome').onclick=()=>goHome();
   const pads=$('drpads');
-  pads.addEventListener('pointerdown',e=>{ const el=e.target.closest('.drpad'); if(!el)return; e.preventDefault(); try{ el.setPointerCapture(e.pointerId); }catch(x){}
-    el.classList.add('on'); if(el.dataset.l!=null)drPadDown(+el.dataset.l); else drSound(el.dataset.k,.95,performance.now()); });
-  const up=e=>{ const el=e.target.closest&&e.target.closest('.drpad'); if(el)el.classList.remove('on'); };
+  pads.addEventListener('pointerdown',e=>{ const el=e.target.closest('.drpad,.dpart'); if(!el)return; e.preventDefault(); if(el.classList.contains('drpad')){ try{ el.setPointerCapture(e.pointerId); }catch(x){} }
+    el.classList.add('on'); if(el.dataset.l!=null)drPadDown(+el.dataset.l); else{ drSound(el.dataset.k,.95,performance.now()); if(navigator.vibrate)try{navigator.vibrate(8);}catch(x){} setTimeout(()=>el.classList.remove('on'),110); } });
+  const up=e=>{ const el=e.target.closest&&e.target.closest('.drpad,.dpart'); if(el)el.classList.remove('on'); setTimeout(()=>pads.querySelectorAll('.dpart.on').forEach(x=>x.classList.remove('on')),120); };
   pads.addEventListener('pointerup',up); pads.addEventListener('pointercancel',up); pads.addEventListener('lostpointercapture',up);
   addEventListener('keydown',e=>{ if(KB.shown!=='dr'||e.repeat||e.ctrlKey||e.metaKey||e.altKey)return; const k=e.key.toLowerCase(), flash=el=>{ if(el){ el.classList.add('on'); setTimeout(()=>el.classList.remove('on'),90); } };
     if(DR.mode==='play'){ const i=DR_LANES.findIndex(L=>L.key===k); if(i>=0){ drPadDown(i); flash(pads.children[i]); } else if(k===' '&&!DR.run&&!$('drstart').hidden){ e.preventDefault(); drStart(false); } }
