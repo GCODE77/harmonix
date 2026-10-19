@@ -346,6 +346,24 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 .hcard small{color:var(--dim);font-size:13.5px;line-height:1.45}
 @media (max-width:520px){#home .hcards{grid-template-columns:1fr;gap:10px}.hcard{min-height:104px;flex-direction:row;gap:16px;text-align:left;justify-content:flex-start;padding:16px 20px}.hcard .hi{font-size:48px}.hcard>span:last-child{display:flex;flex-direction:column;gap:4px}}
 @media (orientation:landscape) and (max-height:520px){#home .hcards{grid-template-columns:1fr 1fr}.hcard{min-height:150px;flex-direction:column;text-align:center}#home p{margin-bottom:12px}}
+/* v125: 아이콘+이름 한 줄, 「무엇을 하시겠어요?」 삭제, 폰에서는 카드를 2열로 줄여 아래로 많이 안 끌어도 한눈에 보이게 */
+#home .hhead{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 14px}
+#home .hhead .hicon{width:52px;height:52px;margin:0;border-radius:14px}#home .hhead .hlogo{font-size:32px;line-height:1}
+@media (max-width:520px){
+  #home{padding:calc(12px + env(safe-area-inset-top)) 12px calc(10px + env(safe-area-inset-bottom))}
+  #home .hhead{margin-bottom:8px;gap:10px}#home .hhead .hicon{width:44px;height:44px;border-radius:12px}#home .hhead .hlogo{font-size:28px}
+  #home .hcards .hcards{grid-template-columns:1fr 1fr;gap:8px}
+  #home .hgrp{margin:4px 2px 0;font-size:13.5px}
+  #home .hcards .hcard,#home .hcards .hcard.wide{min-height:78px;flex-direction:column;gap:2px;padding:7px 8px;text-align:center;justify-content:center;grid-column:auto}
+  #home .hcards .hcard .hi,#home .hcards .hcard.wide .hi{font-size:26px;line-height:1}
+  #home .hcards .hcard b,#home .hcards .hcard.wide b{font-size:15.5px;display:block;margin:0}
+  #home .hcards .hcard small{font-size:11px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  #home .hcards .hcard>span:last-child,#home .hcards .hcard.wide>span:last-child{display:block;text-align:center}
+  #home .hcards .hcard.wide br{display:none}
+  #home .hcards .hcard.span2{grid-column:1/-1;flex-direction:row;min-height:58px;gap:12px;padding:6px 8px;justify-content:center;text-align:left}
+  #home .hcards .hcard.span2>span:last-child{text-align:left}#home .hcards .hcard.span2 .hi{font-size:26px;line-height:1}
+  #home .hcopy{margin-top:8px}
+}
 #kb{position:fixed;inset:0;height:100vh;height:100dvh;z-index:70;background:var(--ink);display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);user-select:none;-webkit-user-select:none;touch-action:none;overscroll-behavior:none}
 /* 건반 돌리기: 폰이 세로여도 화면을 시계/반시계로 눕힌다(자동 회전을 꺼 둔 폰·고정된 폰용) */
 #kb.rot1{inset:auto;top:0;left:100vw;width:100vh;width:100dvh;height:100vw;transform-origin:0 0;transform:rotate(90deg)}
@@ -671,7 +689,7 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 #gm .gmtop #gmsong{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;text-align:left}
 #gmtick{opacity:.55}#gmtick.on{opacity:1;background:var(--brass);color:#10161E;border-color:var(--brass)}
 #gmscore{font-family:var(--mono);font-size:21px;font-weight:800;color:var(--brass);min-width:56px;text-align:right;flex:none}
-#gmfield{position:relative;flex:1;min-height:200px;overflow:hidden}
+#gmfield{position:relative;flex:1;min-height:200px;overflow:hidden;width:100%;max-width:620px;align-self:center}
 #gmcv{position:absolute;inset:0;width:100%;height:100%;display:block}
 #gmstart,#gmend{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,12,20,.66);padding:14px}
 #gmstart[hidden],#gmend[hidden]{display:none}
@@ -689,7 +707,7 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 #gmrec{font-size:20px;font-weight:900;color:#ff8af0;animation:kbpulse .8s infinite}#gmrec[hidden]{display:none}
 .gmopts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.gmopt{min-height:40px;opacity:.6}.gmopt.on{opacity:1;background:var(--brass);color:#10161E;border-color:var(--brass)}
 #gmstars{font-size:46px;letter-spacing:6px;color:#ffd54a;text-shadow:0 0 14px rgba(255,213,74,.6)}
-#gmkeys{position:relative;flex:none;height:clamp(92px,17vh,150px);margin:0 4px calc(4px + env(safe-area-inset-bottom,0px))}
+#gmkeys{position:relative;flex:none;height:clamp(92px,17vh,150px);margin:0 4px calc(4px + env(safe-area-inset-bottom,0px));width:calc(100% - 8px);max-width:612px;align-self:center}
 .gk{position:absolute;top:0;bottom:0;touch-action:none;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;font-weight:800;box-sizing:border-box;transition:transform .05s,background .05s}
 .gk span{pointer-events:none;line-height:1.1;text-align:center;padding-bottom:6px}.gk sub{display:block;font-size:9px;font-weight:700;opacity:.6}
 .gk i{position:absolute;left:0;right:0;top:0;height:7px;background:var(--c);opacity:.9;pointer-events:none}
@@ -772,9 +790,7 @@ header{padding-top:8px!important;padding-left:10px!important}
 <div id="scrim"><div id="sheet"></div></div>
 <div id="home">
   <div class="hbox">
-    <img class="hicon" src="icon-192.png" alt="" width="84" height="84">
-    <div class="hlogo">하모닉스</div>
-    <p>무엇을 하시겠어요?</p>
+    <div class="hhead"><img class="hicon" src="icon-192.png" alt="" width="84" height="84"><div class="hlogo">하모닉스</div></div>
     <div class="hcards">
       <h2 class="hgrp">🎼 악보 · 연주</h2>
       <button class="hcard" id="h-score" type="button"><span class="hi">🎼</span><span><b>악보 연주</b><br><small>악보 사진을 악보로 바꾸고<br>반주와 함께 연주해요</small></span></button>
@@ -782,11 +798,11 @@ header{padding-top:8px!important;padding-left:10px!important}
       <h2 class="hgrp">🎯 연습 도구</h2>
       <button class="hcard" id="h-tn" type="button"><span class="hi">🎤</span><span><b>튜너 · 음 찾기</b><br><small>악기 소리를 듣고 음 이름과<br>음정이 맞는지 알려 줘요</small></span></button>
       <button class="hcard" id="h-mt" type="button"><span class="hi">⏱</span><span><b>메트로놈</b><br><small>박자·쪼개기·탭 템포로<br>연습 박자를 맞춰요</small></span></button>
-      <button class="hcard wide" id="h-dk" type="button"><span class="hi">🥁</span><span><b>드럼 연주</b><br><small>실제 드럼 세트를 눌러 쳐요 · 비트 반주 · 녹음</small></span></button>
+      <button class="hcard wide span2" id="h-dk" type="button"><span class="hi">🥁</span><span><b>드럼 연주</b><br><small>실제 드럼 세트를 눌러 쳐요 · 비트 반주 · 녹음</small></span></button>
       <h2 class="hgrp">🎮 놀이 · 게임</h2>
       <button class="hcard wide" id="h-vb" type="button"><span class="hi">🐤</span><span><b>노래하는 새</b><br><small>목소리 높이로 새를 날려 파이프 틈을 통과해요 · 도레미 음정 놀이</small></span></button>
       <button class="hcard wide" id="h-dg" type="button"><span class="hi">🎮</span><span><b>드럼 게임</b><br><small>줄어드는 링에 맞춰 드럼을 쳐요 · 쿵짝 기본부터 필인까지 13단계</small></span></button>
-      <button class="hcard wide" id="h-gm" type="button"><span class="hi">🎮</span><span><b>건반 게임</b><br><small>내려오는 블록을 맞춰 눌러요 · 동요·클래식 100판</small></span></button>
+      <button class="hcard wide span2" id="h-gm" type="button"><span class="hi">🎮</span><span><b>건반 게임</b><br><small>내려오는 블록을 맞춰 눌러요 · 동요·클래식 100판</small></span></button>
       <h2 class="hgrp">✨ 만들기</h2>
       <button class="hcard wide" id="h-ts" type="button"><span class="hi">🎧</span><span><b>노래 파일 채보</b><br><small>노래 파일을 넣으면 멜로디·박자·코드를 악보로 옮겨 줘요 · 악보에서 바로 고쳐요</small></span></button>
       <button class="hcard wide" id="h-sm" type="button"><span class="hi">🎙</span><span><b>노래 만들기</b><br><small>흥얼거리거나 노래하면 코드·반주를 붙여 노래로 만들어 줘요</small></span></button>
@@ -1092,7 +1108,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "124";
+const APP_VER = "125";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -11765,7 +11781,7 @@ function gmNext(){ const i=GM_SONGS.indexOf(GM.song); if(i+1>=GM_SONGS.length){ 
 function gmDraw(){
   const cv=$('gmcv'); if(!cv||!GM.rng)return; const g=cv.getContext('2d'), W=GM.W, H=GM.H, dpr=GM.dpr||1, R=GM.rng, dt=GM.dt||1/60;
   g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,W,H);
-  const lw=W/R.nw, lineY=H-16, look=4.4, pxb=lineY/look, ts3=GM.song.ts||4;
+  const lw=W/R.nw, lineY=H-16, look=Math.max(5.5,Math.min(9,lineY/84)), pxb=lineY/look, ts3=GM.song.ts||4;
   let sx=0,sy=0; if(GM.shake>0){ sx=(Math.random()-.5)*GM.shake*7; sy=(Math.random()-.5)*GM.shake*7; GM.shake=Math.max(0,GM.shake-dt*2.2); }
   g.save(); g.translate(sx,sy);
   const bg=g.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#0a1018'); bg.addColorStop(1,'#16263a'); g.fillStyle=bg; g.fillRect(-10,-10,W+20,H+20);
@@ -11786,9 +11802,9 @@ function gmDraw(){
   for(let i=0;i<R.nw;i++){ const m=gmWMidi(R.a+i); if(GM.down.get(m)){ g.fillStyle=GM_PCC[m%12]; g.fillRect(i*lw+3,lineY-6,lw-6,12); } }
   for(const [m] of GM.down){ if(gmIsBlack(m)){ const o=gmX(m,lw); g.fillStyle=GM_PCC[m%12]; g.fillRect(o.cx-o.w/2,lineY-6,o.w,12); } }
   // 블록
-  const minH=Math.max(34,Math.min(lw*.9,64));
+  const minH=Math.max(30,Math.min(lw*.8,52));
   for(const b of GM.blocks){
-    const yb=lineY-(b.beat-GM.T)*pxb, h=Math.max(minH,b.dur*pxb-6), yt=yb-h, o=gmX(b.m,lw), col=GM_PCC[b.m%12], x=o.cx-o.w/2+(o.black?0:3), w=o.w-(o.black?0:0);
+    const yb=lineY-(b.beat-GM.T)*pxb, h=Math.max(minH,b.dur*pxb-6), yt=yb-h, o=gmX(b.m,lw), col=GM_PCC[b.m%12], x=o.cx-o.w/2+(o.black?0:o.w*.09), w=o.black?o.w:o.w*.82;
     if(b.hit){
       const held=GM.down.get(b.m)>0;
       if(b.dur>=1){   // 긴 음: 누르고 있는 동안 판정선에 꼬리가 붙어 남고, 남은 길이만큼 줄어든다 — 끝까지 누르면 보너스
