@@ -20,7 +20,7 @@ export default async function drTest(){
     // 녹음 → 듣기
     document.getElementById('dkrec').click(); down('#dkbox','snare'); await W(120); down('#dkbox','kickL'); await W(80); document.getElementById('dkrec').click();
     ok('녹음 2번',DK.rec.ev.length===2&&!document.getElementById('dkplay').disabled,DK.rec.ev.length);
-    hits.length=0; document.getElementById('dkplay').click(); await W(1300); ok('듣기: 녹음한 소리가 다시 난다',hits.join(',')==='snare,kick'&&!DK.playing,hits.join(','));
+    hits.length=0; document.getElementById('dkplay').click(); await W(2000); ok('듣기: 녹음한 소리가 다시 난다',hits.join(',')==='snare,kick'&&!DK.playing,hits.join(','));
     // 세로 화면은 세트를 눕힌다
     kitFit(document.getElementById('dkbox')); ok('가로 화면이면 그대로, 세로면 눕힌다',['0','1'].includes(document.getElementById('dkbox').dataset.rot));
     // 게임

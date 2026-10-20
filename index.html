@@ -11,7 +11,6 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
-<script>if(/[?&]app=drum/.test(location.search)){document.querySelector('link[rel=manifest]').href='manifest-drum.json';}</script>
 <meta name="apple-mobile-web-app-title" content="하모닉스">
 <title>하모닉스 — 악보·건반·튜너·메트로놈</title>
 <style>
@@ -327,7 +326,7 @@ body.focus #focusout{display:block}
 
 /* ===== 첫 화면 · 건반 연주 ===== */
 html.hm,html.hm body{overflow:hidden;height:100%;overscroll-behavior:none}
-html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):not(#dk):not(#dg):not(#ts):not(#tnpop):not(#toast):not(#errbar):not(script):not(style){display:none!important}
+html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):not(#dk):not(#dg):not(#ts):not(#tnpop):not(#instpop):not(#toast):not(#errbar):not(script):not(style){display:none!important}
 #home{position:fixed;inset:0;height:100vh;height:100dvh;overscroll-behavior:none;touch-action:pan-y;z-index:80;background:var(--ink);display:flex;align-items:flex-start;justify-content:center;padding:calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom));overflow-x:hidden;overflow-y:auto}
 #home[hidden],#kb[hidden]{display:none}
 #home .hbox{width:min(760px,100%);text-align:center;margin:auto 0}
@@ -348,7 +347,12 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 @media (orientation:landscape) and (max-height:520px){#home .hcards{grid-template-columns:1fr 1fr}.hcard{min-height:150px;flex-direction:column;text-align:center}#home p{margin-bottom:12px}}
 /* v125: 아이콘+이름 한 줄, 「무엇을 하시겠어요?」 삭제, 폰에서는 카드를 2열로 줄여 아래로 많이 안 끌어도 한눈에 보이게 */
 #home .hi svg{display:block;width:1em;height:1em;margin:0 auto;border-radius:.2em}
-#home .hbox{position:relative}.hfs{position:absolute;right:2px;top:2px;z-index:2;min-width:40px;min-height:40px;border-radius:12px;border:1px solid var(--line);background:var(--raise);color:var(--paper);font-size:18px;cursor:pointer}.hfs.off{opacity:.45}
+#home .hbox{position:relative}.hinst{position:absolute;left:2px;top:2px;z-index:2;min-height:40px;padding:0 9px;border-radius:12px;border:2px solid var(--brass);background:rgba(240,185,94,.12);color:var(--brass);font:800 13.5px inherit;cursor:pointer;white-space:nowrap}.hinst[hidden]{display:none}
+.instov{position:fixed;inset:0;z-index:200;background:rgba(5,9,15,.7);display:flex;align-items:center;justify-content:center;padding:16px}.instov[hidden]{display:none}
+.instbox{background:var(--raise);border:2px solid var(--brass);border-radius:20px;padding:18px 20px;max-width:min(440px,100%);max-height:100%;overflow-y:auto;color:var(--paper);display:flex;flex-direction:column;gap:10px}
+.instbox b{font-size:19px}.instbox p{margin:0;color:var(--dim);font-size:13.5px;line-height:1.5}
+#inststeps ol{margin:0;padding-left:20px;line-height:1.7;font-size:14.5px}#inststeps li b{font-size:inherit;color:var(--brass)}
+.instbtns{display:flex;flex-wrap:wrap;gap:8px}.instbtns .btn{flex:1 1 130px;min-height:44px}.hfs{position:absolute;right:2px;top:2px;z-index:2;min-width:40px;min-height:40px;border-radius:12px;border:1px solid var(--line);background:var(--raise);color:var(--paper);font-size:18px;cursor:pointer}.hfs.off{opacity:.45}
 #home .hhead{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 0 14px}
 #home .hhead .hicon{width:52px;height:52px;margin:0;border-radius:14px}#home .hhead .hlogo{font-size:32px;line-height:1}
 @media (max-width:520px){
@@ -801,9 +805,15 @@ header{padding-top:8px!important;padding-left:10px!important}
 <button class="btn" id="focusout">나가기</button>
 <div id="errbar"></div>
 <div id="scrim"><div id="sheet"></div></div>
+<div id="instpop" class="instov" hidden role="dialog" aria-label="앱으로 설치하기"><div class="instbox">
+  <b>📲 홈 화면에 추가해서 앱처럼 쓰기</b>
+  <p id="instwhy">주소창 없이 전체화면으로 열리고, 인터넷이 약해도 마지막 화면이 열려요.</p>
+  <div id="inststeps"></div>
+  <div class="instbtns"><button class="btn cta" id="instgo" type="button" hidden>📲 지금 설치</button><button class="btn" id="instx" type="button">닫기</button></div>
+</div></div>
 <div id="home">
   <div class="hbox">
-    <button class="hfs" id="hfs" type="button" aria-label="전체화면 자동으로 켜기/끄기" title="전체화면 자동">⛶</button><div class="hhead"><img class="hicon" src="icon-192.png" alt="" width="84" height="84"><div class="hlogo">하모닉스</div></div>
+    <button class="hinst" id="hinst" type="button" aria-label="홈 화면에 추가해서 앱처럼 쓰기">📲 앱 설치</button><button class="hfs" id="hfs" type="button" aria-label="전체화면 자동으로 켜기/끄기" title="전체화면 자동">⛶</button><div class="hhead"><img class="hicon" src="icon-192.png" alt="" width="84" height="84"><div class="hlogo">하모닉스</div></div>
     <div class="hcards">
       <h2 class="hgrp">🎼 악보 · 연주</h2>
       <button class="hcard" id="h-score" type="button"><span class="hi">🎼</span><span><b>악보 연주</b><br><small>악보 사진을 악보로 바꾸고<br>반주와 함께 연주해요</small></span></button>
@@ -1122,7 +1132,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "128";
+const APP_VER = "129";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -11027,6 +11037,21 @@ document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&['kb','t
    홈 오른쪽 위 「⛶」 로 끌 수 있다(`konti:autofs`). */
 const fsOn=()=>{ try{ return localStorage.getItem('konti:autofs')!=='0'; }catch(e){ return true; } };
 function fsAuto(){ try{ if(!fsOn())return; const d=document, e=d.documentElement; if(d.fullscreenElement||d.webkitFullscreenElement)return; const r=e.requestFullscreen?e.requestFullscreen({navigationUI:'hide'}):(e.webkitRequestFullscreen&&e.webkitRequestFullscreen()); if(r&&r.catch)r.catch(()=>{}); }catch(x){} }
+/* v129(사용자: "홈 화면에 추가하면 앱처럼 쓸 수 있는 버튼"): 크롬·엣지(안드로이드·PC)는 `beforeinstallprompt` 로 바로 설치창을 띄우고,
+   iPhone 사파리·그 밖은 따라 할 순서를 보여 준다. 이미 앱으로 열렸으면(standalone) 버튼을 숨긴다. 서비스 워커(sw.js)는 https 에서만 등록한다. */
+let INST_EVT=null;
+const isStandalone=()=>{ try{ return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true; }catch(e){ return false; } };
+function instUpdate(){ const b=$('hinst'); if(b)b.hidden=isStandalone(); }
+function instSteps(){
+  const ua=navigator.userAgent||'', ios=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1), and=/Android/.test(ua), safari=/Safari/.test(ua)&&!/Chrome|CriOS|FxiOS|EdgiOS/.test(ua);
+  if(ios)return '<ol><li>화면 아래(또는 위)의 <b>공유 ⬆</b> 단추를 눌러요'+(safari?'':' — <b>사파리</b>로 열어야 돼요')+'</li><li>목록에서 <b>홈 화면에 추가</b>를 눌러요</li><li>오른쪽 위 <b>추가</b>를 누르면 끝! 홈 화면의 「하모닉스」를 누르세요</li></ol>';
+  if(and)return '<ol><li>오른쪽 위 <b>⋮ 메뉴</b>를 눌러요</li><li><b>앱 설치</b> 또는 <b>홈 화면에 추가</b>를 눌러요</li><li><b>설치</b>를 누르면 끝! 홈 화면의 「하모닉스」를 누르세요</li></ol>';
+  return '<ol><li>주소창 오른쪽의 <b>설치 아이콘 ⊕</b>(또는 ⋮ 메뉴 → <b>앱 설치</b>)을 눌러요</li><li><b>설치</b>를 누르면 바탕화면·시작 메뉴에 「하모닉스」가 생겨요</li></ol>';
+}
+function instOpen(){ $('inststeps').innerHTML=instSteps(); $('instgo').hidden=!INST_EVT; $('instpop').hidden=false; }
+addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); INST_EVT=e; });
+addEventListener('appinstalled',()=>{ INST_EVT=null; instUpdate(); try{ toast('설치됐어요! 홈 화면에서 「하모닉스」를 열어 보세요'); }catch(e){} });
+try{ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){}
 function showScreen(which){
   if(which!=='home')fsAuto();
   wakeSet(['kb','tn','mt','gm','sm','vb','dk','dg'].includes(which));   // 연주·튜닝·박자 연습 중에는 화면이 꺼지지 않게
@@ -12713,6 +12738,9 @@ function vbDraw(dt){
   $('vblevel').style.width=Math.min(100,Math.sqrt(VB.level||0)*200)+'%';
 }
 (function vbInit(){
+  instUpdate(); $('hinst').onclick=()=>{ if(INST_EVT){ instOpen(); } else instOpen(); };
+  $('instx').onclick=()=>{ $('instpop').hidden=true; };
+  $('instgo').onclick=async()=>{ const e=INST_EVT; if(!e)return; try{ e.prompt(); const r=await e.userChoice; if(r&&r.outcome==='accepted')$('instpop').hidden=true; }catch(x){} INST_EVT=null; $('instgo').hidden=true; };
   { const b=$('hfs'); const upd=()=>{ b.classList.toggle('off',!fsOn()); b.title=fsOn()?'전체화면 자동: 켬 (누르면 끔)':'전체화면 자동: 끔 (누르면 켬)'; }; upd();
     b.onclick=()=>{ const on=!fsOn(); try{ localStorage.setItem('konti:autofs',on?'1':'0'); }catch(e){} upd(); if(on){ fsAuto(); toast('전체화면 자동 켬 — 기능 화면에 들어갈 때 전체화면이 돼요'); } else{ try{ if(document.fullscreenElement)document.exitFullscreen(); }catch(e){} toast('전체화면 자동 끔'); } }; }
   $('h-dk').onclick=()=>{ showScreen('dk'); try{ history.pushState({v:'dk'},''); }catch(e){} };
@@ -12740,7 +12768,7 @@ function vbEnter(){ vbSized(); vbReset(); vbSumm(); }
    · 치는 맛: ① 누른 **위치**로 소리가 달라진다 — 북은 가운데가 크고 가장자리는 작게, 스네어 가장자리는 림샷, 라이드 가운데는 벨 ② 부품이 눌리며 출렁(북은 살짝 커졌다 돌아오고 심벌은 흔들림)
      ③ 퍼지는 파문 ④ 짧은 진동(세게 칠수록 길게) ⑤ 금속 심벌 합성음(네모파 여섯 겹)·킥 클릭·스네어 두 겹.
    · 🥁 드럼 연주(`#dk`): 세트를 그냥 친다 + 비트 반주(박자 틀 13가지) + 녹음·듣기. 위 막대 한 줄에 모든 조작(가로 화면). 세로 화면이면 세트를 90° 눕혀 꽉 채운다(`kitFit`).
-     `index.html?app=drum` 으로 열면 이 화면으로 바로 시작하고 앱 이름도 「하모닉스 드럼」(manifest-drum.json) — 홈 화면에 따로 설치.
+     (드럼 전용 앱 설치는 사용자 요청으로 뺐다 — 설치는 하모닉스 전체만).
    · 🎮 드럼 게임(`#dg`): 같은 세트 위, 칠 부품 둘레에 큰 링이 나타나 줄어든다 — 링이 부품 가장자리에 닿을 때 친다. 판정 완벽 ±90ms · 좋아요 ±160 · 아쉬워요 ±220(빠름/늦음 알려 줌).
      13단계: 킥 → 킥+스네어 → 8비트 → 록·발라드·댄스·펑크·보사노바·왈츠 → 라이드 → 크래시 → 탐 필인 → 록+필인. 쉬움 = 하이햇은 반주가 침. 1마디 카운트인 + 8마디.
    소리는 건반 연주의 합성 드럼(drumHit) — 오프라인 OK. 박은 25ms 마다 앞 120ms 치를 예약(오디오 시계). */
@@ -12753,38 +12781,54 @@ const DK_P=[
   ['hatc','hatc',874,236,80,'hat','CLOSE HH','하이햇 닫힘','a'],['hato','hato',896,346,80,'hat','OPEN HH','하이햇 열림','w']];
 const DK_BY={}; DK_P.forEach(p=>{ DK_BY[p[0]]={id:p[0],k:p[1],x:p[2],y:p[3],r:p[4],t:p[5],en:p[6],ko:p[7],key:p[8]}; });
 const DK_CYM=t=>t==='cym'||t==='ride'||t==='hat'||t==='splash';
-function dkPieceSvg(P){
-  const {id,k,x,y,r,t,en,ko,key}=P; let h='<g class="dkp" data-p="'+id+'" data-k="'+k+'">';
-  const C=(rr,attr)=>'<circle cx="'+x+'" cy="'+y+'" r="'+rr.toFixed(1)+'" '+attr+'/>';
+function dkRnd(seed){ let a=Math.floor(seed)%233280; return ()=>{ a=(a*9301+49297)%233280; return a/233280; }; }
+/* v129(사용자: "드럼 세트 사진 더 실감나게"): 실제 사진 대신 SVG 로 — 결 무늬·망치 자국·광택 쐐기(원뿔 반사 흉내)·볼트 하이라이트·헤드 마모·킥 포트 구멍·스네어 스트레이너, 전체에 필름 입자 */
+function dkPieceParts(P){
+  const {id,k,x,y,r,t,en,ko,key}=P; let h='';
+  const C=(rr,attr)=>'<circle cx="'+x+'" cy="'+y+'" r="'+rr.toFixed(1)+'" '+attr+'/>', rnd=dkRnd(x*7+y*13+r*3);
+  const pt=(a,rr)=>[(x+Math.cos(a)*rr).toFixed(1),(y+Math.sin(a)*rr).toFixed(1)];
+  const wedge=(a0,a1,rr,attr)=>{ const p0=pt(a0,rr), p1=pt(a1,rr); return '<path d="M'+x+' '+y+' L'+p0[0]+' '+p0[1]+' A'+rr.toFixed(1)+' '+rr.toFixed(1)+' 0 0 1 '+p1[0]+' '+p1[1]+' Z" '+attr+'/>'; };
   if(t==='kick'){
-    h+=C(r*1.0,'fill="url(#dkWood)" stroke="#5a3a1c" stroke-width="3"')+C(r*.93,'fill="none" stroke="rgba(255,225,170,.5)" stroke-width="2"');
-    for(let i=0;i<14;i++){ const a=i/14*6.2832; h+='<circle cx="'+(x+Math.cos(a)*r*.955).toFixed(1)+'" cy="'+(y+Math.sin(a)*r*.955).toFixed(1)+'" r="6" fill="url(#dkChrome)" stroke="#444" stroke-width="1"/>'; }
-    h+=C(r*.88,'fill="url(#dkKickHead)"')+C(r*.78,'fill="none" stroke="rgba(255,255,255,.07)" stroke-width="3"')
-     +C(r*.52,'fill="url(#dkLogo)" stroke="#bdbdbd" stroke-width="3"')
-     +'<text x="'+x+'" y="'+(y+r*.05)+'" class="dkbig">KICK</text><text x="'+x+'" y="'+(y+r*.3)+'" class="dkkoD" style="fill:#16505e;stroke:none">'+ko+'</text>';
+    h+=C(r*1.03,'fill="#1b130c"')+C(r,'fill="url(#dkWood)" stroke="#3f2711" stroke-width="3"');
+    for(let i=1;i<=4;i++)h+=C(r*(.93+i*.017),'fill="none" stroke="rgba(50,25,8,'+(.18+i*.03).toFixed(2)+')" stroke-width="1.4"');
+    for(let i=0;i<14;i++){ const a=i/14*6.2832, q=pt(a,r*.945); h+='<circle cx="'+q[0]+'" cy="'+q[1]+'" r="6.5" fill="url(#dkChrome)" stroke="#333" stroke-width="1"/><circle cx="'+(q[0]-1.5)+'" cy="'+(q[1]-1.5)+'" r="2" fill="#fff" opacity=".8"/>'; }
+    h+=C(r*.885,'fill="#0c0c0d"')+C(r*.86,'fill="url(#dkKickHead)"')+C(r*.8,'fill="none" stroke="rgba(255,255,255,.09)" stroke-width="3"')+C(r*.66,'fill="none" stroke="rgba(0,0,0,.35)" stroke-width="2"')
+     +C(r*.52,'fill="url(#dkLogo)" stroke="#c8c8c8" stroke-width="3"')+C(r*.45,'fill="none" stroke="#1f6f80" stroke-width="2.5"')
+     +'<text x="'+x+'" y="'+(y+r*.06)+'" class="dkbig">KICK</text><text x="'+x+'" y="'+(y+r*.3)+'" class="dkkoD" style="fill:#16505e;stroke:none">'+ko+'</text>'
+     +'<circle cx="'+(x-r*.6).toFixed(1)+'" cy="'+(y+r*.42).toFixed(1)+'" r="'+(r*.15).toFixed(1)+'" fill="#050505" stroke="url(#dkChrome)" stroke-width="4"/>'
+     +'<ellipse cx="'+(x-r*.3).toFixed(1)+'" cy="'+(y-r*.45).toFixed(1)+'" rx="'+(r*.5).toFixed(1)+'" ry="'+(r*.16).toFixed(1)+'" fill="#fff" opacity=".07" transform="rotate(-28 '+(x-r*.3).toFixed(1)+' '+(y-r*.45).toFixed(1)+')"/>';
   }else if(t==='drum'||t==='snare'){
     const sn=t==='snare', ringG=sn?'url(#dkSnareRing)':'url(#dkTeal)';
-    h+=C(r*1.04,'fill="url(#dkChrome)" stroke="#333" stroke-width="2"');
-    for(let i=0;i<10;i++){ const a=i/10*6.2832+.31; h+='<rect x="'+(x+Math.cos(a)*r*1.02-7).toFixed(1)+'" y="'+(y+Math.sin(a)*r*1.02-9).toFixed(1)+'" width="14" height="18" rx="4" fill="url(#dkChrome)" stroke="#2a2a2a" stroke-width="1.5" transform="rotate('+(a*57.3+90).toFixed(0)+' '+(x+Math.cos(a)*r*1.02).toFixed(1)+' '+(y+Math.sin(a)*r*1.02).toFixed(1)+')"/>'; }
-    h+=C(r*.97,'fill="#222" stroke="#bdbdbd" stroke-width="3"')+C(r*.9,'fill="url(#dkHead)"')
-     +C(r*.7,'fill="none" stroke="'+ringG+'" stroke-width="'+(r*.2).toFixed(1)+'"')+C(r*.6,'fill="none" stroke="rgba(0,0,0,.35)" stroke-width="3"')+C(r*.8,'fill="none" stroke="rgba(0,0,0,.3)" stroke-width="2"')
-     +'<ellipse cx="'+(x-r*.25).toFixed(1)+'" cy="'+(y-r*.35).toFixed(1)+'" rx="'+(r*.5).toFixed(1)+'" ry="'+(r*.22).toFixed(1)+'" fill="#fff" opacity=".1" transform="rotate(-25 '+(x-r*.25).toFixed(1)+' '+(y-r*.35).toFixed(1)+')"/>'
+    h+=C(r*1.09,'fill="#101011"')+C(r*1.05,'fill="url(#dkChrome)" stroke="#2a2a2a" stroke-width="2"')+C(r*1.0,'fill="none" stroke="rgba(255,255,255,.85)" stroke-width="2"')+C(r*.975,'fill="none" stroke="rgba(0,0,0,.45)" stroke-width="2"');
+    if(sn){ const q=pt(0.06,r*1.06); h+='<rect x="'+(q[0]-4)+'" y="'+(q[1]-20)+'" width="22" height="40" rx="5" fill="url(#dkChrome)" stroke="#222" stroke-width="1.5"/><circle cx="'+(+q[0]+7)+'" cy="'+(+q[1]-9)+'" r="3.4" fill="#444"/><circle cx="'+(+q[0]+7)+'" cy="'+(+q[1]+9)+'" r="3.4" fill="#444"/>'; }
+    for(let i=0;i<10;i++){ const a=i/10*6.2832+.31, q=pt(a,r*1.025); h+='<rect x="'+(q[0]-7.5)+'" y="'+(q[1]-9.5)+'" width="15" height="19" rx="4.5" fill="url(#dkChrome)" stroke="#222" stroke-width="1.5" transform="rotate('+(a*57.3+90).toFixed(0)+' '+q[0]+' '+q[1]+')"/><circle cx="'+q[0]+'" cy="'+q[1]+'" r="3.2" fill="#555" stroke="#ddd" stroke-width="1"/>'; }
+    h+=C(r*.94,'fill="#262626" stroke="#cfcfcf" stroke-width="3"')+C(r*.9,'fill="url(#dkHead)"');
+    for(let i=1;i<=6;i++)h+=C(r*(.2+i*.115),'fill="none" stroke="rgba(0,0,0,'+(i%2?.16:.07)+')" stroke-width="1.2"');
+    h+=C(r*.42,'fill="url(#dkWorn)"')
+     +C(r*.7,'fill="none" stroke="'+ringG+'" stroke-width="'+(r*.2).toFixed(1)+'"')+C(r*.8,'fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1.6"')+C(r*.6,'fill="none" stroke="rgba(0,0,0,.4)" stroke-width="3"')
+     +'<path d="M'+pt(3.6,r*.99).join(' ')+' A'+(r*.99).toFixed(1)+' '+(r*.99).toFixed(1)+' 0 0 1 '+pt(4.9,r*.99).join(' ')+'" fill="none" stroke="#fff" stroke-width="4" opacity=".55" stroke-linecap="round"/>'
+     +'<ellipse cx="'+(x-r*.25).toFixed(1)+'" cy="'+(y-r*.38).toFixed(1)+'" rx="'+(r*.5).toFixed(1)+'" ry="'+(r*.2).toFixed(1)+'" fill="#fff" opacity=".09" transform="rotate(-25 '+(x-r*.25).toFixed(1)+' '+(y-r*.38).toFixed(1)+')"/>'
      +'<text transform="translate('+(x+r*.46).toFixed(1)+','+(y+r*.68).toFixed(1)+') rotate(-38)" class="dklab" style="fill:'+(sn?'#3a3a3a':'#e9f7fa')+'">'+en+'</text>'
      +'<text x="'+x+'" y="'+(y+r*.1).toFixed(1)+'" class="dkko">'+ko+'</text>';
   }else{
     const band=t==='ride'?'rgba(255,170,40,.55)':t==='splash'?'rgba(205,215,70,.6)':t==='hat'?'rgba(0,0,0,0)':'rgba(224,92,52,.55)', grad=t==='ride'?'url(#dkGold)':t==='hat'?'url(#dkBrass)':'url(#dkCopper)';
     h+=C(r,'fill="url(#dkShadowRim)"')+C(r*.985,'fill="'+grad+'" stroke="#4a2410" stroke-width="2.5"');
     if(band!=='rgba(0,0,0,0)')h+=C(r*.8,'fill="none" stroke="'+band+'" stroke-width="'+(r*.17).toFixed(1)+'"');
-    for(let i=1;i<=15;i++)h+=C(r*(.2+i*.052),'fill="none" stroke="'+(i%2?'rgba(70,32,8,.16)':'rgba(255,238,200,.2)')+'" stroke-width="'+(i%3?1.1:1.8)+'"');
+    for(let i=1;i<=22;i++)h+=C(r*(.2+i*.0355),'fill="none" stroke="'+(rnd()<.5?'rgba(70,32,8,':'rgba(255,238,200,')+(.08+rnd()*.14).toFixed(2)+')" stroke-width="'+(.6+rnd()*1.3).toFixed(1)+'"');
+    for(let i=0;i<72;i++){ const a=i/72*6.2832+rnd()*.05, p0=pt(a,r*.22), p1=pt(a,r*.97); h+='<line x1="'+p0[0]+'" y1="'+p0[1]+'" x2="'+p1[0]+'" y2="'+p1[1]+'" stroke="'+(i%2?'rgba(255,240,210,.07)':'rgba(70,30,5,.07)')+'" stroke-width=".9"/>'; }
+    for(let q=0;q<4;q++){ const a0=q*1.5708+.25; h+=wedge(a0,a0+.42,r*.97,'fill="#fff" opacity=".2"')+wedge(a0+.78,a0+1.2,r*.97,'fill="#000" opacity=".13"'); }
+    for(let i=0;i<54;i++){ const a=rnd()*6.2832, rr=r*(.3+rnd()*.62), q=pt(a,rr), rx=(2.4+rnd()*3.4).toFixed(1); h+='<ellipse cx="'+q[0]+'" cy="'+q[1]+'" rx="'+rx+'" ry="'+(rx*.7).toFixed(1)+'" fill="rgba(80,38,10,.14)"/><ellipse cx="'+(q[0]-1)+'" cy="'+(q[1]-1.2)+'" rx="'+(rx*.6).toFixed(1)+'" ry="'+(rx*.38).toFixed(1)+'" fill="rgba(255,240,200,.16)"/>'; }
     h+=C(r*.97,'fill="url(#dkSheenA)"')+C(r*.97,'fill="url(#dkSheenB)"')
-     +C(r*.205,'fill="url(#dkBell)" stroke="rgba(60,30,10,.55)" stroke-width="2"')+C(r*.07,'fill="#262626" stroke="#bbb" stroke-width="3"')
-     +C(r*.985,'fill="none" stroke="rgba(255,240,210,.55)" stroke-width="2" stroke-dasharray="'+(r*1.4).toFixed(0)+' '+(r*5).toFixed(0)+'" transform="rotate(-150 '+x+' '+y+')"')
+     +C(r*.21,'fill="url(#dkBell)" stroke="rgba(60,30,10,.6)" stroke-width="2"')+C(r*.15,'fill="none" stroke="rgba(255,235,200,.45)" stroke-width="1.5"')+C(r*.085,'fill="url(#dkChrome)" stroke="#333" stroke-width="2"')+C(r*.035,'fill="#1b1b1b"')
+     +C(r*.985,'fill="none" stroke="rgba(255,240,210,.6)" stroke-width="2.4" stroke-dasharray="'+(r*1.3).toFixed(0)+' '+(r*5).toFixed(0)+'" transform="rotate(-150 '+x+' '+y+')"')
      +'<text transform="translate('+(x+r*.34).toFixed(1)+','+(y+r*.62).toFixed(1)+') rotate(-38)" class="dklab" style="fill:#2a1405">'+en+'</text>'
      +'<text x="'+x+'" y="'+(y+r*.44).toFixed(1)+'" class="dkko">'+ko+'</text>';
   }
-  return h+C(r,'class="dkglow"')+'<text x="'+x+'" y="'+(y-r*(t==='kick'?.62:.3)).toFixed(1)+'" class="dkkey">'+key.toUpperCase()+'</text></g>';
+  const tx=(h.match(/<text[\s\S]*?<\/text>/g)||[]).join(''), art=h.replace(/<text[\s\S]*?<\/text>/g,'');
+  return {art,tx,glow:C(r,'class="dkglow"')+'<text x="'+x+'" y="'+(y-r*(t==='kick'?.62:.3)).toFixed(1)+'" class="dkkey">'+key.toUpperCase()+'</text>'};
 }
-function dkSvg(uid){   /* 같은 그림이 두 화면에 있으면 그라데이션 id 가 겹쳐, 숨겨진 쪽(display:none)을 가리켜 색이 사라진다 → 화면마다 id 를 다르게 */
+function dkPieceSvg(P){ const q=dkPieceParts(P); return '<g class="dkp" data-p="'+P.id+'" data-k="'+P.k+'"><g class="dkart">'+q.art+'</g>'+q.tx+q.glow+'</g>'; }
+function dkDefs(){   /* 같은 그림이 두 화면에 있으면 그라데이션 id 가 겹쳐, 숨겨진 쪽(display:none)을 가리켜 색이 사라진다 → 화면마다 id 를 다르게 */
   const lin=(id,stops,x2,y2)=>'<linearGradient id="'+id+'" x1="0" y1="0" x2="'+(x2||1)+'" y2="'+(y2||1)+'">'+stops.map(s=>'<stop offset="'+s[0]+'" stop-color="'+s[1]+'"'+(s[2]!=null?' stop-opacity="'+s[2]+'"':'')+'/>').join('')+'</linearGradient>';
   const rad=(id,stops,cx,cy,rr)=>'<radialGradient id="'+id+'" cx="'+(cx||.5)+'" cy="'+(cy||.5)+'" r="'+(rr||.6)+'">'+stops.map(s=>'<stop offset="'+s[0]+'" stop-color="'+s[1]+'"'+(s[2]!=null?' stop-opacity="'+s[2]+'"':'')+'/>').join('')+'</radialGradient>';
   const defs='<defs>'
@@ -12803,12 +12847,40 @@ function dkSvg(uid){   /* 같은 그림이 두 화면에 있으면 그라데이�
    +rad('dkShadowRim',[[.9,'#000',.0],[1,'#000',.5]],.5,.5,.5)
    +'<linearGradient id="dkSheenA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".42" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".42"/><stop offset=".58" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
    +'<linearGradient id="dkSheenB" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".46" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".28"/><stop offset=".54" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
-   +'<filter id="dkBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9"/></filter></defs>';
-  const shadows='<g filter="url(#dkBlur)" opacity=".7" transform="translate(8,14)">'+DK_P.map(p=>'<circle cx="'+p[2]+'" cy="'+p[3]+'" r="'+p[4]+'" fill="#000"/>').join('')+'</g>';
-  return ('<svg class="dkkit" viewBox="-14 -16 1028 432" preserveAspectRatio="xMidYMid meet" role="group" aria-label="드럼 세트 — 눌러서 치세요">'+defs
-   +'<rect x="-600" y="-600" width="2400" height="1800" fill="url(#dkStripe)"/>'+shadows+DK_P.map(p=>dkPieceSvg(DK_BY[p[0]])).join('')
+   +rad('dkWorn',[[0,'#ffffff',.16],[1,'#ffffff',0]],.5,.5,.5)
+   +'<filter id="dkBlur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9"/></filter>'
+   +'<filter id="dkNoise" filterUnits="userSpaceOnUse" x="-14" y="-16" width="1028" height="432"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/><feColorMatrix type="saturate" values="0"/></filter></defs>';
+  return defs;
+}
+const dkShadows=()=>'<g filter="url(#dkBlur)" opacity=".7" transform="translate(8,14)">'+DK_P.map(p=>'<circle cx="'+p[2]+'" cy="'+p[3]+'" r="'+p[4]+'" fill="#000"/>').join('')+'</g>';
+const dkBgBody=()=>'<rect x="-600" y="-600" width="2400" height="1800" fill="url(#dkStripe)"/>'+dkShadows();
+function dkSvg(uid){
+  return ('<svg class="dkkit" viewBox="-14 -16 1028 432" preserveAspectRatio="xMidYMid meet" role="group" aria-label="드럼 세트 — 눌러서 치세요">'+dkDefs()
+   +'<g class="dkbgl">'+dkBgBody()+'</g>'+DK_P.map(p=>dkPieceSvg(DK_BY[p[0]])).join('')
    +'<g class="dkfxl" pointer-events="none"></g><g class="dkrings" pointer-events="none"></g></svg>').replace(/(id="|url\(#)(dk[A-Za-z]+)/g,'$1$2'+(uid||''));
 }
+/* v129: 세트 그림이 SVG 요소 1750개라 칠 때마다(출렁임 애니메이션) 다시 그려져 폰에서 끊길 수 있었다 → 처음 한 번 부품마다 그림(PNG)으로 구워 `<image>` 로 바꿔 끼운다.
+   눌림 판정·글자·불빛은 그대로 벡터, 애니메이션은 그림 한 장을 움직이는 것이라 가볍다. 실패하면 벡터 그대로. */
+const DK_RAS={p:null,ready:false,map:{}};
+function dkRasterize(){
+  if(DK_RAS.p)return DK_RAS.p;
+  DK_RAS.p=(async()=>{ try{
+    const S=1.5, defs=dkDefs();
+    const mk=async(X,Y,W,H,body)=>{ const w=Math.ceil(W*S), h=Math.ceil(H*S), svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="'+X+' '+Y+' '+W+' '+H+'" width="'+w+'" height="'+h+'">'+defs+body+'</svg>';
+      const img=new Image(); img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg); await img.decode();
+      const cv=document.createElement('canvas'); cv.width=w; cv.height=h; cv.getContext('2d').drawImage(img,0,0); return cv.toDataURL('image/png'); };
+    for(const p of DK_P){ const P=DK_BY[p[0]], b=P.r*1.3, noise='<clipPath id="dkcl"><circle cx="'+P.x+'" cy="'+P.y+'" r="'+P.r+'"/></clipPath><circle cx="'+P.x+'" cy="'+P.y+'" r="'+P.r+'" filter="url(#dkNoise)" opacity=".2" clip-path="url(#dkcl)" style="mix-blend-mode:overlay"/>';
+      DK_RAS.map[P.id]={url:await mk(P.x-b,P.y-b,2*b,2*b,dkPieceParts(P).art+noise),x:P.x-b,y:P.y-b,w:2*b,h:2*b}; await new Promise(r=>setTimeout(r,0)); }
+    DK_RAS.map.bg={url:await mk(-14,-16,1028,432,dkBgBody()),x:-14,y:-16,w:1028,h:432}; DK_RAS.ready=true;
+  }catch(e){ DK_RAS.fail=true; } })();
+  return DK_RAS.p;
+}
+function dkApplyRaster(svg){
+  if(!svg||!DK_RAS.ready)return; const im=r=>'<image href="'+r.url+'" x="'+r.x+'" y="'+r.y+'" width="'+r.w+'" height="'+r.h+'" preserveAspectRatio="none"/>';
+  svg.querySelectorAll('.dkp').forEach(g=>{ const r=DK_RAS.map[g.dataset.p], a=g.querySelector('.dkart'); if(r&&a&&!a.dataset.r){ a.innerHTML=im(r); a.dataset.r='1'; } });
+  const bg=svg.querySelector('.dkbgl'); if(bg&&DK_RAS.map.bg&&!bg.dataset.r){ bg.innerHTML=im(DK_RAS.map.bg); bg.dataset.r='1'; }
+}
+function dkBake(box){ const svg=box.querySelector('.dkkit'); dkRasterize().then(()=>dkApplyRaster(svg)); }
 /* 세로 화면이면 세트를 90° 눕혀 상자에 꽉 채운다(포인터 판정은 변환을 따라간다) */
 function kitFit(box){
   const svg=box&&box.querySelector('.dkkit'); if(!svg)return; const w=box.clientWidth, h=box.clientHeight; if(!w||!h)return;
@@ -12896,7 +12968,7 @@ function dkRecToggle(){
   dkPlayStop(); DK.rec={on:true,t0:performance.now(),ev:[]}; dkUI();
 }
 function dkLeave(){ dkBeatStop(); dkPlayStop(); DK.rec.on=false; }
-function dkEnter(){ const box=$('dkbox'); if(!box.querySelector('.dkkit'))box.insertAdjacentHTML('afterbegin',dkSvg('K')); kitFit(box); dkUI(); const h=$('dkhint'); if(h){ h.hidden=DK.hits>0; clearTimeout(DK.hintT); DK.hintT=setTimeout(()=>{ h.hidden=true; },5000); } }
+function dkEnter(){ const box=$('dkbox'); if(!box.querySelector('.dkkit'))box.insertAdjacentHTML('afterbegin',dkSvg('K')); dkBake(box); kitFit(box); dkUI(); const h=$('dkhint'); if(h){ h.hidden=DK.hits>0; clearTimeout(DK.hintT); DK.hintT=setTimeout(()=>{ h.hidden=true; },5000); } }
 (function dkInit(){
   const sel=$('dkpat'); sel.innerHTML=DR_PATS.map(p=>'<option value="'+p.id+'">'+p.name.replace(/^\d+단계 · /,'')+'</option>').join('');
   try{ DK.pat=localStorage.getItem('konti:dkpat')||'rock'; DK.bpm=+(localStorage.getItem('konti:dkbpm')||90)||90; }catch(e){}
@@ -13000,7 +13072,7 @@ function dgInfo(){ dgOpts();
 }
 function dgReset(){ dgStop(); $('dgstart').hidden=false; $('dgend').hidden=true; $('dgcount').hidden=true; $('dgbar').textContent=''; DG.score=0; $('dgscore').textContent=0; dgInfo(); }
 function dgSetPat(i,keepBpm){ DG.pat=Math.max(0,Math.min(DR_PATS.length-1,i)); if(!keepBpm)DG.bpm=dgPat().bpm; $('dgpat').value=String(DG.pat); $('dgbpm').textContent=DG.bpm; try{ localStorage.setItem('konti:dgpat',String(DG.pat)); }catch(e){} dgReset(); }
-function dgEnter(){ const box=$('dgbox'); if(!box.querySelector('.dkkit'))box.insertAdjacentHTML('afterbegin',dkSvg('G')); dgFit(); dgReset(); }
+function dgEnter(){ const box=$('dgbox'); if(!box.querySelector('.dkkit'))box.insertAdjacentHTML('afterbegin',dkSvg('G')); dkBake(box); dgFit(); dgReset(); }
 (function dgInit(){
   const sel=$('dgpat'); sel.innerHTML=DR_PATS.map((p,i)=>'<option value="'+i+'">'+p.name+'</option>').join('');
   try{ DG.pat=Math.min(DR_PATS.length-1,+(localStorage.getItem('konti:dgpat')||0)||0); DG.lv=localStorage.getItem('konti:dglv')||'easy'; DG.metro=localStorage.getItem('konti:dgmetro')!=='0'; }catch(e){}
@@ -13018,8 +13090,6 @@ function dgEnter(){ const box=$('dgbox'); if(!box.querySelector('.dkkit'))box.in
     if(P){ dgHit(P[0],P[1]); const el=document.querySelector('#dgbox .dkp[data-p="'+P[0]+'"]'); if(el)kitFx(el,.95); }
     else if(k===' '&&!DG.run&&!$('dgstart').hidden){ e.preventDefault(); dgStart(false); } });
 })();
-/* index.html?app=drum — 드럼 연주만 따로 쓰는 앱(홈 화면에 설치하면 「하모닉스 드럼」) */
-try{ if(/[?&]app=drum/.test(location.search)){ document.title='하모닉스 드럼'; showScreen('dk'); } }catch(e){}
 /* ============ 튜너(음 찾기) · 메트로놈 (v96, 사용자 요청) ============
    ③ 튜너: 마이크로 들은 소리의 높이를 재서 음 이름·정확도(센트)를 보여 주고, 건반·막대·최근 기록 그래프로 시각화한다.
       목표음(기타 줄·건반으로 고른 음)에 얼마나 맞는지 알려 주고, 목표음을 소리로 들려 준다.
