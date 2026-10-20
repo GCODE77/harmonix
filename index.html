@@ -347,7 +347,8 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 @media (orientation:landscape) and (max-height:520px){#home .hcards{grid-template-columns:1fr 1fr}.hcard{min-height:150px;flex-direction:column;text-align:center}#home p{margin-bottom:12px}}
 /* v125: 아이콘+이름 한 줄, 「무엇을 하시겠어요?」 삭제, 폰에서는 카드를 2열로 줄여 아래로 많이 안 끌어도 한눈에 보이게 */
 #home .hi svg{display:block;width:1em;height:1em;margin:0 auto;border-radius:.2em}
-#home .hbox{position:relative}.hinst{position:absolute;left:2px;top:2px;z-index:2;min-height:40px;padding:0 9px;border-radius:12px;border:2px solid var(--brass);background:rgba(240,185,94,.12);color:var(--brass);font:800 13.5px inherit;cursor:pointer;white-space:nowrap}.hinst[hidden]{display:none}
+#home .hbox{position:relative}
+#home .hcard.last{border-color:var(--brass);box-shadow:0 0 0 1px var(--brass) inset}#home .hcard.last::after{content:'최근';position:absolute;top:5px;right:8px;font:800 10px/1 sans-serif;color:#10161E;background:var(--brass);border-radius:8px;padding:3px 6px}#home .hcard{position:relative}.hinst{position:absolute;left:2px;top:2px;z-index:2;min-height:40px;padding:0 9px;border-radius:12px;border:2px solid var(--brass);background:rgba(240,185,94,.12);color:var(--brass);font:800 13.5px inherit;cursor:pointer;white-space:nowrap}.hinst[hidden]{display:none}
 .instov{position:fixed;inset:0;z-index:200;background:rgba(5,9,15,.7);display:flex;align-items:center;justify-content:center;padding:16px}.instov[hidden]{display:none}
 .instbox{background:var(--raise);border:2px solid var(--brass);border-radius:20px;padding:18px 20px;max-width:min(440px,100%);max-height:100%;overflow-y:auto;color:var(--paper);display:flex;flex-direction:column;gap:10px}
 .instbox b{font-size:19px}.instbox p{margin:0;color:var(--dim);font-size:13.5px;line-height:1.5}
@@ -830,7 +831,7 @@ header{padding-top:8px!important;padding-left:10px!important}
       <button class="hcard wide" id="h-ts" type="button"><span class="hi">🎧</span><span><b>노래 파일 채보</b><br><small>노래 파일을 넣으면 멜로디·박자·코드를 악보로 옮겨 줘요 · 악보에서 바로 고쳐요</small></span></button>
       <button class="hcard wide" id="h-sm" type="button"><span class="hi">🎙</span><span><b>노래 만들기</b><br><small>흥얼거리거나 노래하면 코드·반주를 붙여 노래로 만들어 줘요</small></span></button>
     </div>
-    <div class="hcopy">© GLORY &nbsp;·&nbsp; All rights reserved</div>
+    <div class="hcopy">© GLORY &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; <a href="#" id="hreload" style="color:inherit;pointer-events:auto">🔄 새로 불러오기</a> &nbsp;·&nbsp; v<span id="hver"></span></div>
   </div>
 </div>
 <div id="kb" hidden>
@@ -1117,12 +1118,14 @@ header{padding-top:8px!important;padding-left:10px!important}
 <div id="result" role="alert" aria-live="assertive"></div>
 
 <script>
+/* v130: 앱으로 설치하면 옛 판이 남아 있을 수 있다 — 저장해 둔 것(서비스 워커·캐시)을 지우고 최신 판을 새로 받는다. 저장한 곡은 지우지 않는다. */
+function hardReload(){ var done=function(){ location.reload(); }; try{ var p=[]; if(navigator.serviceWorker)p.push(navigator.serviceWorker.getRegistrations().then(function(rs){ return Promise.all(rs.map(function(r){ return r.unregister(); })); })); if(window.caches)p.push(caches.keys().then(function(ks){ return Promise.all(ks.map(function(k){ return caches.delete(k); })); })); Promise.all(p).then(done,done); setTimeout(done,2500); }catch(e){ done(); } }
 window.onerror=function(msg,src,ln){
   try{
     var e=document.getElementById('errbar');
     if(e){e.style.display='block';
       e.innerHTML='<b>문제가 생겼습니다'+(typeof APP_VER!=='undefined'?' (v'+APP_VER+')':'')+'</b>'
-        +String(msg)+' · '+ln+'행<br>주소 끝에 <b>?v=새숫자</b>를 붙여 새로고침하면 대부분 해결됩니다.';}
+        +String(msg)+' · '+ln+'행<br><button type="button" onclick="hardReload()" style="margin-top:6px;padding:8px 14px;border-radius:10px;border:0;background:#fff;color:#a00;font-weight:800">🔄 최신 판으로 새로 불러오기</button> <small>(저장한 곡은 그대로예요)</small>';}
   }catch(x){}
   return false;
 };
@@ -1132,7 +1135,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "129";
+const APP_VER = "130";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -11052,7 +11055,11 @@ function instOpen(){ $('inststeps').innerHTML=instSteps(); $('instgo').hidden=!I
 addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); INST_EVT=e; });
 addEventListener('appinstalled',()=>{ INST_EVT=null; instUpdate(); try{ toast('설치됐어요! 홈 화면에서 「하모닉스」를 열어 보세요'); }catch(e){} });
 try{ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){}
+const LAST_CARD={score:'h-score',kb:'h-kb',tn:'h-tn',mt:'h-mt',ts:'h-ts',sm:'h-sm',vb:'h-vb',gm:'h-gm',dk:'h-dk',dg:'h-dg'};
+function markLast(){ try{ const w=localStorage.getItem('konti:last'); document.querySelectorAll('#home .hcard.last').forEach(e=>e.classList.remove('last')); const el=w&&LAST_CARD[w]&&document.getElementById(LAST_CARD[w]); if(el)el.classList.add('last'); }catch(e){} }
 function showScreen(which){
+  if(which!=='home'){ try{ localStorage.setItem('konti:last',which); }catch(e){} }
+  else setTimeout(markLast,0);
   if(which!=='home')fsAuto();
   wakeSet(['kb','tn','mt','gm','sm','vb','dk','dg'].includes(which));   // 연주·튜닝·박자 연습 중에는 화면이 꺼지지 않게
   document.documentElement.classList.toggle('hm',which!=='score'); KB.shown=which; $('home').hidden=which!=='home'; $('kb').hidden=which!=='kb'; $('tn').hidden=which!=='tn'; $('mt').hidden=which!=='mt'; $('gm').hidden=which!=='gm'; $('sm').hidden=which!=='sm'; $('vb').hidden=which!=='vb'; $('dk').hidden=which!=='dk'; $('dg').hidden=which!=='dg'; if($('ts'))$('ts').hidden=which!=='ts';
@@ -12738,6 +12745,7 @@ function vbDraw(dt){
   $('vblevel').style.width=Math.min(100,Math.sqrt(VB.level||0)*200)+'%';
 }
 (function vbInit(){
+  markLast(); $('hver').textContent=APP_VER; $('hreload').onclick=e=>{ e.preventDefault(); toast('최신 판을 새로 받아요…'); hardReload(); };
   instUpdate(); $('hinst').onclick=()=>{ if(INST_EVT){ instOpen(); } else instOpen(); };
   $('instx').onclick=()=>{ $('instpop').hidden=true; };
   $('instgo').onclick=async()=>{ const e=INST_EVT; if(!e)return; try{ e.prompt(); const r=await e.userChoice; if(r&&r.outcome==='accepted')$('instpop').hidden=true; }catch(x){} INST_EVT=null; $('instgo').hidden=true; };
