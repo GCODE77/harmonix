@@ -593,6 +593,10 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 .kithint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:2;pointer-events:none;background:rgba(10,14,22,.8);border:2px solid var(--brass);border-radius:18px;padding:12px 20px;text-align:center;font:800 19px sans-serif;pointer-events:none;max-width:80%}
 .kithint small{display:block;margin-top:5px;font:600 12.5px sans-serif;color:var(--dim)}.kithint[hidden]{display:none}
 #dgbar{position:absolute;left:10px;top:6px;z-index:2;font:800 14px sans-serif;color:rgba(255,255,255,.85);text-shadow:0 1px 3px #000;pointer-events:none}
+#dgpulse{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 55%,rgba(255,255,255,.28),transparent 62%)}
+#dgcombo{position:absolute;right:12px;top:6px;z-index:2;font:900 26px sans-serif;color:#ffd600;-webkit-text-stroke:4px rgba(0,0,0,.5);paint-order:stroke fill;pointer-events:none}#dgcombo[hidden]{display:none}
+#dgbox.miss{animation:dgshake .22s}@keyframes dgshake{0%,100%{transform:none;box-shadow:inset 0 0 0 0 rgba(255,60,60,0)}20%{transform:translateX(-7px);box-shadow:inset 0 0 60px 8px rgba(255,60,60,.5)}60%{transform:translateX(6px)}}
+.dgcf{position:absolute;top:-12px;width:9px;height:14px;z-index:4;pointer-events:none;animation:dgfall 1.9s ease-in forwards}@keyframes dgfall{to{transform:translateY(120vh) rotate(720deg);opacity:.9}}
 #dgcount{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;font:900 110px sans-serif;color:#ffd23f;-webkit-text-stroke:6px #10161E;paint-order:stroke fill;pointer-events:none}
 #dgcount[hidden]{display:none}
 .drov{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;background:rgba(10,14,22,.62);padding:14px}
@@ -663,6 +667,9 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 #smbeat i{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.25)}
 #smbeat i.on{background:#f0b95e;border-color:#f0b95e;box-shadow:0 0 14px #f0b95e}#smbeat i.on.s{background:#ff6a5e;border-color:#ff6a5e;box-shadow:0 0 16px #ff6a5e;transform:scale(1.2)}
 #smbeat b{font:900 34px sans-serif;min-width:26px;text-align:center;color:#ffd23f}#smbeat.cin i.on{background:#ffd23f}
+.btn.cta{background:var(--mint,#4fd1a5);color:#10161E;border-color:var(--mint,#4fd1a5);font-weight:800}
+#smrec{background:#e53935;border-color:#e53935;color:#fff}
+.gmdet{width:100%;text-align:left}.gmdet summary{cursor:pointer;color:var(--brass,#f2b84b);font-size:13.5px;padding:6px 2px;min-height:34px}.gmdet[open] summary{margin-bottom:6px}.gmdet .gmopts{justify-content:center}
 .smlive{display:flex;align-items:center;gap:10px}.smlevel{flex:1;height:10px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}.smlevel.quiet{outline:2px solid #fdd835}.smlevel i{display:block;height:100%;width:0;background:linear-gradient(90deg,#66bb6a,#fdd835,#ef5350)}
 #smnow{min-width:70px;font-weight:800;color:var(--brass)}#smrectime{font-family:var(--mono);font-size:13px;color:var(--dim);min-width:120px;text-align:right}
 #smtrace{width:100%;height:70px;background:rgba(0,0,0,.25);border-radius:10px}
@@ -808,8 +815,7 @@ header{padding-top:8px!important;padding-left:10px!important}
       <h2 class="hgrp">🎮 놀이 · 게임</h2>
       <button class="hcard wide" id="h-vb" type="button"><span class="hi">🐤</span><span><b>노래하는 새</b><br><small>목소리 높이로 새를 날려 파이프 틈을 통과해요 · 도레미 음정 놀이</small></span></button>
       <button class="hcard wide" id="h-dg" type="button"><span class="hi"><svg viewBox="0 0 64 64" width="1em" height="1em" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#1c1c1e"/><circle cx="32" cy="34" r="13" fill="#4b4238" stroke="#cfcfcf" stroke-width="3"/><circle cx="32" cy="34" r="8.5" fill="none" stroke="#1f7a8c" stroke-width="3.5"/><circle cx="32" cy="34" r="25" fill="none" stroke="#ffd23f" stroke-width="3.5" stroke-dasharray="7 5"/><circle cx="32" cy="34" r="19" fill="none" stroke="#ff7a7a" stroke-width="2.5" opacity=".75"/><path d="M8 8l14 14M56 8L42 22" stroke="#e8c98a" stroke-width="3.5" stroke-linecap="round"/><circle cx="23" cy="23" r="3" fill="#e8c98a"/><circle cx="41" cy="23" r="3" fill="#e8c98a"/></svg></span><span><b>드럼 게임</b><br><small>줄어드는 링에 맞춰 드럼을 쳐요 · 쿵짝 기본부터 필인까지 13단계</small></span></button>
-<button class="hcard wide" id="h-dg2" type="button"><span class="hi"><svg viewBox="0 0 64 64" width="1em" height="1em" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#1c1c1e"/><circle cx="32" cy="34" r="13" fill="#4b4238" stroke="#cfcfcf" stroke-width="3"/><circle cx="32" cy="34" r="8.5" fill="none" stroke="#1f7a8c" stroke-width="3.5"/><circle cx="32" cy="34" r="25" fill="none" stroke="#ffd23f" stroke-width="3.5" stroke-dasharray="7 5"/><circle cx="32" cy="34" r="19" fill="none" stroke="#ff7a7a" stroke-width="2.5" opacity=".75"/><path d="M8 8l14 14M56 8L42 22" stroke="#e8c98a" stroke-width="3.5" stroke-linecap="round"/><circle cx="23" cy="23" r="3" fill="#e8c98a"/><circle cx="41" cy="23" r="3" fill="#e8c98a"/></svg></span><span><b>드럼 기초 연습</b><br><small>1단계(킥만)부터 차근차근 · 쉬움</small></span></button>
-      <button class="hcard wide" id="h-gm" type="button"><span class="hi"><svg viewBox="0 0 64 64" width="1em" height="1em" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#16233a"/><rect x="7" y="7" width="12" height="15" rx="3" fill="#35d0e8"/><rect x="26" y="19" width="12" height="15" rx="3" fill="#ffd23f"/><rect x="45" y="9" width="12" height="15" rx="3" fill="#ff9a3c"/><path d="M13 25v6M32 37v-0M51 27v6" stroke="rgba(255,255,255,.35)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 4"/><rect x="5" y="40" width="54" height="19" rx="3" fill="#f6f2e8"/><path d="M14 40v19M23 40v19M32 40v19M41 40v19M50 40v19" stroke="#aaa" stroke-width="1.2"/><rect x="11" y="40" width="6" height="11" rx="1.5" fill="#222"/><rect x="29" y="40" width="6" height="11" rx="1.5" fill="#222"/><rect x="38" y="40" width="6" height="11" rx="1.5" fill="#222"/><rect x="47" y="40" width="6" height="11" rx="1.5" fill="#222"/></svg></span><span><b>건반 게임</b><br><small>내려오는 블록을 맞춰 눌러요 · 동요·클래식 100판</small></span></button>
+      <button class="hcard wide span2" id="h-gm" type="button"><span class="hi"><svg viewBox="0 0 64 64" width="1em" height="1em" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#16233a"/><rect x="7" y="7" width="12" height="15" rx="3" fill="#35d0e8"/><rect x="26" y="19" width="12" height="15" rx="3" fill="#ffd23f"/><rect x="45" y="9" width="12" height="15" rx="3" fill="#ff9a3c"/><path d="M13 25v6M32 37v-0M51 27v6" stroke="rgba(255,255,255,.35)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 4"/><rect x="5" y="40" width="54" height="19" rx="3" fill="#f6f2e8"/><path d="M14 40v19M23 40v19M32 40v19M41 40v19M50 40v19" stroke="#aaa" stroke-width="1.2"/><rect x="11" y="40" width="6" height="11" rx="1.5" fill="#222"/><rect x="29" y="40" width="6" height="11" rx="1.5" fill="#222"/><rect x="38" y="40" width="6" height="11" rx="1.5" fill="#222"/><rect x="47" y="40" width="6" height="11" rx="1.5" fill="#222"/></svg></span><span><b>건반 게임</b><br><small>내려오는 블록을 맞춰 눌러요 · 동요·클래식 100판</small></span></button>
       <h2 class="hgrp">✨ 만들기</h2>
       <button class="hcard wide" id="h-ts" type="button"><span class="hi">🎧</span><span><b>노래 파일 채보</b><br><small>노래 파일을 넣으면 멜로디·박자·코드를 악보로 옮겨 줘요 · 악보에서 바로 고쳐요</small></span></button>
       <button class="hcard wide" id="h-sm" type="button"><span class="hi">🎙</span><span><b>노래 만들기</b><br><small>흥얼거리거나 노래하면 코드·반주를 붙여 노래로 만들어 줘요</small></span></button>
@@ -879,15 +885,14 @@ header{padding-top:8px!important;padding-left:10px!important}
 <div id="dg" hidden>
   <div class="dkbar">
     <button class="btn homebtn" id="dghome" type="button" aria-label="처음으로">⌂</button>
-    <b class="dkttl">🎮 드럼 게임</b>
+    <b class="dkttl">🥁 드럼 게임</b><span class="drchip">⭐ <b id="dgscore">0</b></span>
     <select id="dgpat" aria-label="단계 고르기"></select>
     <span class="drbpm"><button class="btn sq" id="dgbpmd" type="button" aria-label="느리게">−</button><b id="dgbpm">70</b><small>BPM</small><button class="btn sq" id="dgbpmu" type="button" aria-label="빠르게">+</button></span>
     <button class="btn" id="dglv" type="button">😊 쉬움</button>
     <button class="btn on" id="dgmetro" type="button">🔔 박자</button>
-    <span class="drchip">⭐ <b id="dgscore">0</b></span>
   </div>
   <div class="kitbox" id="dgbox">
-    <div id="dgbar"></div><div id="dgcount" hidden></div>
+    <div id="dgpulse"></div><div id="dgbar"></div><div id="dgcombo" hidden></div><div id="dgcount" hidden></div>
     <div id="dgstart" class="drov"><div class="gmbox"><small id="dgstage"></small><b id="dgtitle">드럼 게임</b><small id="dgdesc"></small>
       <div class="gmbtns"><button class="btn cta" id="dggo" type="button">▶ 시작</button><button class="btn" id="dglisten" type="button">🔊 먼저 듣기</button></div>
       <small>① 먼저 듣기로 박자를 익히고 ② 시작을 누르면 ③ 드럼 위에 큰 링이 나타나 줄어들어요 — 링이 부품 가장자리에 닿을 때 그 부품을 톡!</small></div></div>
@@ -934,7 +939,7 @@ header{padding-top:8px!important;padding-left:10px!important}
     <span id="gmscore">0</span>
   </div>
   <div id="gmfield"><canvas id="gmcv"></canvas>
-    <div id="gmstart"><div class="gmbox"><small id="gmstage"></small><b id="gmtitle">곡을 골라요</b><small id="gmdesc"></small><div class="gmbtns"><button class="btn cta" id="gmgo" type="button">▶ 시작</button><button class="btn" id="gmdemo" type="button">🔊 먼저 듣기</button></div><div class="gmopts"><button class="btn gmopt" id="gmbg" type="button">🎶 반주</button><button class="btn gmopt" id="gmguide" type="button">🎤 노래 가이드</button></div><div class="gmopts gmmodes"><button class="btn gmopt" data-mode="basic" type="button">🎹 기본</button><button class="btn gmopt" data-mode="rhythm" type="button">🥁 리듬</button><button class="btn gmopt" data-mode="duel" type="button">⚔ 대결</button><button class="btn gmopt" id="gmswap" type="button">🎲 악기 바꿔 치기</button></div><button class="btn gmdailybtn" id="gmdaily" type="button">📅 오늘의 도전</button></div></div>
+    <div id="gmstart"><div class="gmbox"><small id="gmstage"></small><b id="gmtitle">곡을 골라요</b><small id="gmdesc"></small><div class="gmbtns"><button class="btn cta" id="gmgo" type="button">▶ 시작</button><button class="btn" id="gmdemo" type="button">🔊 먼저 듣기</button></div><details class="gmdet"><summary>⚙ 놀이 방식 바꾸기 (기본·리듬·대결 · 반주 · 악기 바꿔 치기)</summary><div class="gmopts"><button class="btn gmopt" id="gmbg" type="button">🎶 반주</button><button class="btn gmopt" id="gmguide" type="button">🎤 노래 가이드</button></div><div class="gmopts gmmodes"><button class="btn gmopt" data-mode="basic" type="button">🎹 기본</button><button class="btn gmopt" data-mode="rhythm" type="button">🥁 리듬</button><button class="btn gmopt" data-mode="duel" type="button">⚔ 대결</button><button class="btn gmopt" id="gmswap" type="button">🎲 악기 바꿔 치기</button></div></details><button class="btn gmdailybtn" id="gmdaily" type="button">📅 오늘의 도전</button></div></div>
     <div id="gmend" hidden><div class="gmbox"><div class="gmrankrow"><span id="gmrank">S</span><div id="gmstars">★★★</div></div><div id="gmrec" hidden>🎉 신기록!</div><b id="gmresult"></b><small id="gmdetail"></small><div class="gmbtns"><button class="btn cta" id="gmnext" type="button">다음 판 ▶</button><button class="btn" id="gmagain" type="button">다시 하기</button><button class="btn" id="gmother" type="button">곡 목록</button></div></div></div>
   </div>
   <div id="gmkeys"></div>
@@ -963,8 +968,8 @@ header{padding-top:8px!important;padding-left:10px!important}
       </div>
       <div class="smlive"><div class="smlevel"><i id="smlevel"></i></div><span id="smnow">–</span><span id="smrectime"></span></div>
       <div id="smbeat" hidden></div>
-      <div id="smstaff" class="smstaffbox"></div>
-      <canvas id="smtrace"></canvas>
+      <div id="smstaff" class="smstaffbox" hidden></div>
+      <canvas id="smtrace" hidden></canvas>
       <div id="smsttnote" class="smnote"></div>
       <div id="smstatus"></div>
     </section>
@@ -1117,7 +1122,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "127";
+const APP_VER = "128";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -11976,7 +11981,7 @@ async function smRecStart(){
   let stream;
   try{ stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:true}}); }
   catch(e){ smStatus('마이크를 쓸 수 없어요 — 브라우저 주소창 옆 🔒 에서 마이크를 허용해 주세요.','err'); return; }
-  SM.stream=stream; SM.chunks=[]; SM.trace=[]; SM.lv={notes:[],cur:null,cand:null,quiet:0}; $('smstaff').innerHTML=smStaffSvg([],-1,{minW:$('smstaff').clientWidth-4}); SM.recSr=ctx.sampleRate; SM.recBpm=SM.bpm=Math.max(50,Math.min(160,+$('smbpm').value||90));
+  SM.stream=stream; SM.chunks=[]; SM.trace=[]; SM.lv={notes:[],cur:null,cand:null,quiet:0,t0:performance.now(),curve:[]}; $('smstaff').innerHTML=smStaffSvg([],-1,{minW:$('smstaff').clientWidth-4}); SM.recSr=ctx.sampleRate; SM.recBpm=SM.bpm=Math.max(50,Math.min(160,+$('smbpm').value||90));
   SM.src=ctx.createMediaStreamSource(stream);
   /* 작은 목소리 (v111, 사용자: "작은 목소리는 잘 안 들린다"): 마이크 소리를 키우고(감도), 큰 소리는 압축해 찢어지지 않게 한 뒤 녹음·분석한다 */
   SM.floor=.002;
@@ -11989,7 +11994,7 @@ async function smRecStart(){
   try{ $('smsens').value=localStorage.getItem('konti:smsens')||'5'; SM.boost.gain.value=+$('smsens').value; }catch(e){}
   SM.proc.onaudioprocess=e=>{ if(!SM.recOn)return; const d=e.inputBuffer.getChannelData(0); if(!SM.chunks.length)SM.recT0=ctx.currentTime-d.length/ctx.sampleRate; SM.chunks.push(new Float32Array(d)); };
   SM.lim.connect(SM.proc);
-  SM.recOn=true; SM.metro=$('smmetro').checked; SM.clickSound=$('smclick').checked; SM.sttOn=$('smstt').checked; smBeatShow(SM.metro);
+  $('smstaff').hidden=false; $('smtrace').hidden=false; SM.recOn=true; SM.metro=$('smmetro').checked; SM.clickSound=$('smclick').checked; SM.sttOn=$('smstt').checked; smBeatShow(SM.metro);
   const spb=60/SM.bpm, ts=SM.ts;
   SM.metroT0=ctx.currentTime+.15+ts*spb;          // 한 마디 세고(카운트인) 그다음 박부터 노래
   if(SM.metro){ SM.mk=0; SM.mtimer=setInterval(()=>{ if(!SM.recOn)return; const base=SM.metroT0-ts*spb;
@@ -12062,7 +12067,7 @@ function smStaffSvg(ns,cur,opt){
   return s+'</svg>';
 }
 function smLiveNote(mf,rms){   // 녹음 중 실시간 음표
-  const L=SM.lv||(SM.lv={notes:[],cur:null,cand:null,quiet:0,t0:performance.now(),curve:[]}), tn=(performance.now()-L.t0)/1000;
+  const L=SM.lv||(SM.lv={notes:[],cur:null,cand:null,quiet:0,t0:performance.now(),curve:[]}); if(!L.curve){ L.curve=[]; L.t0=performance.now(); } const tn=(performance.now()-L.t0)/1000;
   if(mf==null){ if(L.curve.length&&L.curve[L.curve.length-1])L.curve.push(null); } else L.curve.push({t:tn,m:mf}); if(L.curve.length>1500)L.curve.splice(0,300);
   if(mf==null){ if(++L.quiet>=1){ L.cur=null; L.cand=null; } return; }
   L.quiet=0;
@@ -12712,7 +12717,6 @@ function vbDraw(dt){
     b.onclick=()=>{ const on=!fsOn(); try{ localStorage.setItem('konti:autofs',on?'1':'0'); }catch(e){} upd(); if(on){ fsAuto(); toast('전체화면 자동 켬 — 기능 화면에 들어갈 때 전체화면이 돼요'); } else{ try{ if(document.fullscreenElement)document.exitFullscreen(); }catch(e){} toast('전체화면 자동 끔'); } }; }
   $('h-dk').onclick=()=>{ showScreen('dk'); try{ history.pushState({v:'dk'},''); }catch(e){} };
   $('h-dg').onclick=()=>{ showScreen('dg'); try{ history.pushState({v:'dg'},''); }catch(e){} };
-  $('h-dg2').onclick=()=>{ showScreen('dg'); try{ history.pushState({v:'dg'},''); }catch(e){} DG.lv='easy'; try{ localStorage.setItem('konti:dglv','easy'); }catch(e){} $('dglv').textContent='😊 쉬움'; dgSetPat(0); };   // 기초부터: 1단계·쉬움
   $('h-vb').onclick=()=>{ showScreen('vb'); try{ history.pushState({v:'vb'},''); }catch(e){} };
   $('vbhome').onclick=()=>{ if(history.state&&history.state.v)history.back(); else goHome(); };
   $('vbsong').innerHTML='<option value="random">🎲 무작위 음</option>'+vbSongs().map(s=>'<option value="'+s.id+'">🎵 '+s.name+'</option>').join('');
@@ -12908,7 +12912,7 @@ function dkEnter(){ const box=$('dkbox'); if(!box.querySelector('.dkkit'))box.in
   addEventListener('resize',()=>{ if(KB.shown==='dk')kitFit($('dkbox')); if(KB.shown==='dg')dgFit(); });
 })();
 /* ---------- 🎮 드럼 게임 ---------- */
-const DG={pat:0,bpm:70,lv:'easy',metro:true,run:false,demo:false,notes:[],evs:[],ei:0,t0:0,P0:0,end:0,score:0,perf:0,good:0,close:0,miss:0,combo:0,maxCombo:0,fx:[],timer:null,raf:0};
+const DG={parts:[],pat:0,bpm:70,lv:'easy',metro:true,run:false,demo:false,notes:[],evs:[],ei:0,t0:0,P0:0,end:0,score:0,perf:0,good:0,close:0,miss:0,combo:0,maxCombo:0,fx:[],timer:null,raf:0};
 const DG_BARS=8, DG_FALL=1150;
 const DG_RING={kick:'kickL',snare:'snare',rim:'snare',hatc:'hatc',hato:'hato',tomh:'tomL',tomm:'tomM',toml:'tomR',crash:'crashL',splash:'splash',ride:'ride'};
 const DG_JK=k=>k==='rim'?'snare':k;     // 림샷 음표는 스네어를 쳐서 받는다
@@ -12931,7 +12935,7 @@ function dgPump(){ if(!DG.run)return; const ahead=performance.now()+120; while(D
 function dgStart(demo){
   dgStop(); try{ AC(); }catch(e){}
   DG.demo=!!demo; DG.score=0; DG.perf=DG.good=DG.close=DG.miss=0; DG.combo=DG.maxCombo=0; DG.fx=[];
-  dgBuild(); DG.run=true; $('dgstart').hidden=true; $('dgend').hidden=true;
+  DG.parts=[]; dgBuild(); DG.run=true; $('dgstart').hidden=true; $('dgend').hidden=true;
   DG.timer=setInterval(dgPump,25); dgPump(); cancelAnimationFrame(DG.raf); DG.raf=requestAnimationFrame(dgLoop);
 }
 function dgStop(){ DG.run=false; clearInterval(DG.timer); DG.timer=null; cancelAnimationFrame(DG.raf); const r=document.querySelector('#dgbox .dkrings'); if(r)r.innerHTML=''; }
@@ -12945,14 +12949,18 @@ function dgJudge(kind,T){
   else{ best.state='close'; DG.close++; pt=1; txt='아쉬워요 · '+tag; }
   DG.combo++; DG.maxCombo=Math.max(DG.maxCombo,DG.combo); DG.score+=pt*(1+Math.min(4,Math.floor(DG.combo/10)));
   DG.fx.push({t:0,txt,id:DG_RING[best.kind],c:pt===3?'#fff36b':pt===2?'#9be36b':'#ffb36b'});
+  const P=DK_BY[DG_RING[best.kind]]; dgBurst(P,DG_COL[best.kind],pt===3?16:8);
+  if(DG.combo%10===0){ DG.fx.push({t:-.2,txt:'🔥 '+DG.combo+' 콤보!',id:'center',c:'#ffd600',big:true}); dgBurst({x:500,y:200,r:80},'#ffd600',26); }
 }
+function dgBurst(P,col,n){ for(let i=0;i<n;i++){ const a=Math.random()*6.283, v=140+Math.random()*320; DG.parts.push({x:P.x,y:P.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-80,t:0,l:.5+Math.random()*.4,c:col,r:3+Math.random()*5}); } }
+function dgConfetti(){ const b=$('dgbox'); for(let i=0;i<44;i++){ const d=document.createElement('i'); d.className='dgcf'; d.style.left=(Math.random()*100)+'%'; d.style.background=['#ffd23f','#ff7a7a','#6fd3ff','#9be36b','#c79bff','#ffb36b'][i%6]; d.style.animationDelay=(Math.random()*.7)+'s'; b.appendChild(d); setTimeout(()=>d.remove(),2900); } }
 function dgHit(id,kind,vo){
   vo=vo||{k:kind,v:.95}; const T=performance.now(); drSound(vo.k,vo.v,T);
   if(DG.run&&!DG.demo&&T<DG.end)dgJudge(kind,T);
 }
 function dgLoop(){
   if(!DG.run)return; const now=performance.now();
-  for(const n of DG.notes){ if(n.state===0&&now-n.t>220){ n.state='miss'; DG.miss++; DG.combo=0; DG.fx.push({t:0,txt:'놓침',id:DG_RING[n.kind],c:'#ff6a6a'}); } }
+  for(const n of DG.notes){ if(n.state===0&&now-n.t>220){ n.state='miss'; DG.miss++; DG.combo=0; DG.fx.push({t:0,txt:'놓침',id:DG_RING[n.kind],c:'#ff6a6a'}); const bx=$('dgbox'); bx.classList.remove('miss'); void bx.offsetWidth; bx.classList.add('miss'); } }
   dgDraw(now);
   if(now>=DG.end){ dgEnd(); return; }
   DG.raf=requestAnimationFrame(dgLoop);
@@ -12965,10 +12973,13 @@ function dgDraw(now){
     if(n.state==='auto'){ h+='<circle cx="'+P.x+'" cy="'+P.y+'" r="'+(P.r*(1+.6*q))+'" fill="none" stroke="'+DG_COL[n.kind]+'" stroke-opacity=".3" stroke-width="3"/>'; continue; }
     h+='<circle cx="'+P.x+'" cy="'+P.y+'" r="'+(P.r*.97).toFixed(1)+'" fill="'+DG_COL[n.kind]+'" fill-opacity="'+(.12+.25*(1-q)).toFixed(2)+'" stroke="none"/>'
      +'<circle cx="'+P.x+'" cy="'+P.y+'" r="'+r.toFixed(1)+'" fill="none" stroke="'+DG_COL[n.kind]+'" stroke-width="'+(11-5*q).toFixed(1)+'" stroke-opacity="'+(.6+.4*(1-q)).toFixed(2)+'"/>'; }
-  for(const f of DG.fx){ f.t+=.016; const P=DK_BY[f.id]; if(!P)continue; h+='<text x="'+P.x+'" y="'+(P.y-f.t*70).toFixed(1)+'" class="dkfx" fill="'+f.c+'" opacity="'+Math.max(0,1-f.t/.7).toFixed(2)+'">'+f.txt+'</text>'; }
+  for(const f of DG.fx){ f.t+=.016; if(f.t<0)continue; const P=DK_BY[f.id]||{x:500,y:215}; h+='<text x="'+P.x+'" y="'+(P.y-f.t*70).toFixed(1)+'" class="dkfx" fill="'+f.c+'" opacity="'+Math.max(0,1-f.t/.7).toFixed(2)+'"'+(f.big?' style="font-size:54px"':'')+'>'+f.txt+'</text>'; }
+  for(const q of DG.parts){ q.t+=.016; q.vy+=900*.016; q.x+=q.vx*.016; q.y+=q.vy*.016; h+='<circle cx="'+q.x.toFixed(0)+'" cy="'+q.y.toFixed(0)+'" r="'+(q.r*(1-q.t/q.l*.6)).toFixed(1)+'" fill="'+q.c+'" opacity="'+Math.max(0,1-q.t/q.l).toFixed(2)+'"/>'; }
+  DG.parts=DG.parts.filter(q=>q.t<q.l);
+  { const pl=$('dgpulse'); if(DG.run&&now>=DG.P0){ const ph=((now-DG.P0)/bm)%1; pl.style.opacity=(.5*Math.pow(1-ph,3)*(DG.combo>=10?1:.6)).toFixed(2); } else pl.style.opacity=0; const cb=$('dgcombo'); if(DG.run&&!DG.demo&&DG.combo>=3){ cb.hidden=false; cb.textContent='🔥 '+DG.combo+(DG.combo>=20?' ×3':DG.combo>=10?' ×2':''); } else cb.hidden=true; }
   DG.fx=DG.fx.filter(f=>f.t<.7); g.innerHTML=h;
   const el=$('dgcount'); if(DG.run&&now<DG.P0){ el.hidden=false; el.textContent=Math.max(1,Math.ceil((DG.P0-now)/bm)); }
-  else if(DG.run){ el.hidden=true; const bar=Math.min(DG_BARS,Math.floor((now-DG.P0)/(dgPat().n*drStepMs(DG.bpm)))+1); $('dgbar').textContent=(DG.demo?'🔊 듣는 중 ':'')+bar+' / '+DG_BARS+' 마디'+(DG.combo>=3&&!DG.demo?'  🔥 '+DG.combo+' 연속':''); }
+  else if(DG.run){ el.hidden=true; const bar=Math.min(DG_BARS,Math.floor((now-DG.P0)/(dgPat().n*drStepMs(DG.bpm)))+1); $('dgbar').textContent=(DG.demo?'🔊 듣는 중 ':'')+bar+' / '+DG_BARS+' 마디'+''; }
   $('dgscore').textContent=DG.score;
 }
 function dgEnd(){
@@ -12980,9 +12991,10 @@ function dgEnd(){
   $('dgresult').textContent=stars>=3?'🎉 완벽해요! ('+rank+')':stars===2?'👏 잘했어요! ('+rank+')':stars===1?'🙂 좋아요, 한 번 더! ('+rank+')':'💪 천천히 다시 해 봐요 ('+rank+')';
   $('dgdetail').innerHTML='완벽 '+DG.perf+' · 좋아요 '+DG.good+' · 아쉬워요 '+DG.close+' · 놓침 '+DG.miss+'<br>최고 연속 '+DG.maxCombo+' · 정확도 '+Math.round(acc*100)+'%'+(stars>prev&&stars>0?'<br>🏆 이 단계 새 기록!':'')+(stars<2?'<br>💡 어려우면 BPM을 낮추거나 「쉬움」으로 해 보세요.':'');
   $('dgnext').hidden=DG.pat>=DR_PATS.length-1; $('dgnext').classList.toggle('cta',stars>=2); $('dgagain').classList.toggle('cta',stars<2);
-  $('dgend').hidden=false;
+  $('dgend').hidden=false; if(stars>=2)dgConfetti();
 }
-function dgInfo(){
+function dgOpts(){ const b=drBest(), sel=$('dgpat'); DR_PATS.forEach((p,i)=>{ const st=Math.max(b[p.id+':easy']||0,b[p.id+':normal']||0); if(sel.options[i])sel.options[i].textContent=p.name+(st?'  '+'★'.repeat(st)+'☆'.repeat(3-st):''); }); }
+function dgInfo(){ dgOpts();
   const p=dgPat(), b=drBest(), best=Math.max(b[p.id+':easy']||0,b[p.id+':normal']||0);
   $('dgstage').textContent=p.name.split(' · ')[0]+' / '+DR_PATS.length+'단계'+(best?'  ·  최고 '+'★'.repeat(best):''); $('dgtitle').textContent=p.name.replace(/^.+? · /,''); $('dgdesc').textContent=p.desc+' (BPM '+DG.bpm+' · '+(DG.lv==='easy'?'쉬움':'보통')+')';
 }

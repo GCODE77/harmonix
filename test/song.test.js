@@ -37,6 +37,8 @@ export default async function songTest(){
       smFixBars(true); const sp=SM.chords.filter(c=>c.c2).length; ok('마디 안에서 멜로디가 화음을 옮기면 코드를 둘로 쪼갠다',sp>=1,SM.chords);
       const E=smEvents(), bars4=E.ev.filter(e=>e.inst==='strings'); ok('쪼갠 마디는 반주도 두 번 친다',bars4.length>0);
       SM.chords=keepC; SM.notes=keepN; SM.key=keepK; SM.ts=keepTs; }
+    // v128: 녹음 시작 직후 실시간 음표·곡선이 오류 없이 도는지(v126 에서 녹음 시작이 이 초기값을 빠뜨려 녹음이 오류로 멈췄다)
+    { SM.lv=null; let err=null; try{ for(let i=0;i<12;i++){ smLiveNote(67+Math.sin(i)*.3,.1); } smLiveStaff(); }catch(e){ err=e; } ok('녹음 중 실시간 오선지가 오류 없이 그려진다',!err&&SM.lv.curve.length>0,err&&err.message); SM.lv=null; }
     ok('편집 화면이 보인다',!$('smedit').hidden&&$('smroll').querySelectorAll('[data-i]').length===12);
     // 편곡
     const A=smEvents();
