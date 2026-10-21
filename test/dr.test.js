@@ -25,7 +25,7 @@ export default async function drTest(){
     kitFit(document.getElementById('dkbox')); ok('가로 화면이면 그대로, 세로면 눕힌다',['0','1'].includes(document.getElementById('dkbox').dataset.rot));
     // 게임
     showScreen('dg'); await W(150); ok('게임 시작 창',!document.getElementById('dgstart').hidden&&document.querySelectorAll('#dgbox .dkp').length===13);
-    ok('단계 13개',DR_PATS.length===13&&document.getElementById('dgpat').options.length===13);
+    ok('단계 22개',DR_PATS.length===22&&document.getElementById('dgpat').options.length===22);
     dgSetPat(0); DG.lv='normal'; DG.bpm=140; dgStart(false);
     let t0=performance.now(), done=new Set();
     const pieceOf=k=>DG_RING[k];
@@ -47,6 +47,9 @@ export default async function drTest(){
     dgSetPat(11,true); DG.lv='normal'; dgStart(false); ok('탐 필인 단계에 탐·크래시 음표',['tomh','tomm','toml','crash'].every(k=>DG.notes.some(n=>n.kind===k))); dgStop();
     dgSetPat(0); DG.bpm=200; dgStart(true); ok('먼저 듣기는 직접 칠 음표 없음',dgTotal()===0); t0=performance.now(); while(DG.run&&performance.now()-t0<30000)await W(50);
     ok('먼저 듣기가 끝나면 시작 창',!document.getElementById('dgstart').hidden&&document.getElementById('dgend').hidden);
+    // v138 서바이벌: 안 치면 하트 5개를 잃고 일찍 끝난다 · 점수 기록
+    { DG.mode='surv'; DG.lv='normal'; dgStart(false); ok('서바이벌: 구간 30개·하트 5',DG.segs.length===30&&DG.lives===5,[DG.segs.length,DG.lives]); const t2=performance.now(); while(DG.run&&performance.now()-t2<40000)await W(50);
+      ok('서바이벌: 다 놓치면 하트를 잃고 끝',!DG.run&&DG.lives<=0&&!document.getElementById('dgend').hidden,DG.lives); DG.mode='stage'; localStorage.removeItem('konti:dgsurv'); localStorage.removeItem('konti:dgmode'); }
     // 나가기
     dgStart(false); showScreen('home'); ok('게임에서 나가면 멈춘다',!DG.run&&document.getElementById('dg').hidden);
     showScreen('dk'); document.getElementById('dkbeat').click(); showScreen('home'); ok('연주에서 나가면 비트가 멈춘다',!DK.beatOn&&document.getElementById('dk').hidden);
