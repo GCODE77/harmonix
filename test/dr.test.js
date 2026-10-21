@@ -33,6 +33,12 @@ export default async function drTest(){
     ok('정확히 치면 전부 완벽',DG.perf===32&&DG.miss===0,[DG.perf,DG.good,DG.miss]);
     ok('별 3개 · 결과 창',!document.getElementById('dgend').hidden&&/★★★/.test(document.getElementById('dgstars').textContent));
     ok('기록 저장',JSON.parse(localStorage.getItem('konti:dgbest')||'{}')['l1:normal']===3);
+    // v131: 늦게 치는 사람(+90ms)은 자동 보정을 권하고, 보정하면 완벽으로 판정된다
+    { const keepOff=DG.off; DG.off=0; dgSetPat(0); DG.lv='normal'; DG.bpm=140; dgStart(false); const done2=new Set(), t1=performance.now();
+      while(DG.run&&performance.now()-t1<30000){ await W(4); const now=performance.now(); for(const n of DG.notes){ if(n.state===0&&!done2.has(n)&&now>=n.t+90){ done2.add(n); down('#dgbox',DG_RING[n.kind]); } } }
+      ok('90ms 늦게 치는 사람: 자동 보정을 권한다',!document.getElementById('dgcalbox').hidden&&DG.calNext>=60&&DG.calNext<=120,DG.calNext);
+      document.getElementById('dgcal').click(); ok('보정이 저장된다',DG.off===DG.calNext&&+localStorage.getItem('konti:dgoff')===DG.off);
+      localStorage.removeItem('konti:dgoff'); DG.off=keepOff; }
     dgSetPat(1,true); DG.bpm=200; dgStart(false); t0=performance.now(); while(DG.run&&performance.now()-t0<30000)await W(50);
     ok('안 치면 전부 놓침 · 별 0',DG.perf===0&&DG.miss===32&&/☆☆☆/.test(document.getElementById('dgstars').textContent),[DG.perf,DG.miss]);
     dgSetPat(2,true); DG.lv='easy'; DG.bpm=200; dgStart(false);

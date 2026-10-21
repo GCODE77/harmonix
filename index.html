@@ -604,6 +604,7 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 .dgcf{position:absolute;top:-12px;width:9px;height:14px;z-index:4;pointer-events:none;animation:dgfall 1.9s ease-in forwards}@keyframes dgfall{to{transform:translateY(120vh) rotate(720deg);opacity:.9}}
 #dgcount{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;font:900 110px sans-serif;color:#ffd23f;-webkit-text-stroke:6px #10161E;paint-order:stroke fill;pointer-events:none}
 #dgcount[hidden]{display:none}
+#dgcalbox{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%}#dgcalbox[hidden]{display:none}
 .drov{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;background:rgba(10,14,22,.62);padding:14px}
 .drov[hidden]{display:none}.drov .gmbox{max-height:100%;overflow-y:auto;box-sizing:border-box}
 .drov .gmbtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;width:100%}.drov .btn.cta{flex:1 1 140px;font-size:17px;min-height:50px}
@@ -908,7 +909,7 @@ header{padding-top:8px!important;padding-left:10px!important}
       <div class="gmbtns"><button class="btn cta" id="dggo" type="button">▶ 시작</button><button class="btn" id="dglisten" type="button">🔊 먼저 듣기</button></div>
       <small>① 먼저 듣기로 박자를 익히고 ② 시작을 누르면 ③ 드럼 위에 큰 링이 나타나 줄어들어요 — 링이 부품 가장자리에 닿을 때 그 부품을 톡!</small></div></div>
     <div id="dgend" class="drov" hidden><div class="gmbox"><div id="dgstars" class="vbstars">★★★</div><b id="dgresult"></b><small id="dgdetail"></small>
-      <div class="gmbtns"><button class="btn cta" id="dgagain" type="button">다시 하기</button><button class="btn" id="dgnext" type="button">다음 단계 ▶</button><button class="btn" id="dgtoplay" type="button">🥁 자유롭게 치기</button></div></div></div>
+      <div id="dgcalbox" hidden><small id="dgcaltxt"></small><button class="btn" id="dgcal" type="button">⏱ 자동 보정</button></div><div class="gmbtns"><button class="btn cta" id="dgagain" type="button">다시 하기</button><button class="btn" id="dgnext" type="button">다음 단계 ▶</button><button class="btn" id="dgtoplay" type="button">🥁 자유롭게 치기</button></div></div></div>
   </div>
 </div>
 <div id="tn" hidden>
@@ -1135,7 +1136,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "130";
+const APP_VER = "131";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -12992,7 +12993,7 @@ function dkEnter(){ const box=$('dkbox'); if(!box.querySelector('.dkkit'))box.in
   addEventListener('resize',()=>{ if(KB.shown==='dk')kitFit($('dkbox')); if(KB.shown==='dg')dgFit(); });
 })();
 /* ---------- 🎮 드럼 게임 ---------- */
-const DG={parts:[],pat:0,bpm:70,lv:'easy',metro:true,run:false,demo:false,notes:[],evs:[],ei:0,t0:0,P0:0,end:0,score:0,perf:0,good:0,close:0,miss:0,combo:0,maxCombo:0,fx:[],timer:null,raf:0};
+const DG={off:0,diffs:[],parts:[],pat:0,bpm:70,lv:'easy',metro:true,run:false,demo:false,notes:[],evs:[],ei:0,t0:0,P0:0,end:0,score:0,perf:0,good:0,close:0,miss:0,combo:0,maxCombo:0,fx:[],timer:null,raf:0};
 const DG_BARS=8, DG_FALL=1150;
 const DG_RING={kick:'kickL',snare:'snare',rim:'snare',hatc:'hatc',hato:'hato',tomh:'tomL',tomm:'tomM',toml:'tomR',crash:'crashL',splash:'splash',ride:'ride'};
 const DG_JK=k=>k==='rim'?'snare':k;     // 림샷 음표는 스네어를 쳐서 받는다
@@ -13015,15 +13016,16 @@ function dgPump(){ if(!DG.run)return; const ahead=performance.now()+120; while(D
 function dgStart(demo){
   dgStop(); try{ AC(); }catch(e){}
   DG.demo=!!demo; DG.score=0; DG.perf=DG.good=DG.close=DG.miss=0; DG.combo=DG.maxCombo=0; DG.fx=[];
-  DG.parts=[]; dgBuild(); DG.run=true; $('dgstart').hidden=true; $('dgend').hidden=true;
+  DG.parts=[]; DG.diffs=[]; dgBuild(); DG.run=true; $('dgstart').hidden=true; $('dgend').hidden=true;
   DG.timer=setInterval(dgPump,25); dgPump(); cancelAnimationFrame(DG.raf); DG.raf=requestAnimationFrame(dgLoop);
 }
 function dgStop(){ DG.run=false; clearInterval(DG.timer); DG.timer=null; cancelAnimationFrame(DG.raf); const r=document.querySelector('#dgbox .dkrings'); if(r)r.innerHTML=''; }
 const dgTotal=()=>DG.notes.filter(n=>!n.auto).length;
 function dgJudge(kind,T){
+  T-=DG.off;   // 타이밍 보정(블루투스 이어폰·폰 지연): 평균적으로 늦게 치는 만큼 뺀다
   let best=null,bd=1e9; for(const n of DG.notes){ if(n.t-T>260)break; if(n.jk!==kind||n.state!==0)continue; const d=Math.abs(n.t-T); if(d<bd){ bd=d; best=n; } }
   if(!best||bd>220)return;
-  const tag=T<best.t?'빨라요':'늦어요'; let txt,pt;
+  const tag=T<best.t?'빨라요':'늦어요'; let txt,pt; DG.diffs.push(T-best.t);
   if(bd<=90){ best.state='perfect'; DG.perf++; pt=3; txt='완벽!'; }
   else if(bd<=160){ best.state='good'; DG.good++; pt=2; txt='좋아요 · '+tag; }
   else{ best.state='close'; DG.close++; pt=1; txt='아쉬워요 · '+tag; }
@@ -13071,12 +13073,13 @@ function dgEnd(){
   $('dgresult').textContent=stars>=3?'🎉 완벽해요! ('+rank+')':stars===2?'👏 잘했어요! ('+rank+')':stars===1?'🙂 좋아요, 한 번 더! ('+rank+')':'💪 천천히 다시 해 봐요 ('+rank+')';
   $('dgdetail').innerHTML='완벽 '+DG.perf+' · 좋아요 '+DG.good+' · 아쉬워요 '+DG.close+' · 놓침 '+DG.miss+'<br>최고 연속 '+DG.maxCombo+' · 정확도 '+Math.round(acc*100)+'%'+(stars>prev&&stars>0?'<br>🏆 이 단계 새 기록!':'')+(stars<2?'<br>💡 어려우면 BPM을 낮추거나 「쉬움」으로 해 보세요.':'');
   $('dgnext').hidden=DG.pat>=DR_PATS.length-1; $('dgnext').classList.toggle('cta',stars>=2); $('dgagain').classList.toggle('cta',stars<2);
+  { const d=DG.diffs, box=$('dgcalbox'); box.hidden=true; if(d.length>=12){ const mean=d.reduce((a,b)=>a+b,0)/d.length; if(Math.abs(mean)>=30){ DG.calNext=Math.round(DG.off+mean); $('dgcaltxt').textContent='평균 '+Math.abs(Math.round(mean))+'ms '+(mean>0?'늦게':'빠르게')+' 쳤어요 — 폰·이어폰 지연일 수 있어요. 자동으로 맞춰 드릴까요?'; box.hidden=false; } } }
   $('dgend').hidden=false; if(stars>=2)dgConfetti();
 }
 function dgOpts(){ const b=drBest(), sel=$('dgpat'); DR_PATS.forEach((p,i)=>{ const st=Math.max(b[p.id+':easy']||0,b[p.id+':normal']||0); if(sel.options[i])sel.options[i].textContent=p.name+(st?'  '+'★'.repeat(st)+'☆'.repeat(3-st):''); }); }
 function dgInfo(){ dgOpts();
   const p=dgPat(), b=drBest(), best=Math.max(b[p.id+':easy']||0,b[p.id+':normal']||0);
-  $('dgstage').textContent=p.name.split(' · ')[0]+' / '+DR_PATS.length+'단계'+(best?'  ·  최고 '+'★'.repeat(best):''); $('dgtitle').textContent=p.name.replace(/^.+? · /,''); $('dgdesc').textContent=p.desc+' (BPM '+DG.bpm+' · '+(DG.lv==='easy'?'쉬움':'보통')+')';
+  $('dgstage').textContent=p.name.split(' · ')[0]+' / '+DR_PATS.length+'단계'+(best?'  ·  최고 '+'★'.repeat(best):''); $('dgtitle').textContent=p.name.replace(/^.+? · /,''); $('dgdesc').textContent=p.desc+' (BPM '+DG.bpm+' · '+(DG.lv==='easy'?'쉬움':'보통')+(DG.off?' · ⏱ 보정 '+(DG.off>0?'+':'')+DG.off+'ms':'')+')';
 }
 function dgReset(){ dgStop(); $('dgstart').hidden=false; $('dgend').hidden=true; $('dgcount').hidden=true; $('dgbar').textContent=''; DG.score=0; $('dgscore').textContent=0; dgInfo(); }
 function dgSetPat(i,keepBpm){ DG.pat=Math.max(0,Math.min(DR_PATS.length-1,i)); if(!keepBpm)DG.bpm=dgPat().bpm; $('dgpat').value=String(DG.pat); $('dgbpm').textContent=DG.bpm; try{ localStorage.setItem('konti:dgpat',String(DG.pat)); }catch(e){} dgReset(); }
@@ -13084,10 +13087,12 @@ function dgEnter(){ const box=$('dgbox'); if(!box.querySelector('.dkkit'))box.in
 (function dgInit(){
   const sel=$('dgpat'); sel.innerHTML=DR_PATS.map((p,i)=>'<option value="'+i+'">'+p.name+'</option>').join('');
   try{ DG.pat=Math.min(DR_PATS.length-1,+(localStorage.getItem('konti:dgpat')||0)||0); DG.lv=localStorage.getItem('konti:dglv')||'easy'; DG.metro=localStorage.getItem('konti:dgmetro')!=='0'; }catch(e){}
+  try{ DG.off=+(localStorage.getItem('konti:dgoff')||0)||0; }catch(e){}
   DG.bpm=dgPat().bpm; sel.value=String(DG.pat); $('dgbpm').textContent=DG.bpm; $('dglv').textContent=DG.lv==='easy'?'😊 쉬움':'😎 보통'; $('dgmetro').classList.toggle('on',DG.metro);
   sel.onchange=()=>dgSetPat(+sel.value);
   const bpm=d=>{ DG.bpm=Math.max(40,Math.min(200,DG.bpm+d)); $('dgbpm').textContent=DG.bpm; dgReset(); };
   $('dgbpmd').onclick=()=>bpm(-5); $('dgbpmu').onclick=()=>bpm(5);
+  $('dgcal').onclick=()=>{ DG.off=Math.max(-250,Math.min(250,DG.calNext||0)); try{ localStorage.setItem('konti:dgoff',String(DG.off)); }catch(e){} $('dgcalbox').hidden=true; toast('⏱ 타이밍 보정 '+(DG.off>0?'+':'')+DG.off+'ms 적용 — 다시 해 보세요'); dgInfo(); };
   $('dglv').onclick=()=>{ DG.lv=DG.lv==='easy'?'normal':'easy'; $('dglv').textContent=DG.lv==='easy'?'😊 쉬움':'😎 보통'; try{ localStorage.setItem('konti:dglv',DG.lv); }catch(e){} toast(DG.lv==='easy'?'쉬움 — 하이햇은 반주가 쳐 줘요':'보통 — 모든 부품을 직접 쳐요'); dgReset(); };
   $('dgmetro').onclick=()=>{ DG.metro=!DG.metro; $('dgmetro').classList.toggle('on',DG.metro); try{ localStorage.setItem('konti:dgmetro',DG.metro?'1':'0'); }catch(e){} };
   $('dggo').onclick=()=>dgStart(false); $('dglisten').onclick=()=>dgStart(true);
