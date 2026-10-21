@@ -9,7 +9,7 @@ export default async function vbTest(){
     ok('남자 목소리 솔3 도 → 4 (옥타브 접기)',Math.abs(vbPosOfMidi(55,3)-4)<1e-6);
     ok('아이 목소리 미5 → 2',Math.abs(vbPosOfMidi(76,3)-2)<1e-6);
     ok('반음(도#) 은 도·레 사이',Math.abs(vbPosOfMidi(61,1)-.5)<1e-6);
-    showScreen('vb'); window.vbMic=async()=>true; VB.hint=false; VB.lv='normal';
+    showScreen('vb'); window.vbMic=async()=>true; VB.hint=false; VB.scale=false; VB.lv='normal';
     // 완벽하게 부르는 사람
     VB.song='school';
     window.vbHear=()=>{ const q=VB.pipes.find(p=>!p.done); const p=q?q.p:3.5; return 60+[0,2,4,5,7,9,11,12][Math.round(p)]+(p%1?1:0); };

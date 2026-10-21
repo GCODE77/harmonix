@@ -51,7 +51,7 @@ export default async function drTest(){
     dgStart(false); showScreen('home'); ok('게임에서 나가면 멈춘다',!DG.run&&document.getElementById('dg').hidden);
     showScreen('dk'); document.getElementById('dkbeat').click(); showScreen('home'); ok('연주에서 나가면 비트가 멈춘다',!DK.beatOn&&document.getElementById('dk').hidden);
     // 새: 마이크를 쉬는 동안 유지
-    showScreen('vb'); const rh=window.vbHear, rm=window.vbMic; window.vbMic=async()=>true; VB.hint=false; VB.lv='easy'; VB.song='random';
+    showScreen('vb'); const rh=window.vbHear, rm=window.vbMic; window.vbMic=async()=>true; VB.hint=false; VB.scale=false; VB.lv='easy'; VB.song='random';
     window.vbHear=()=>VB.mute>0?null:60+7;
     await vbStart(); await W(6000); const before=VB.pos; VB.mute=.6; const lo=[VB.pos]; for(let i=0;i<5;i++){ await W(100); lo.push(VB.pos); }
     ok('마이크를 쉬는 동안(0.5초) 새가 떨어지지 않는다',Math.min(...lo)>before-.3&&VB.voice!=null,lo);
