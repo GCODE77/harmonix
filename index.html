@@ -544,6 +544,9 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 .tnpopgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tnpopgrid .btn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;min-height:58px;text-align:left}
 .tnpopgrid .btn small{color:var(--dim);font-size:11.5px;font-weight:600}.tnpopgrid .btn.on{background:var(--brass);color:#10161E;border-color:var(--brass)}.tnpopgrid .btn.on small{color:#3a2a08}
+.tnpopgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.tnpopgrid .btn.tnib{flex-direction:row;align-items:center;gap:8px;min-height:72px;min-width:0;padding:8px;white-space:normal}.tnib span{display:flex;flex-direction:column;gap:2px;min-width:0}.tnib span b,.tnib span small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tnpic{width:54px;height:54px;flex:none;border-radius:12px;background:radial-gradient(circle at 40% 35%,#2c3a50,#141c28);border:1px solid rgba(240,185,94,.35);padding:2px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.4))}
+.tnpopgrid .btn.tnib.on .tnpic{border-color:#2a1b05}
 .tnpopnote{margin:12px 2px 2px;font-size:12px;color:var(--dim);line-height:1.5}
 #tngtr .peg .sn{position:absolute;left:8px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:#2c3a4c;color:var(--paper);font-style:normal;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center}
 #tngtr .peg.det .sn{background:#10161E;color:var(--brass)}#tngtr .peg.done .sn{background:var(--mint);color:#10161E}
@@ -818,6 +821,14 @@ input[type=range]{accent-color:var(--gold2)}
 #dk,#dg{background:radial-gradient(110% 70% at 50% -10%,#1a2230,#121316)}
 #toast{background:rgba(18,24,34,.92);border:1px solid var(--hair);backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(0,0,0,.45)}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:rgba(240,185,94,.28);border-radius:8px}::-webkit-scrollbar-track{background:transparent}
+
+/* v135 프리미엄 아이콘 — 이모지 대신 금빛 선 아이콘 타일(같은 결·같은 굵기) */
+#home .hi{font-size:56px;line-height:0}#home .hi .ic{width:1em;height:1em;display:block;margin:0 auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.45))}
+#home .hcard:hover .hi .ic{filter:drop-shadow(0 6px 18px rgba(240,185,94,.35))}
+#home .hcard.wide .hi{font-size:48px}
+@media (max-width:520px){#home .hcards .hcard .hi,#home .hcards .hcard.wide .hi{font-size:34px}#home .hcards .hcard.span2 .hi{font-size:38px}}
+#home .hgrp{font-size:12.5px;text-transform:uppercase;letter-spacing:.14em}
+#home .hcard b{font-weight:700;letter-spacing:.01em}
 </style>
 </head>
 <body>
@@ -873,20 +884,21 @@ input[type=range]{accent-color:var(--gold2)}
   <div class="hbox">
     <button class="hinst" id="hinst" type="button" aria-label="홈 화면에 추가해서 앱처럼 쓰기">📲 앱 설치</button><button class="hfs" id="hfs" type="button" aria-label="전체화면 자동으로 켜기/끄기" title="전체화면 자동">⛶</button><div class="hhead"><img class="hicon" src="icon-192.png" alt="" width="84" height="84"><div class="hlogo">하모닉스</div></div>
     <div class="hcards">
-      <h2 class="hgrp">🎼 악보 · 연주</h2>
-      <button class="hcard" id="h-score" type="button"><span class="hi">🎼</span><span><b>악보 연주</b><br><small>악보 사진을 악보로 바꾸고<br>반주와 함께 연주해요</small></span></button>
-      <button class="hcard" id="h-kb" type="button"><span class="hi">🎹</span><span><b>건반 연주</b><br><small>건반을 직접 눌러 연주해요<br>피아노·바이올린·드럼 등</small></span></button>
-      <h2 class="hgrp">🎯 연습 도구</h2>
-      <button class="hcard" id="h-tn" type="button"><span class="hi">🎤</span><span><b>튜너 · 음 찾기</b><br><small>악기 소리를 듣고 음 이름과<br>음정이 맞는지 알려 줘요</small></span></button>
-      <button class="hcard" id="h-mt" type="button"><span class="hi">⏱</span><span><b>메트로놈</b><br><small>박자·쪼개기·탭 템포로<br>연습 박자를 맞춰요</small></span></button>
-      <button class="hcard wide span2" id="h-dk" type="button"><span class="hi">🥁</span><span><b>드럼 연주</b><br><small>실제 드럼 세트를 눌러 쳐요 · 비트 반주 · 녹음</small></span></button>
-      <h2 class="hgrp">🎮 놀이 · 게임</h2>
-      <button class="hcard wide" id="h-vb" type="button"><span class="hi">🐤</span><span><b>노래하는 새</b><br><small>목소리 높이로 새를 날려 파이프 틈을 통과해요 · 도레미 음정 놀이</small></span></button>
-      <button class="hcard wide" id="h-dg" type="button"><span class="hi"><svg viewBox="0 0 64 64" width="1em" height="1em" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#1c1c1e"/><circle cx="32" cy="34" r="13" fill="#4b4238" stroke="#cfcfcf" stroke-width="3"/><circle cx="32" cy="34" r="8.5" fill="none" stroke="#1f7a8c" stroke-width="3.5"/><circle cx="32" cy="34" r="25" fill="none" stroke="#ffd23f" stroke-width="3.5" stroke-dasharray="7 5"/><circle cx="32" cy="34" r="19" fill="none" stroke="#ff7a7a" stroke-width="2.5" opacity=".75"/><path d="M8 8l14 14M56 8L42 22" stroke="#e8c98a" stroke-width="3.5" stroke-linecap="round"/><circle cx="23" cy="23" r="3" fill="#e8c98a"/><circle cx="41" cy="23" r="3" fill="#e8c98a"/></svg></span><span><b>드럼 게임</b><br><small>줄어드는 링에 맞춰 드럼을 쳐요 · 쿵짝 기본부터 필인까지 13단계</small></span></button>
-      <button class="hcard wide span2" id="h-gm" type="button"><span class="hi"><svg viewBox="0 0 64 64" width="1em" height="1em" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#16233a"/><rect x="7" y="7" width="12" height="15" rx="3" fill="#35d0e8"/><rect x="26" y="19" width="12" height="15" rx="3" fill="#ffd23f"/><rect x="45" y="9" width="12" height="15" rx="3" fill="#ff9a3c"/><path d="M13 25v6M32 37v-0M51 27v6" stroke="rgba(255,255,255,.35)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 4"/><rect x="5" y="40" width="54" height="19" rx="3" fill="#f6f2e8"/><path d="M14 40v19M23 40v19M32 40v19M41 40v19M50 40v19" stroke="#aaa" stroke-width="1.2"/><rect x="11" y="40" width="6" height="11" rx="1.5" fill="#222"/><rect x="29" y="40" width="6" height="11" rx="1.5" fill="#222"/><rect x="38" y="40" width="6" height="11" rx="1.5" fill="#222"/><rect x="47" y="40" width="6" height="11" rx="1.5" fill="#222"/></svg></span><span><b>건반 게임</b><br><small>내려오는 블록을 맞춰 눌러요 · 동요·클래식 100판</small></span></button>
-      <h2 class="hgrp">✨ 만들기</h2>
-      <button class="hcard wide" id="h-ts" type="button"><span class="hi">🎧</span><span><b>노래 파일 채보</b><br><small>노래 파일을 넣으면 멜로디·박자·코드를 악보로 옮겨 줘요 · 악보에서 바로 고쳐요</small></span></button>
-      <button class="hcard wide" id="h-sm" type="button"><span class="hi">🎙</span><span><b>노래 만들기</b><br><small>흥얼거리거나 노래하면 코드·반주를 붙여 노래로 만들어 줘요</small></span></button>
+      <h2 class="hgrp">악보 · 연주</h2>
+      <button class="hcard" id="h-score" type="button"><span class="hi"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8E3AE"/><stop offset="1" stop-color="#C9963F"/></linearGradient><linearGradient id="hxt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26364B"/><stop offset="1" stop-color="#121B27"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="13" fill="url(#hxt)" stroke="rgba(240,185,94,.45)"/><g transform="translate(8 8) scale(1.34)" stroke="url(#hxg)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2h14l4 4v16H3z"/><path d="M17 2v4h4"/><path d="M6 9h11M6 13h11M6 17h11" opacity=".55"/><circle cx="9" cy="17" r="2" fill="url(#hxg)"/><path d="M11 17V9l5-1"/></g></svg></span><span><b>악보 연주</b><br><small>악보 사진을 악보로 바꾸고<br>반주와 함께 연주해요</small></span></button>
+      <button class="hcard" id="h-kb" type="button"><span class="hi"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8E3AE"/><stop offset="1" stop-color="#C9963F"/></linearGradient><linearGradient id="hxt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26364B"/><stop offset="1" stop-color="#121B27"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="13" fill="url(#hxt)" stroke="rgba(240,185,94,.45)"/><g transform="translate(8 8) scale(1.34)" stroke="url(#hxg)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M6 4v16M11.5 4v16M17 4v16"/><path d="M4 4v9h3V4M14.5 4v9h3V4" fill="url(#hxg)"/></g></svg></span><span><b>건반 연주</b><br><small>건반을 직접 눌러 연주해요<br>피아노·바이올린·드럼 등</small></span></button>
+      <h2 class="hgrp">연습 도구</h2>
+      <button class="hcard" id="h-tn" type="button"><span class="hi"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8E3AE"/><stop offset="1" stop-color="#C9963F"/></linearGradient><linearGradient id="hxt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26364B"/><stop offset="1" stop-color="#121B27"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="13" fill="url(#hxt)" stroke="rgba(240,185,94,.45)"/><g transform="translate(8 8) scale(1.34)" stroke="url(#hxg)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17a9 9 0 1 1 18 0"/><path d="M12 17l5-7"/><circle cx="12" cy="17" r="1.6" fill="url(#hxg)"/><path d="M5 10l1.4 1M19 10l-1.4 1M12 6v1.6"/></g></svg></span><span><b>음 찾기 · 튜너</b><br><small>노래·악기 소리가 무슨 음인지<br>정확한지 바로 알려 줘요</small></span></button>
+<button class="hcard" id="h-tni" type="button"><span class="hi"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8E3AE"/><stop offset="1" stop-color="#C9963F"/></linearGradient><linearGradient id="hxt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26364B"/><stop offset="1" stop-color="#121B27"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="13" fill="url(#hxt)" stroke="rgba(240,185,94,.45)"/><g transform="translate(8 8) scale(1.34)" stroke="url(#hxg)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2l4 4-6.5 6.5"/><path d="M11.5 12.5c1.8 1.8 1.6 4.8-.6 6.5-2.4 2-6 2.2-8 .2s-1.8-5.6.2-8c1.7-2.2 4.7-2.4 6.5-.6z"/><circle cx="7" cy="17" r="1.6" fill="url(#hxg)"/><path d="M17 1l2 2M19.5 3.5l1 1"/></g></svg></span><span><b>악기 튜닝</b><br><small>기타·베이스·우쿨렐레<br>바이올린·첼로 줄 맞추기</small></span></button>
+      <button class="hcard" id="h-mt" type="button"><span class="hi"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8E3AE"/><stop offset="1" stop-color="#C9963F"/></linearGradient><linearGradient id="hxt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26364B"/><stop offset="1" stop-color="#121B27"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="13" fill="url(#hxt)" stroke="rgba(240,185,94,.45)"/><g transform="translate(8 8) scale(1.34)" stroke="url(#hxg)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l5 20H3z"/><path d="M12 18l6-12"/><circle cx="16.5" cy="9" r="1.6" fill="url(#hxg)"/><path d="M6 18h12" opacity=".55"/></g></svg></span><span><b>메트로놈</b><br><small>박자·쪼개기·탭 템포로<br>연습 박자를 맞춰요</small></span></button>
+      <button class="hcard wide" id="h-dk" type="button"><span class="hi"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8E3AE"/><stop offset="1" stop-color="#C9963F"/></linearGradient><linearGradient id="hxt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26364B"/><stop offset="1" stop-color="#121B27"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="13" fill="url(#hxt)" stroke="rgba(240,185,94,.45)"/><g transform="translate(8 8) scale(1.34)" stroke="url(#hxg)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="10" rx="9" ry="3.5"/><path d="M3 10v7c0 2 4 3.5 9 3.5s9-1.5 9-3.5v-7"/><path d="M5 2l7 7M19 2l-7 7"/></g></svg></span><span><b>드럼 연주</b><br><small>실제 드럼 세트를 눌러 쳐요 · 비트 반주 · 녹음</small></span></button>
+      <h2 class="hgrp">놀이 · 게임</h2>
+      <button class="hcard wide" id="h-vb" type="button"><span class="hi"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8E3AE"/><stop offset="1" stop-color="#C9963F"/></linearGradient><linearGradient id="hxt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26364B"/><stop offset="1" stop-color="#121B27"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="13" fill="url(#hxt)" stroke="rgba(240,185,94,.45)"/><g transform="translate(8 8) scale(1.34)" stroke="url(#hxg)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14c0-5 4-8 9-8 3 0 5 2 5 4l3 1-3 1c0 4-3 7-8 7-4 0-6-2-6-5z"/><circle cx="15" cy="10" r="1" fill="url(#hxg)"/><path d="M7 13c2 2 5 2 7 0"/><path d="M20 4l1-2M22 6h1.5" opacity=".6"/></g></svg></span><span><b>노래하는 새</b><br><small>목소리 높이로 새를 날려 파이프 틈을 통과해요 · 도레미 음정 놀이</small></span></button>
+      <button class="hcard wide" id="h-dg" type="button"><span class="hi"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8E3AE"/><stop offset="1" stop-color="#C9963F"/></linearGradient><linearGradient id="hxt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26364B"/><stop offset="1" stop-color="#121B27"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="13" fill="url(#hxt)" stroke="rgba(240,185,94,.45)"/><g transform="translate(8 8) scale(1.34)" stroke="url(#hxg)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" stroke-dasharray="3 2.4"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2.2" fill="url(#hxg)"/></g></svg></span><span><b>드럼 게임</b><br><small>줄어드는 링에 맞춰 드럼을 쳐요 · 쿵짝 기본부터 필인까지 13단계</small></span></button>
+      <button class="hcard wide span2" id="h-gm" type="button"><span class="hi"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8E3AE"/><stop offset="1" stop-color="#C9963F"/></linearGradient><linearGradient id="hxt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26364B"/><stop offset="1" stop-color="#121B27"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="13" fill="url(#hxt)" stroke="rgba(240,185,94,.45)"/><g transform="translate(8 8) scale(1.34)" stroke="url(#hxg)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="15" width="20" height="7" rx="1.5"/><path d="M7 15v7M12 15v7M17 15v7"/><rect x="3" y="2" width="4" height="6" rx="1" fill="url(#hxg)"/><rect x="10" y="6" width="4" height="6" rx="1"/><rect x="17" y="1" width="4" height="6" rx="1"/></g></svg></span><span><b>건반 게임</b><br><small>내려오는 블록을 맞춰 눌러요 · 동요·클래식 100판</small></span></button>
+      <h2 class="hgrp">만들기</h2>
+      <button class="hcard wide" id="h-ts" type="button"><span class="hi"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8E3AE"/><stop offset="1" stop-color="#C9963F"/></linearGradient><linearGradient id="hxt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26364B"/><stop offset="1" stop-color="#121B27"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="13" fill="url(#hxt)" stroke="rgba(240,185,94,.45)"/><g transform="translate(8 8) scale(1.34)" stroke="url(#hxg)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="2" y="14" width="4" height="7" rx="1.5"/><rect x="18" y="14" width="4" height="7" rx="1.5"/><path d="M9 17v2M12 15v6M15 17v2" /></g></svg></span><span><b>노래 파일 채보</b><br><small>노래 파일을 넣으면 멜로디·박자·코드를 악보로 옮겨 줘요 · 악보에서 바로 고쳐요</small></span></button>
+      <button class="hcard wide" id="h-sm" type="button"><span class="hi"><svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="hxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8E3AE"/><stop offset="1" stop-color="#C9963F"/></linearGradient><linearGradient id="hxt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#26364B"/><stop offset="1" stop-color="#121B27"/></linearGradient></defs><rect x="1" y="1" width="46" height="46" rx="13" fill="url(#hxt)" stroke="rgba(240,185,94,.45)"/><g transform="translate(8 8) scale(1.34)" stroke="url(#hxg)" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="12" rx="4"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4M8 22h8"/><path d="M20 3l.6 1.4L22 5l-1.4.6L20 7l-.6-1.4L18 5l1.4-.6z" fill="url(#hxg)" stroke="none"/></g></svg></span><span><b>노래 만들기</b><br><small>흥얼거리거나 노래하면 코드·반주를 붙여 노래로 만들어 줘요</small></span></button>
     </div>
     <div class="hcopy">© GLORY &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; <a href="#" id="hreload" style="color:inherit;pointer-events:auto">🔄 새로 불러오기</a> &nbsp;·&nbsp; v<span id="hver"></span></div>
   </div>
@@ -976,7 +988,7 @@ input[type=range]{accent-color:var(--gold2)}
     <button class="btn rec" id="tnmic" type="button">🎤 시작</button>
   </div>
   <div id="tnbody">
-    <div id="tnmodes"><button class="btn" data-mode="chrom" type="button">🎤 모든 음</button><button class="btn" data-mode="guitar" type="button">🎸 기타</button><button class="btn" data-mode="other" id="tnmodeo" type="button">🎻 다른 악기 ▾</button></div>
+    <div id="tnmodes"><button class="btn" data-mode="chrom" type="button">🎤 음 찾기 (모든 음)</button><button class="btn" data-mode="other" id="tnmodeo" type="button">🎸 악기 튜닝 ▾</button></div>
     <div id="tnnote" aria-live="polite"><span style="opacity:.3">♪</span></div>
     <div id="tnsub">마이크를 켜고 악기 소리를 내 보세요</div>
     <div id="tnmeter" aria-hidden="true"><i class="z0"></i><i class="zc"></i><span class="tk" style="left:0"></span><span class="tk" style="left:25%"></span><span class="tk big" style="left:50%"></span><span class="tk" style="left:75%"></span><span class="tk" style="left:100%"></span><div id="tnneedle"></div><em class="lo">♭ 낮음</em><em class="hi">높음 ♯</em></div>
@@ -1193,7 +1205,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "134";
+const APP_VER = "136";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -13326,11 +13338,33 @@ function tnGuitarDet(i,tuned,pre,ac,cents){
   /* ★ 다른 줄을 조이면 이미 맞춘 줄이 다시 풀린다(목의 장력이 바뀐다) — 맞춘 줄이 20센트 넘게 벗어나면 「다시 확인」으로 되돌린다 */
   else if(i>=0&&ac>25&&TN.done[TN.pre+':'+i]){ delete TN.done[TN.pre+':'+i]; tnGuitarPaint(); const p=$('tngtr').querySelector('.peg[data-i="'+i+'"]'); if(p){ p.classList.add('redo'); setTimeout(()=>p.classList.remove('redo'),1500); } }
 }
+/* v135(사용자: "튜닝할 악기가 글자만 있어 가시성이 안 좋다 — 악기 사진도"): 악기마다 그림(SVG 일러스트, 나무색 몸통·줄·헤드) */
+function tnInstPic(k){
+  const t=/^guitar7/.test(k)?'eg':/^guitar/.test(k)?'g':k==='dbass'?'db':/^bass/.test(k)?'b':/^uke/.test(k)?'u':k==='mandolin'?'m':k==='banjo'?'bj':k==='cello'?'c':k==='viola'?'va':'v';
+  const wood='url(#tiw)', D='<defs><linearGradient id="tiw" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e6a35a"/><stop offset=".55" stop-color="#b8652a"/><stop offset="1" stop-color="#7a3b14"/></linearGradient><linearGradient id="tie" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e85a4f"/><stop offset="1" stop-color="#8e1f1f"/></linearGradient><radialGradient id="tib"><stop offset="0" stop-color="#f4efe2"/><stop offset="1" stop-color="#cfc6ae"/></radialGradient></defs>';
+  const neck=(x,y1,y2,w)=>'<rect x="'+(x-w/2)+'" y="'+y1+'" width="'+w+'" height="'+(y2-y1)+'" rx="1.5" fill="#3b2412"/>'+[0.25,.5,.75].map(f=>'<line x1="'+(x-w/2)+'" x2="'+(x+w/2)+'" y1="'+(y1+(y2-y1)*f)+'" y2="'+(y1+(y2-y1)*f)+'" stroke="#c9b08a" stroke-width=".6"/>').join('');
+  let b='';
+  if(t==='g'||t==='eg'||t==='u'||t==='b'){ const sc=t==='u'?.78:1, fill=t==='eg'?'url(#tie)':wood;
+    b='<g transform="translate(32 34) scale('+sc+') translate(-32 -34)">'+neck(32,4,34,6)+'<rect x="27" y="1" width="10" height="7" rx="2" fill="#2a180b"/>'
+     +'<path d="M32 30c-9 0-13 5-11 11 1 3-3 5-3 10 0 7 7 11 14 11s14-4 14-11c0-5-4-7-3-10 2-6-2-11-11-11z" fill="'+fill+'" stroke="#4a260c" stroke-width="1.2"/>'
+     +(t==='eg'?'<rect x="27" y="44" width="10" height="3" rx="1" fill="#222"/><rect x="27" y="51" width="10" height="3" rx="1" fill="#222"/>':'<circle cx="32" cy="45" r="4.2" fill="#2a1508"/>')
+     +'<rect x="28" y="55" width="8" height="2.2" rx="1" fill="#2a1508"/>'+[29.5,31,32.5,34].map((x,i)=>'<line x1="'+x+'" x2="'+x+'" y1="4" y2="56" stroke="#f3e6c8" stroke-width=".45"/>').join('')+'</g>';
+    if(t==='b')b=b.replace('scale(1)','scale(1)').replace(/fill="url\(#tiw\)"/,'fill="#2d3e57"'); }
+  else if(t==='m'){ b=neck(32,6,30,5)+'<path d="M32 26c-12 0-17 9-17 17 0 9 8 17 17 17s17-8 17-17c0-8-5-17-17-17z" fill="'+wood+'" stroke="#4a260c" stroke-width="1.2"/><path d="M27 37h10l-1 4h-8z" fill="#2a1508"/><circle cx="32" cy="45" r="3.5" fill="#2a1508"/>'; }
+  else if(t==='bj'){ b=neck(32,3,30,4.5)+'<circle cx="32" cy="44" r="16" fill="url(#tib)" stroke="#9a9a9a" stroke-width="3"/><circle cx="32" cy="44" r="12.5" fill="none" stroke="#b5ac94" stroke-width=".8"/><rect x="29" y="49" width="6" height="2" fill="#5a3a1c"/>'; }
+  else{ const big=t==='c'||t==='db', sc=t==='db'?1:t==='c'?.95:t==='va'?.82:.76;
+    b='<g transform="translate(32 34) scale('+sc+') translate(-32 -34)">'+neck(32,3,30,4)+'<circle cx="32" cy="4" r="3" fill="#3b2412"/>'
+     +'<path d="M32 26c-7 0-11 3-11 8 0 3 3 4 3 6s-4 3-4 8c0 7 6 12 12 12s12-5 12-12c0-5-4-6-4-8s3-3 3-6c0-5-4-8-11-8z" fill="'+(t==='db'?'#8b4513':wood)+'" stroke="#4a260c" stroke-width="1.2"/>'
+     +'<path d="M27 39c-1 2-1 4 0 6M37 39c1 2 1 4 0 6" stroke="#2a1508" stroke-width="1.6" fill="none"/><path d="M29 49h6" stroke="#2a1508" stroke-width="2"/><path d="M30 55l2 4 2-4z" fill="#2a1508"/>'
+     +[30.5,31.5,32.5,33.5].map(x=>'<line x1="'+x+'" x2="'+x+'" y1="4" y2="55" stroke="#f3e6c8" stroke-width=".4"/>').join('')
+     +(big?'<line x1="32" x2="32" y1="59" y2="64" stroke="#888" stroke-width="1.5"/>':'')+'</g>'; }
+  return '<svg class="tnpic" viewBox="0 0 64 64" aria-hidden="true">'+D+b+'</svg>';
+}
 function tnPopOpen(){
   const row=k=>{ const a=TN_PRE[k][1].map(m=>tnNames2(m).en.replace(/[0-9]/g,'')).join(' ');
-    return '<button class="btn'+(k===TN.pre?' on':'')+'" data-k="'+k+'" type="button"><b>'+TN_PRE[k][0].split(' (')[0]+'</b><small>'+TN_PRE[k][1].length+'줄 · '+a+'</small></button>'; };
+    return '<button class="btn tnib'+(k===TN.pre?' on':'')+'" data-k="'+k+'" type="button">'+tnInstPic(k)+'<span><b>'+TN_PRE[k][0].split(' (')[0]+'</b><small>'+TN_PRE[k][1].length+'줄 · '+a+'</small></span></button>'; };
   $('tnpopbody').innerHTML=TN_GROUPS.map(g=>'<div class="tnpopgrp">'+g[0]+'</div><div class="tnpopgrid">'+g[1].map(row).join('')+'</div>').join('')
-    +'<p class="tnpopnote">트럼펫·클라리넷·색소폰 같은 관악기는 「🎤 모든 음」으로 두고 아래 「이조 악기」에서 B♭·E♭ 를 고르세요.</p>';
+    +'<p class="tnpopnote">트럼펫·클라리넷·색소폰 같은 관악기는 「🎤 음 찾기」로 두고 아래 「이조 악기」에서 B♭·E♭ 를 고르세요.</p>';
   $('tnpop').hidden=false;
 }
 function tnStrings(){
@@ -13506,7 +13540,8 @@ function mtSetBpm(v,restart){ v=Math.max(30,Math.min(300,Math.round(v||90))); MT
     if(MT.taps.length>=3){ const g=[]; for(let i=1;i<MT.taps.length;i++)g.push(MT.taps[i]-MT.taps[i-1]); mtSetBpm(60000/(g.reduce((a,b)=>a+b,0)/g.length),true); } };
   addEventListener('keydown',e=>{ if(KB.shown==='mt'&&e.code==='Space'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='SELECT'){ e.preventDefault(); if(MT.on)mtStop(); else mtStart(); } });
   window.addEventListener('resize',()=>{ if(KB.shown==='tn')tnGraph(performance.now()); });
-  $('h-tn').onclick=()=>{ showScreen('tn'); try{ history.pushState({v:'tn'},''); }catch(e){} tnStart(); };   // 들어가면 바로 듣기 시작(정지·다시 시작 단추는 그대로)
+  $('h-tn').onclick=()=>{ showScreen('tn'); try{ history.pushState({v:'tn'},''); }catch(e){} TN.pre='chrom'; $('tnpre').value='chrom'; TN.target=null; tnStrings(); tnStart(); };
+  $('h-tni').onclick=()=>{ showScreen('tn'); try{ history.pushState({v:'tn'},''); }catch(e){} tnStart(); tnPopOpen(); };   // 들어가면 바로 듣기 시작(정지·다시 시작 단추는 그대로)
   $('h-mt').onclick=()=>{ showScreen('mt'); try{ history.pushState({v:'mt'},''); }catch(e){} };
 })();
 </script>
