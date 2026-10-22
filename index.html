@@ -1239,7 +1239,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "142";
+const APP_VER = "143";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -12643,7 +12643,7 @@ function smEnter(){ if(!SM.notes.length&&smLoad()){ $('smlyric').value=SM.lyric|
    · 곡 따라 부르기: 파이프가 곡의 음 순서대로 나온다(도 장조·도~높은 도 안의 곡). 「음 미리 듣기」는 파이프가 나타날 때 목표음을 들려준다(그동안은 마이크를 안 듣는다 — 스피커 소리를 새가 따라가지 않게).
    음높이는 튜너·노래 만들기와 같은 yinPitch. 마이크는 화면을 나가면 끄고, 끝나면 소리 엔진을 새로 띄운다(통화 모드 방지, smFreshAudio). */
 /* v120(사용자: "쉬운 버전도 어렵다 · 무적·생명·보너스"): 쉬움은 틈을 아주 넓게(±1.4칸)·느리게·간격 넓게·하트 8·충돌 뒤 무적 길게·떨어지는 속도 느리게. fall=떨어지는 가속, maxH=하트 상한 */
-const VB_LV={easy:{label:'쉬움',gap:1.4,sp:.12,every:3.3,hearts:8,inv:2.6,fall:.8,vmax:1.2,hit:.2},normal:{label:'보통',gap:.95,sp:.16,every:2.7,hearts:6,inv:2.0,fall:1.2,vmax:1.7,hit:.24},hard:{label:'어려움',gap:.62,sp:.22,every:1.9,hearts:5,inv:1.6,fall:1.6,vmax:2.2,hit:.28}};
+const VB_LV={easy:{label:'쉬움',gap:1.4,sp:.12,every:4.4,hearts:8,inv:2.6,fall:.8,vmax:1.2,hit:.2},normal:{label:'보통',gap:.95,sp:.16,every:3.6,hearts:6,inv:2.0,fall:1.2,vmax:1.7,hit:.24},hard:{label:'어려움',gap:.62,sp:.22,every:2.6,hearts:5,inv:1.6,fall:1.6,vmax:2.2,hit:.28}};
 const VB_MAXH=10;
 const VB_STEP=[0,0.5,1,1.5,2,3,3.5,4,4.5,5,5.5,6];   // 반음 → 도레미 자리(검은 건반은 사이)
 const VB_NM=['도','레','미','파','솔','라','시','도'];
