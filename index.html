@@ -1246,7 +1246,7 @@ input[type=range]{accent-color:var(--gold2)}
   </div>
   <div id="wkfield"><canvas id="wkcv"></canvas>
     <button class="btn vbskip" id="wkskip" type="button" hidden>건너뛰기 ▶</button>
-    <div id="wkstart" class="vbov"><div class="gmbox"><b>🐶 폴짝 산책</b><small>강아지와 산책해요! 소리를 내면 폴짝 뛰어올라 걸어오는 장애물을 넘어요. <b>큰 소리</b>나 <b>높은 음</b>일수록 더 높이 올라가고, 소리를 멈추면 내려와요.<br>⭐ 별 · ❤️ 생명 · 🛡 방패 · 🐢 느리게 아이템을 모아 끝까지 걸어요.</small>
+    <div id="wkstart" class="vbov"><div class="gmbox"><b>🐶 폴짝 산책</b><small>강아지와 산책해요! 소리를 내면 폴짝 뛰어올라 걸어오는 장애물을 넘어요. <b>큰 소리</b>나 <b>높은 음</b>일수록 더 높이 올라가고, 소리를 멈추면 내려와요.<br>⭐ 별 · ❤️ 생명 · 🛡 방패 · 🍄 거대화 · 🌈 무적(다 부숴요!) · 🧲 자석 · 🐢 느리게 — 아이템을 모아 끝까지 걸어요.</small>
       <div class="vbgo"><button class="vbgobtn a" id="wkgo" type="button"><b>🎓 목소리 연습</b><small>내 목소리 크기·높이에 맞추기 · 처음이면 추천</small></button><button class="vbgobtn b" id="wkquick" type="button"><b>⚡ 바로 시작</b><small>지난번 맞춘 값으로 곧바로</small></button></div>
       <small id="wksum" class="vbsum"></small>
       <details class="vbdet"><summary>⚙ 설정 바꾸기 (난이도·마이크·배경음악)</summary><div class="vbopts">
@@ -1306,7 +1306,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "146";
+const APP_VER = "147";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -13100,7 +13100,9 @@ function vbEnter(){ vbSized(); vbReset(); vbSumm(); }
    · 효과음·배경 리듬이 나는 동안엔 마이크를 쉰다(WK.mute) — 쉬는 동안엔 마지막 상태를 유지해 강아지가 갑자기 떨어지지 않게(v121 의 교훈). */
 const WK_LV={easy:{label:'쉬움',hearts:7,sp:.27,gap:2.9,inv:2.6,cap:.62,goal:500},normal:{label:'보통',hearts:5,sp:.33,gap:2.4,inv:2.1,cap:1,goal:700},hard:{label:'어려움',hearts:4,sp:.41,gap:1.9,inv:1.7,cap:1,goal:900}};
 const WK_MAXH=9, WK_GAIN=6, WK_SENS={low:.6,mid:1,high:1.8,max:3.2};
-const WK_OB={rock:{h:.2,w:.055,vx:0},snail:{h:.15,w:.05,vx:.015},log:{h:.38,w:.085,vx:0},hog:{h:.26,w:.055,vx:.07},fence:{h:.56,w:.07,vx:0},cat:{h:.42,w:.06,vx:.13},bush:{h:.76,w:.09,vx:0},wall:{h:.96,w:.075,vx:0},bird:{h:0,w:.07,vx:.05}};
+/* v147 사용자: 「달팽이가 너무 작아 장애물인지 몰랐다」→ 낮은 장애물을 키웠다. 가로는 폭·높이 중 큰 쪽 기준(WK.U) */
+const WK_OB={rock:{h:.28,w:.085,vx:0},snail:{h:.24,w:.085,vx:.015},log:{h:.4,w:.11,vx:0},hog:{h:.32,w:.085,vx:.07},fence:{h:.58,w:.09,vx:0},cat:{h:.46,w:.085,vx:.13},bush:{h:.78,w:.11,vx:0},wall:{h:.96,w:.09,vx:0},bird:{h:0,w:.085,vx:.05}};
+const wkSz=()=>WK.H*.11*(WK.big>0?1.55:1);
 const WK_ST=[
   {name:'🌳 공원 산책',sky:['#6ec1ff','#dff3ff'],sun:'#fff3a3',hill:'#9ad68a',hill2:'#7cc06c',ground:'#63b04e',dirt:'#a8723a',deco:'tree'},
   {name:'🏖 바닷가 산책',sky:['#79d0ff','#fff0c8'],sun:'#fff3a3',hill:'#bfe6ff',hill2:'#8fd0f0',ground:'#f0d79a',dirt:'#cfae6a',deco:'palm',sea:1},
@@ -13108,7 +13110,7 @@ const WK_ST=[
   {name:'🌇 노을 산책',sky:['#ff8f5c','#ffe3a6'],sun:'#fff0b0',hill:'#d98a5a',hill2:'#b86a45',ground:'#b98550',dirt:'#7d5230',deco:'lamp'},
   {name:'🌙 별밤 산책',sky:['#121c47','#3d4c92'],sun:'#fff6d0',hill:'#243468',hill2:'#1b2a56',ground:'#2d5a3c',dirt:'#1f3a28',deco:'lamp',night:1}];
 const WK={on:false,stream:null,an:null,buf:null,raf:0,last:0,lv:'normal',sens:1,bgm:'beat',vib:true,started:false,paused:false,over:false,W:400,H:300,dpr:1,
-  cal:{lo:.004,hi:.08,loM:48,hiM:72},floor:.002,y:0,vy:0,clk:0,t:0,dist:0,scroll:0,obs:[],items:[],sparks:[],fx:[],clouds:[],snow:[],hearts:5,stars:0,inv:0,shield:0,slow:0,combo:0,bestCombo:0,passed:0,clean:0,hitN:0,nearN:0,
+  cal:{lo:.004,hi:.08,loM:48,hiM:72},floor:.002,y:0,vy:0,clk:0,t:0,dist:0,scroll:0,obs:[],items:[],sparks:[],fx:[],clouds:[],snow:[],hearts:5,stars:0,inv:0,shield:0,slow:0,big:0,mega:0,magnet:0,combo:0,bestCombo:0,passed:0,clean:0,hitN:0,nearN:0,
   spawnT:1.2,sinceP:0,stage:0,cd:0,tut:null,mute:0,held:null,lastOnT:-9,hl:0,shake:0,flash:0,bt:0,b8:-1,bus:null,setOpen:false,voiced:false,lastIn:null,level:0,banner:null,rng:Math.random};
 function wkRngMake(seed){ let a=seed>>>0; return ()=>{ a=(a+0x6D2B79F5)>>>0; let t=a; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; }; }
 const wkClamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -13163,6 +13165,8 @@ function wkSfx(k){
     else if(k==='gold'){ WK.mute=Math.max(WK.mute,.35); [76,80,83,88].forEach((m,i)=>voice(ctx,'vibes',m,t+i*.05,.3,.5)); }
     else if(k==='heart'){ WK.mute=Math.max(WK.mute,.45); [72,76,79,84].forEach((m,i)=>voice(ctx,'piano',m,t+i*.08,.3,.5)); }
     else if(k==='power'){ WK.mute=Math.max(WK.mute,.4); [67,72,79].forEach((m,i)=>voice(ctx,'brass',m,t+i*.07,.2,.4)); }
+    else if(k==='smash'){ WK.mute=Math.max(WK.mute,.25); drumHit('snare',.5,t,true); voice(ctx,'vibes',79,t,.12,.4); }
+    else if(k==='mega'){ WK.mute=Math.max(WK.mute,.8); [60,64,67,72,76,79,84,88].forEach((m,i)=>voice(ctx,'brass',m,t+i*.06,.2,.4)); }
     else if(k==='near'){ WK.mute=Math.max(WK.mute,.2); voice(ctx,'vibes',91,t,.18,.45); }
     else if(k==='hit'){ WK.mute=Math.max(WK.mute,.6); drumHit('kick',.7,t,true); wkYelp(ctx,t+.02); }
     else if(k==='block'){ WK.mute=Math.max(WK.mute,.3); drumHit('crash',.25,t,true); }
@@ -13184,7 +13188,7 @@ function wkSpark(x,y,col,n){ for(let i=0;i<n;i++){ const a=Math.random()*6.28, v
 function wkLoadCal(){ try{ const c=JSON.parse(localStorage.getItem('konti:wkcal')||'null'); if(c&&c.hi>c.lo&&c.hiM>c.loM)WK.cal=c; }catch(e){} }
 function wkReset(){
   if(WK.setOpen)wkSetOpen(false);
-  const L=WK_LV[WK.lv]; Object.assign(WK,{y:0,vy:0,clk:0,t:0,dist:0,scroll:0,obs:[],items:[],sparks:[],fx:[],hearts:L.hearts,stars:0,inv:0,shield:0,slow:0,combo:0,bestCombo:0,passed:0,clean:0,hitN:0,nearN:0,spawnT:1.4,sinceP:0,stage:0,cd:3.2,tut:null,mute:0,held:null,lastOnT:-9,shake:0,flash:0,bt:0,b8:-1,over:false,paused:false,banner:null,gate:false,rng:wkRngMake((Math.random()*4294967296)>>>0)});
+  const L=WK_LV[WK.lv]; Object.assign(WK,{y:0,vy:0,clk:0,t:0,dist:0,scroll:0,obs:[],items:[],sparks:[],fx:[],hearts:L.hearts,stars:0,inv:0,shield:0,slow:0,big:0,mega:0,magnet:0,combo:0,bestCombo:0,passed:0,clean:0,hitN:0,nearN:0,spawnT:1.4,sinceP:0,stage:0,cd:3.2,tut:null,mute:0,held:null,lastOnT:-9,shake:0,flash:0,bt:0,b8:-1,over:false,paused:false,banner:null,gate:false,rng:wkRngMake((Math.random()*4294967296)>>>0)});
   if(!WK.clouds.length)for(let i=0;i<6;i++)WK.clouds.push({x:Math.random(),y:.08+Math.random()*.3,s:.5+Math.random()*.8});
   if(!WK.snow.length)for(let i=0;i<46;i++)WK.snow.push({x:Math.random(),y:Math.random(),s:1+Math.random()*2});
   $('wkend').hidden=true; $('wkstart').hidden=false; wkDraw(0);
@@ -13212,17 +13216,22 @@ function wkSpawn(L){
   const s=WK.stage, r=WK.rng, W=WK.W;
   const pool=['rock','snail','log']; if(s>=1||WK.lv==='hard')pool.push('hog','fence','bird'); if(s>=2)pool.push('cat','bush'); if(s>=3)pool.push('wall','bush','hog');
   let k=pool[Math.floor(r()*pool.length)]; if(L.cap<.7&&(k==='bush'||k==='wall'))k='fence';
-  const mk=(kk,dx)=>{ const D=WK_OB[kk], o={k:kk,x:W*1.08+dx,w:D.w*W,h:D.h,vx:D.vx*W,ph:r()*6,done:false,hit:false}; if(kk==='bird'){ o.alt=.45+r()*.4; o.h=o.alt+.09; } WK.obs.push(o); return o; };
+  const mk=(kk,dx)=>{ const D=WK_OB[kk], o={k:kk,x:W*1.08+dx,w:D.w*Math.max(W,WK.H*1.7),h:D.h,vx:D.vx*W,ph:r()*6,done:false,hit:false}; if(kk==='bird'){ o.alt=.45+r()*.4; o.h=o.alt+.09; } WK.obs.push(o); return o; };
   const o=mk(k,0);
   if(s>=3&&r()<.28&&k!=='bird'){ mk(r()<.5?'rock':'log',W*.3); }   // 연달아 두 개: 높이를 유지해야 한다
   /* 아이템: 장애물 위 별 아치(높이 뛰면 먹는다) · 가끔 낮게 늘어선 별 · 하트·방패·느림 */
   if(k!=='bird'&&r()<.7){ const top=Math.min(1,o.h+.2); for(let i=0;i<3;i++)WK.items.push({k:(i===1&&r()<.15)?'gold':'star',x:o.x+(i-1)*W*.07,y:Math.min(1.02,top+(i===1?.1:0))}); }
   else if(r()<.4){ for(let i=0;i<4;i++)WK.items.push({k:'star',x:o.x+W*.2+i*W*.05,y:.1}); }
   WK.sinceP++;
-  if(WK.sinceP>=6&&r()<.4){ WK.sinceP=0; const q=r(), kk=(q<.4&&WK.hearts<WK_MAXH)?'heart':q<.7?'shield':'slow'; WK.items.push({k:kk,x:o.x+W*.3,y:.5+r()*.3}); }
+  if(WK.sinceP>=4&&r()<.5){ WK.sinceP=0; const q=r(); let kk=q<.2?'heart':q<.38?'shield':q<.55?'big':q<.7?'magnet':q<.85?'slow':'mega'; if(kk==='heart'&&WK.hearts>=WK_MAXH)kk='shield'; if(kk==='mega'&&s<1)kk='big'; WK.items.push({k:kk,x:o.x+W*.3,y:.45+r()*.35}); }
+}
+function wkSmash(ob){   // 무적(🌈)·거대화(🍄)로 부딪히면 장애물이 펑! (마리오처럼)
+  ob.smash=1; ob.done=true; WK.passed++; WK.clean++; WK.combo++; WK.bestCombo=Math.max(WK.bestCombo,WK.combo); const add=WK.mega>0?2:1; WK.stars+=add;
+  wkSpark(ob.x,WK.H*.8-(ob.h||.3)*WK.H*.25,WK.mega>0?'#ff9ad9':'#ffb347',22); WK.fx.push({t:0,txt:'💥 펑! +'+add,bad:false}); wkSfx('smash'); WK.shake=Math.max(WK.shake,.35);
 }
 function wkHurt(L,ob,dx,dh){
   ob.hit=true;
+  if(WK.big>0&&!WK.tut){ WK.big=0; WK.inv=1.4; WK.shake=.6; wkSfx('block'); WK.fx.push({t:0,txt:'🍄 작아졌어요!',bad:true}); return false; }
   if(WK.shield>0||WK.tut){ wkSpark(dx,WK.H*.8-WK.y*WK.H*.5,'#7fe3ff',14); WK.fx.push({t:0,txt:WK.tut?'괜찮아요!':'🛡 막았어요!',bad:false}); wkSfx('block'); return false; }
   if(WK.inv>0)return false;
   WK.hearts--; WK.hitN++; WK.inv=L.inv; WK.shake=1; WK.flash=1; WK.combo=0; wkSfx('hit'); wkSpark(dx,WK.H*.8-WK.y*WK.H*.5-dh*.5,'#ff5a5a',18); WK.fx.push({t:0,txt:'깨갱!',bad:true});
@@ -13244,22 +13253,22 @@ function wkTutStep(dt){
       if(T.step===2){   // 범위 확정 + 연습용 통나무
         const lo=T.lo||WK.cal.lo, hi=Math.max(lo*2.5,T.hi||WK.cal.hi), loM=T.loM!=null?T.loM-1:WK.cal.loM, hiM=T.hiM!=null?Math.max(T.hiM,loM+5):WK.cal.hiM;
         WK.cal={lo,hi,loM,hiM}; try{ localStorage.setItem('konti:wkcal',JSON.stringify(WK.cal)); }catch(e){}
-        T.ob={k:'log',x:WK.W*1.05,w:WK_OB.log.w*WK.W,h:.38,vx:0,ph:0,done:false,hit:false}; WK.obs=[T.ob]; }
+        T.ob={k:'log',x:WK.W*1.05,w:WK_OB.log.w*Math.max(WK.W,WK.H*1.7),h:.4,vx:0,ph:0,done:false,hit:false}; WK.obs=[T.ob]; }
     }
   } else if(T.ob&&T.ob.done){ T.done+=dt; if(T.done>.8){ WK.tut=null; $('wkskip').hidden=true; WK.fx.push({t:0,txt:'🎉 연습 끝! 이제 산책해요',bad:false}); WK.cd=3.2; WK.obs=[]; WK.items=[]; } }
 }
 /* ---- 한 프레임 ---- */
 function wkStep(dt,L){
-  const W=WK.W, H=WK.H, dx=W*.2, sz=H*.15, hw=sz*.42, dogHu=sz*.9/(H*.5);
-  WK.t+=dt; WK.flash=Math.max(0,WK.flash-dt*3); WK.inv=Math.max(0,WK.inv-dt); WK.shield=Math.max(0,WK.shield-dt); WK.slow=Math.max(0,WK.slow-dt);
+  const W=WK.W, H=WK.H, dx=W*.2, sz=wkSz(), hw=sz*.42, dogHu=sz*.9/(H*.5);
+  WK.t+=dt; WK.flash=Math.max(0,WK.flash-dt*3); WK.inv=Math.max(0,WK.inv-dt); WK.shield=Math.max(0,WK.shield-dt); WK.slow=Math.max(0,WK.slow-dt); WK.big=Math.max(0,WK.big-dt); WK.mega=Math.max(0,WK.mega-dt); WK.magnet=Math.max(0,WK.magnet-dt);
   const inp=wkInput(dt); wkMove(dt,inp);
   if(WK.cd>0){ const b=Math.ceil(WK.cd); WK.cd-=dt; const n=Math.ceil(WK.cd); if(n!==b)wkSfx(n>0?'count':'go'); WK.scroll+=W*.12*dt; wkBgm(dt); return; }
   wkBgm(dt);
   const tut=WK.tut; if(tut)wkTutStep(dt);
-  const v=(tut?W*.16:W*L.sp*(1+WK.stage*.06))*(WK.slow>0?.6:1);
+  const v=(tut?W*.16:W*L.sp*(1+WK.stage*.06))*(WK.slow>0?.6:1)*(WK.mega>0?1.35:1);
   WK.scroll+=v*dt; if(!tut)WK.dist+=v*dt/(W*.05);
   /* 구역 */
-  if(!tut){ const st=Math.min(4,Math.floor(WK.dist/(L.goal/5))); if(st!==WK.stage){ WK.stage=st; WK.banner={t:0,txt:WK_ST[st].name}; wkSfx('stage'); } }
+  if(!tut){ const st=Math.min(4,Math.floor(WK.dist/(L.goal/5))); if(st!==WK.stage){ WK.stage=st; WK.banner={t:0,txt:WK_ST[st].name}; WK.stars+=5; WK.fx.push({t:0,txt:'🏁 구역 통과 +5',bad:false}); wkSfx('stage'); } }
   /* 생성 */
   if(!tut){ if(WK.dist<L.goal-30){ WK.spawnT-=dt; if(WK.spawnT<=0){ wkSpawn(L); WK.spawnT=L.gap*(.8+WK.rng()*.5)/(1+WK.stage*.06); } } else WK.gate=true; }
   /* 이동·부딪힘 */
@@ -13268,8 +13277,8 @@ function wkStep(dt,L){
     ob.x-=(v+ob.vx*(WK.slow>0?.6:1))*dt; ob.ph+=dt*(ob.k==='bird'?14:ob.vx>0?9:0);
     if(ob.done)continue; const ow=ob.w/2;
     if(Math.abs(ob.x-dx)<hw+ow*.85){
-      if(ob.k==='bird'){ const above=WK.y-(ob.alt+.09), below=(ob.alt-.09)-(WK.y+dogHu*.8), clr=Math.max(above,below); ob.minClr=Math.min(ob.minClr==null?9:ob.minClr,clr); if(clr<0&&!ob.hit&&wkHurt(L,ob,dx,sz))return; }
-      else{ const clr=WK.y-ob.h; ob.minClr=Math.min(ob.minClr==null?9:ob.minClr,clr); if(clr<-.03&&!ob.hit&&wkHurt(L,ob,dx,sz))return; }
+      if(ob.k==='bird'){ const above=WK.y-(ob.alt+.09), below=(ob.alt-.09)-(WK.y+dogHu*.8), clr=Math.max(above,below); ob.minClr=Math.min(ob.minClr==null?9:ob.minClr,clr); if(clr<0&&!ob.hit&&!ob.smash){ if(WK.mega>0)wkSmash(ob); else if(wkHurt(L,ob,dx,sz))return; } }
+      else{ const clr=WK.y-ob.h; ob.minClr=Math.min(ob.minClr==null?9:ob.minClr,clr); if(clr<-.03&&!ob.hit&&!ob.smash){ if(WK.mega>0||(WK.big>0&&ob.h<=.46))wkSmash(ob); else if(wkHurt(L,ob,dx,sz))return; } }
     }
     if(ob.x+ow<dx-hw){ ob.done=true; WK.passed++;
       if(!ob.hit){ WK.clean++; WK.combo++; WK.bestCombo=Math.max(WK.bestCombo,WK.combo);
@@ -13279,13 +13288,17 @@ function wkStep(dt,L){
   }
   /* 아이템 */
   for(const it of WK.items){ it.x-=v*dt; if(it.got)continue;
-    if(Math.abs(it.x-dx)<hw+sz*.28&&it.y>=WK.y-.08&&it.y<=WK.y+dogHu+.1){ it.got=true; const px=it.x, py=H*.8-it.y*H*.5;
+    if(WK.magnet>0&&(it.k==='star'||it.k==='gold')&&Math.abs(it.x-dx)<W*.4){ it.x+=(dx-it.x)*Math.min(1,dt*5); it.y+=((WK.y+dogHu*.5)-it.y)*Math.min(1,dt*5); }
+    if(Math.abs(it.x-dx)<hw+Math.max(sz*.3,16)&&it.y>=WK.y-.1&&it.y<=WK.y+dogHu+.1){ it.got=true; const px=it.x, py=H*.8-it.y*H*.5;
       if(it.k==='star'){ WK.stars++; wkSfx('star'); wkSpark(px,py,'#fff36b',8); }
       else if(it.k==='gold'){ WK.stars+=3; wkSfx('gold'); wkSpark(px,py,'#ffd700',22); WK.fx.push({t:0,txt:'🌟 +3',bad:false}); }
       else if(it.k==='heart'){ if(WK.hearts<WK_MAXH)WK.hearts++; wkSfx('heart'); wkSpark(px,py,'#ff7aa8',20); WK.fx.push({t:0,txt:'❤️ 생명 +1',bad:false}); }
       else if(it.k==='shield'){ WK.shield=5; wkSfx('power'); wkSpark(px,py,'#7fe3ff',20); WK.fx.push({t:0,txt:'🛡 방패 5초',bad:false}); }
+      else if(it.k==='big'){ WK.big=10; wkSfx('power'); wkSpark(px,py,'#ff6a5a',24); WK.fx.push({t:0,txt:'🍄 거대화 10초! 낮은 장애물은 부숴요',bad:false}); }
+      else if(it.k==='mega'){ WK.mega=7; WK.shield=0; wkSfx('mega'); wkSpark(px,py,'#ff9ad9',30); WK.fx.push({t:0,txt:'🌈 무적! 7초 — 다 부숴요',bad:false}); }
+      else if(it.k==='magnet'){ WK.magnet=9; wkSfx('power'); wkSpark(px,py,'#9ab8ff',20); WK.fx.push({t:0,txt:'🧲 별이 달려와요 9초',bad:false}); }
       else if(it.k==='slow'){ WK.slow=6; wkSfx('power'); wkSpark(px,py,'#b8ff9a',20); WK.fx.push({t:0,txt:'🐢 천천히 6초',bad:false}); } } }
-  WK.obs=WK.obs.filter(o=>o.x>-W*.2); WK.items=WK.items.filter(i=>i.x>-40&&!i.got);
+  WK.obs=WK.obs.filter(o=>o.x>-W*.2&&!o.smash); WK.items=WK.items.filter(i=>i.x>-40&&!i.got);
   if(!tut&&WK.dist>=L.goal&&!WK.obs.length&&!WK.over)wkEnd(true);
 }
 function wkLoop(ts){
@@ -13337,7 +13350,7 @@ function wkDrawOb(g,ob,gy,U){
 }
 function wkDraw(dt){
   const cv=$('wkcv'); if(!cv)return; const g=cv.getContext('2d'), W=WK.W, H=WK.H; dt=dt||0; g.setTransform(WK.dpr||1,0,0,WK.dpr||1,0,0);
-  const S=WK_ST[Math.min(4,WK.stage||0)], gy=H*.8, U=H*.5, sz=H*.15, sc=WK.scroll||0, dx=W*.2, t=WK.clk||0;
+  const S=WK_ST[Math.min(4,WK.stage||0)], gy=H*.8, U=H*.5, sz=wkSz(), sc=WK.scroll||0, dx=W*.2, t=WK.clk||0;
   let sx=0; if(WK.shake>0){ sx=(Math.random()-.5)*12*WK.shake; WK.shake=Math.max(0,WK.shake-dt*3); }
   g.save(); g.translate(sx,0);
   const sky=g.createLinearGradient(0,0,0,gy); sky.addColorStop(0,S.sky[0]); sky.addColorStop(1,S.sky[1]); g.fillStyle=sky; g.fillRect(-20,0,W+40,H);
@@ -13363,10 +13376,11 @@ function wkDraw(dt){
     g.strokeStyle='#fff'; g.lineWidth=2; g.strokeRect(gx,gy-gh,10,gh);
     if(nx&&nx.k!=='bird'){ const th=Math.min(1.02,nx.h+.06); g.fillStyle='#ff5a5a'; g.beginPath(); g.moveTo(gx+14,gy-gh*th); g.lineTo(gx+28,gy-gh*th-6); g.lineTo(gx+28,gy-gh*th+6); g.closePath(); g.fill(); g.setLineDash([6,6]); g.strokeStyle='rgba(255,90,90,.6)'; g.lineWidth=2; g.beginPath(); g.moveTo(gx+28,gy-gh*th); g.lineTo(Math.min(W,dx+W*.5),gy-gh*th); g.stroke(); g.setLineDash([]); } }
   g.textAlign='center'; g.textBaseline='middle';
-  for(const it of WK.items){ if(it.got)continue; const y=gy-it.y*U+Math.sin(t*5+it.x*.05)*3; g.font=(it.k==='star'?22:30)+'px serif'; g.fillText(it.k==='star'?'⭐':it.k==='gold'?'🌟':it.k==='heart'?'❤️':it.k==='shield'?'🛡️':'🐢',it.x,y); }
+  for(const it of WK.items){ if(it.got)continue; const y=gy-it.y*U+Math.sin(t*5+it.x*.05)*3; g.font=(it.k==='star'?22:30)+'px serif'; g.fillText(it.k==='star'?'⭐':it.k==='gold'?'🌟':it.k==='heart'?'❤️':it.k==='shield'?'🛡️':it.k==='big'?'🍄':it.k==='mega'?'🌈':it.k==='magnet'?'🧲':'🐢',it.x,y); }
   for(const ob of WK.obs)wkDrawOb(g,ob,gy,U);
   // 강아지
   const fy=gy-WK.y*U, air=WK.y>.04; g.fillStyle='rgba(0,0,0,.2)'; g.beginPath(); g.ellipse(dx,gy+4,sz*.5*(1-WK.y*.4),5,0,0,7); g.fill();
+  if(WK.mega>0){ g.save(); g.globalAlpha=.55; for(let i=0;i<3;i++){ g.strokeStyle='hsl('+((t*360+i*60)%360)+',95%,60%)'; g.lineWidth=5; g.beginPath(); g.arc(dx+sz*.1,fy-sz*.6,sz*(1.15+i*.18),0,7); g.stroke(); } g.restore(); for(let i=1;i<=5;i++){ g.fillStyle='hsla('+((t*360+i*50)%360)+',95%,60%,'+(.5-i*.08)+')'; g.fillRect(dx-sz*.6-i*sz*.45,fy-sz*.9,sz*.4,sz*.5); } }
   if(WK.shield>0){ g.save(); g.globalAlpha=.3+.15*Math.sin(t*10); g.fillStyle='rgba(127,227,255,.3)'; g.strokeStyle='#7fe3ff'; g.lineWidth=3; g.beginPath(); g.arc(dx+sz*.1,fy-sz*.6,sz*1.1,0,7); g.fill(); g.stroke(); g.restore(); }
   if(!(WK.inv>0&&Math.floor(t*10)%2))wkDrawDog(g,dx,fy,sz,t*(WK.slow>0?7:11),air,WK.voiced,t);
   if(S.snow){ g.fillStyle='#fff'; for(const f of WK.snow){ if(WK.started&&!WK.paused){ f.y+=dt*(.1+f.s*.05); f.x-=dt*.03; if(f.y>1)f.y=0; if(f.x<0)f.x=1; } g.beginPath(); g.arc(f.x*W,f.y*H,f.s,0,7); g.fill(); } }
@@ -13382,7 +13396,7 @@ function wkDraw(dt){
   else if(WK.started&&WK.cd>0&&!WK.over){ const n=Math.ceil(WK.cd), fr=WK.cd-Math.floor(WK.cd); g.save(); g.translate(W/2,H*.38); g.scale(1+fr*.4,1+fr*.4); g.textAlign='center'; g.textBaseline='middle'; g.font='900 72px sans-serif'; g.lineWidth=8; g.strokeStyle='#5a3b00'; g.fillStyle='#ffd23f'; g.strokeText(String(n),0,0); g.fillText(String(n),0,0); g.restore(); say('소리를 내면 폴짝! 큰 소리·높은 음일수록 높이 뛰어요',H*.55,Math.min(16,W/24)); }
   else if(WK.started&&!WK.over&&WK.banner){ const b=WK.banner; b.t+=dt; if(b.t>2.2)WK.banner=null; else{ g.globalAlpha=Math.min(1,(2.2-b.t)*2); say(b.txt,H*.25,28); g.globalAlpha=1; } }
   else if(WK.started&&!WK.over&&!WK.voiced&&WK.t<6&&WK.obs.length){ say('🎤 소리를 내서 폴짝!',H*.14,18); }
-  $('wkstarsn').textContent=WK.stars; { const hmax=WK_LV[WK.lv].hearts, hn=Math.max(0,WK.hearts); $('wkhearts').textContent=(hmax>5||hn>5?'❤️×'+hn:'❤️'.repeat(hn)+'🤍'.repeat(Math.max(0,hmax-hn)))+(WK.shield>0?' 🛡'+Math.ceil(WK.shield):'')+(WK.slow>0?' 🐢':''); }
+  $('wkstarsn').textContent=WK.stars; { const hmax=WK_LV[WK.lv].hearts, hn=Math.max(0,WK.hearts); $('wkhearts').textContent=(hmax>5||hn>5?'❤️×'+hn:'❤️'.repeat(hn)+'🤍'.repeat(Math.max(0,hmax-hn)))+(WK.shield>0?' 🛡'+Math.ceil(WK.shield):'')+(WK.slow>0?' 🐢':'')+(WK.big>0?' 🍄'+Math.ceil(WK.big):'')+(WK.mega>0?' 🌈'+Math.ceil(WK.mega):'')+(WK.magnet>0?' 🧲':''); }
   $('wkprog').style.width=wkClamp(WK.dist/WK_LV[WK.lv].goal*100,0,100)+'%'; $('wkstage').textContent=Math.round(WK.dist)+'m';
   $('wklevel').style.width=Math.min(100,Math.sqrt(WK.level||0)*100)+'%';
 }

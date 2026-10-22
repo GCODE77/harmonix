@@ -28,6 +28,11 @@ export default async function wkTest(){
     const s=document.getElementById('wksens'); s.value='high'; s.onchange(); ok('감도 변경이 바로 적용',Math.abs(WK.sens-WK_SENS.high)<1e-6);
     document.getElementById('wksetgo').click(); await W(300);
     ok('닫으면 이어서 진행',!WK.setOpen&&!WK.paused&&document.querySelector('#wk .vbdet #wksens')!=null);
+    /* 무적·거대화: 부딪히면 부서지고 하트는 그대로 */
+    window.wkHear=()=>({on:false,h:0,raw:0,mf:null,volN:0}); await wkStart('quick'); WK.cd=0; WK.obs=[]; WK.mega=5; WK.obs.push({k:'wall',x:WK.W*.2,w:60,h:.96,vx:0,ph:0,done:false,hit:false}); const hh=WK.hearts; await W(300);
+    ok('무적이면 높은 벽도 부수고 하트가 안 준다',WK.hearts===hh&&WK.stars>=2&&!WK.obs.some(o=>o.k==='wall'&&!o.smash),[WK.hearts,WK.stars]);
+    WK.mega=0; WK.big=5; WK.obs=[{k:'rock',x:WK.W*.2,w:50,h:.28,vx:0,ph:0,done:false,hit:false}]; await W(300); ok('거대하면 낮은 장애물을 부순다',WK.hearts===hh&&WK.big>0);
+    WK.obs=[{k:'wall',x:WK.W*.2,w:60,h:.96,vx:0,ph:0,done:false,hit:false}]; await W(300); ok('거대할 때 높은 벽에 부딪히면 작아지고 하트는 그대로',WK.big===0&&WK.hearts===hh,[WK.big,WK.hearts]);
     showScreen('home'); ok('나가면 멈춘다',!WK.started);
   }finally{
     window.wkHear=realHear; window.wkMic=realMic; Object.assign(WK,st); WK_LV.easy.goal=goal; WK.started=false; cancelAnimationFrame(WK.raf); WK.sens=WK_SENS[localStorage.getItem('konti:wksens')||'mid']||1;
