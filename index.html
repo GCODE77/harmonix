@@ -1306,7 +1306,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "148";
+const APP_VER = "149";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -13098,11 +13098,11 @@ function vbEnter(){ vbSized(); vbReset(); vbSumm(); }
    · 크기·음 높이는 사람마다 다르므로 「🎓 점프 연습」에서 작게→크게·낮게→높게 한 번씩 내 보게 해 범위(WK.cal)를 맞춘다(저장). 안 하면 기본값.
    · 「마이크 감도」 = 소리 크기에 곱하는 배수(WK_SENS) — 노래하는 새와 달리 자동 증폭을 쓰지 않는다(크기가 곧 높이라서 자동 증폭이 높이를 망친다).
    · 효과음·배경 리듬이 나는 동안엔 마이크를 쉰다(WK.mute) — 쉬는 동안엔 마지막 상태를 유지해 강아지가 갑자기 떨어지지 않게(v121 의 교훈). */
-const WK_LV={easy:{label:'쉬움',hearts:7,sp:.27,gap:2.9,inv:2.6,cap:.62,goal:500},normal:{label:'보통',hearts:5,sp:.33,gap:2.4,inv:2.1,cap:1,goal:700},hard:{label:'어려움',hearts:4,sp:.41,gap:1.9,inv:1.7,cap:1,goal:900}};
+const WK_LV={easy:{label:'쉬움',hearts:7,sp:.27,gap:4.2,inv:2.6,cap:.62,goal:500},normal:{label:'보통',hearts:5,sp:.33,gap:3.5,inv:2.1,cap:1,goal:700},hard:{label:'어려움',hearts:4,sp:.41,gap:2.8,inv:1.7,cap:1,goal:900}};
 const WK_MAXH=9, WK_GAIN=6, WK_SENS={low:.6,mid:1,high:1.8,max:3.2};
 /* v147 사용자: 「달팽이가 너무 작아 장애물인지 몰랐다」→ 낮은 장애물을 키웠다. 가로는 폭·높이 중 큰 쪽 기준(WK.U) */
 const WK_OB={rock:{h:.28,w:.085,vx:0},snail:{h:.24,w:.085,vx:.015},log:{h:.4,w:.11,vx:0},hog:{h:.32,w:.085,vx:.07},fence:{h:.58,w:.09,vx:0},cat:{h:.46,w:.085,vx:.13},bush:{h:.78,w:.11,vx:0},wall:{h:.96,w:.09,vx:0},bird:{h:0,w:.085,vx:.05}};
-const wkSz=()=>WK.H*.11*(WK.big>0?1.55:1);
+const wkSz=()=>WK.H*.085*(WK.big>0?1.55:1);
 const WK_ST=[
   {name:'🌳 공원 산책',sky:['#6ec1ff','#dff3ff'],sun:'#fff3a3',hill:'#9ad68a',hill2:'#7cc06c',ground:'#63b04e',dirt:'#a8723a',deco:'tree'},
   {name:'🏖 바닷가 산책',sky:['#79d0ff','#fff0c8'],sun:'#fff3a3',hill:'#bfe6ff',hill2:'#8fd0f0',ground:'#f0d79a',dirt:'#cfae6a',deco:'palm',sea:1},
@@ -13110,7 +13110,7 @@ const WK_ST=[
   {name:'🌇 노을 산책',sky:['#ff8f5c','#ffe3a6'],sun:'#fff0b0',hill:'#d98a5a',hill2:'#b86a45',ground:'#b98550',dirt:'#7d5230',deco:'lamp'},
   {name:'🌙 별밤 산책',sky:['#121c47','#3d4c92'],sun:'#fff6d0',hill:'#243468',hill2:'#1b2a56',ground:'#2d5a3c',dirt:'#1f3a28',deco:'lamp',night:1}];
 const WK={on:false,stream:null,an:null,buf:null,raf:0,last:0,lv:'normal',sens:1,bgm:'beat',vib:true,started:false,paused:false,over:false,W:400,H:300,dpr:1,
-  cal:{lo:.004,hi:.08,loM:48,hiM:72},floor:.002,y:0,vy:0,clk:0,t:0,dist:0,scroll:0,obs:[],items:[],sparks:[],fx:[],clouds:[],snow:[],hearts:5,stars:0,inv:0,shield:0,slow:0,big:0,mega:0,magnet:0,combo:0,bestCombo:0,passed:0,clean:0,hitN:0,nearN:0,
+  cal:{lo:.004,hi:.08,loM:55,hiM:76},floor:.002,y:0,vy:0,clk:0,t:0,dist:0,scroll:0,obs:[],items:[],sparks:[],fx:[],clouds:[],snow:[],hearts:5,stars:0,inv:0,shield:0,slow:0,big:0,mega:0,magnet:0,combo:0,bestCombo:0,passed:0,clean:0,hitN:0,nearN:0,
   spawnT:1.2,sinceP:0,stage:0,cd:0,tut:null,mute:0,held:null,lastOnT:-9,hl:0,shake:0,flash:0,bt:0,b8:-1,bus:null,setOpen:false,voiced:false,lastIn:null,level:0,banner:null,rng:Math.random};
 function wkRngMake(seed){ let a=seed>>>0; return ()=>{ a=(a+0x6D2B79F5)>>>0; let t=a; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; }; }
 const wkClamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -13151,8 +13151,9 @@ function wkInput(dt){
   WK.voiced=on; WK.lastIn=o; return {on,h};
 }
 function wkMove(dt,inp){
-  if(inp.on){ const dy=inp.h-WK.y; WK.y+=dy>0?Math.min(dy*Math.min(1,dt*10),5.2*dt):dy*Math.min(1,dt*8); WK.vy=0; WK.y=Math.min(WK_TOP+.02,WK.y); }
-  else{ WK.vy=Math.min(3.4,WK.vy+dt*4.6); WK.y=Math.max(0,WK.y-WK.vy*dt); if(WK.y<=0)WK.vy=0; }
+  if(inp.on){ WK.hang=Math.max(WK.hang||0,Math.min(1.6,inp.h*1.4)); const dy=inp.h-WK.y; WK.y+=dy>0?Math.min(dy*Math.min(1,dt*10),5.2*dt):dy*Math.min(1,dt*8); WK.vy=0; WK.y=Math.min(WK_TOP+.02,WK.y); }
+  else{ /* v149(사용자: 「떨어지는 건 천천히, 소리를 낼수록 오래 점프」): 소리를 멈춰도 낸 만큼(높이×1.4초까지) 둥둥 떠 있다가 천천히 내려온다 */
+    const fl=WK.hang>0; WK.hang=Math.max(0,WK.hang-dt); WK.vy=Math.min(fl?.5:1.9,WK.vy+dt*(fl?1.0:2.4)); WK.y=Math.max(0,WK.y-WK.vy*dt); if(WK.y<=0)WK.vy=0; }
 }
 /* ---- 소리 ---- */
 function wkAt(fn){ const ctx=AC(); if(!ctx||!WK.bus)return; const real=master; master=WK.bus; try{ fn(ctx,ctx.currentTime+.01); }catch(e){} finally{ master=real; } }
@@ -13190,7 +13191,7 @@ function wkSpark(x,y,col,n){ for(let i=0;i<n;i++){ const a=Math.random()*6.28, v
 function wkLoadCal(){ try{ const c=JSON.parse(localStorage.getItem('konti:wkcal')||'null'); if(c&&c.hi>c.lo&&c.hiM>c.loM)WK.cal=c; }catch(e){} }
 function wkReset(){
   if(WK.setOpen)wkSetOpen(false);
-  const L=WK_LV[WK.lv]; Object.assign(WK,{y:0,vy:0,clk:0,t:0,dist:0,scroll:0,obs:[],items:[],sparks:[],fx:[],hearts:L.hearts,stars:0,inv:0,shield:0,slow:0,big:0,mega:0,magnet:0,combo:0,bestCombo:0,passed:0,clean:0,hitN:0,nearN:0,spawnT:1.4,sinceP:0,stage:0,cd:3.2,tut:null,mute:0,held:null,lastOnT:-9,shake:0,flash:0,bt:0,b8:-1,over:false,paused:false,banner:null,gate:false,rng:wkRngMake((Math.random()*4294967296)>>>0)});
+  const L=WK_LV[WK.lv]; Object.assign(WK,{y:0,vy:0,clk:0,t:0,dist:0,scroll:0,obs:[],items:[],sparks:[],fx:[],hearts:L.hearts,stars:0,inv:0,shield:0,slow:0,big:0,mega:0,magnet:0,hang:0,combo:0,bestCombo:0,passed:0,clean:0,hitN:0,nearN:0,spawnT:1.4,sinceP:0,stage:0,cd:3.2,tut:null,mute:0,held:null,lastOnT:-9,shake:0,flash:0,bt:0,b8:-1,over:false,paused:false,banner:null,gate:false,rng:wkRngMake((Math.random()*4294967296)>>>0)});
   if(!WK.clouds.length)for(let i=0;i<6;i++)WK.clouds.push({x:Math.random(),y:.08+Math.random()*.3,s:.5+Math.random()*.8});
   if(!WK.snow.length)for(let i=0;i<46;i++)WK.snow.push({x:Math.random(),y:Math.random(),s:1+Math.random()*2});
   $('wkend').hidden=true; $('wkstart').hidden=false; wkDraw(0);
@@ -13220,7 +13221,7 @@ function wkSpawn(L){
   let k=pool[Math.floor(r()*pool.length)]; if(L.cap<.7&&(k==='bush'||k==='wall'))k='fence';
   const mk=(kk,dx)=>{ const D=WK_OB[kk], o={k:kk,x:W*1.08+dx,w:D.w*Math.max(W,WK.H*1.7),h:D.h,vx:D.vx*W,ph:r()*6,done:false,hit:false}; if(kk==='bird'){ o.alt=.45+r()*.4; o.h=o.alt+.09; } WK.obs.push(o); return o; };
   const o=mk(k,0);
-  if(s>=3&&r()<.28&&k!=='bird'){ mk(r()<.5?'rock':'log',W*.3); }   // 연달아 두 개: 높이를 유지해야 한다
+  if(s>=3&&r()<.28&&k!=='bird'){ mk(r()<.5?'rock':'log',W*.42); }   // 연달아 두 개: 높이를 유지해야 한다
   /* 아이템: 장애물 위 별 아치(높이 뛰면 먹는다) · 가끔 낮게 늘어선 별 · 하트·방패·느림 */
   if(k!=='bird'&&r()<.7){ const top=Math.min(1.1,o.h+.2); for(let i=0;i<3;i++)WK.items.push({k:(i===1&&r()<.15)?'gold':'star',x:o.x+(i-1)*W*.07,y:Math.min(1.15,top+(i===1?.1:0))}); }
   else if(r()<.4){ for(let i=0;i<4;i++)WK.items.push({k:'star',x:o.x+W*.2+i*W*.05,y:.1}); }
@@ -13242,7 +13243,7 @@ function wkHurt(L,ob,dx,dh){
   if(WK.hearts<=0){ wkEnd(false); return true; } return false;
 }
 /* ---- 연습(목소리 맞추기): ① 작고 낮게 ② 크고 높게 ③ 돌 넘기 ---- */
-const WK_TUT=['① 작고 낮은 소리로 「으~」 하고 길게 내 보세요','② 이번엔 크고 높은 소리로 「아~!」','③ 소리로 통나무를 폴짝 넘어 보세요!'];
+const WK_TUT=['① 평소 목소리로 편하게 「아~」 길게 (낮게 안 해도 돼요)','② 이번엔 크게, 또는 높게 「아~!」','③ 소리로 통나무를 폴짝 넘어 보세요!'];
 function wkMedian(a){ if(!a.length)return null; const s=a.slice().sort((x,y)=>x-y); return s[Math.floor(s.length/2)]; }
 function wkTutStep(dt){
   const T=WK.tut; T.t+=dt; const o=WK.lastIn||{};
@@ -13254,7 +13255,7 @@ function wkTutStep(dt){
       if(T.hold>=.9){ wkSfx('count'); wkSpark(WK.W*.2,WK.H*.7,'#fff36b',16); WK.fx.push({t:0,txt:'★ 좋아요!',bad:false}); }
       T.step++; T.t=0; T.raw=[]; T.mf=[]; T.hold=0;
       if(T.step===2){   // 범위 확정 + 연습용 통나무
-        const lo=T.lo||WK.cal.lo, hi=Math.max(lo*2.5,T.hi||WK.cal.hi), loM=T.loM!=null?T.loM-1:WK.cal.loM, hiM=T.hiM!=null?Math.max(T.hiM,loM+5):WK.cal.hiM;
+        const lo=T.lo||WK.cal.lo, hi=Math.max(lo*2.5,T.hi||WK.cal.hi), loM=T.loM!=null?T.loM-2:WK.cal.loM, hiM=T.hiM!=null?Math.max(T.hiM,loM+5):WK.cal.hiM;
         WK.cal={lo,hi,loM,hiM}; try{ localStorage.setItem('konti:wkcal',JSON.stringify(WK.cal)); }catch(e){}
         T.ob={k:'log',x:WK.W*1.05,w:WK_OB.log.w*Math.max(WK.W,WK.H*1.7),h:.4,vx:0,ph:0,done:false,hit:false}; WK.obs=[T.ob]; }
     }
