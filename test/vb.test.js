@@ -13,7 +13,7 @@ export default async function vbTest(){
     // 완벽하게 부르는 사람
     VB.song='school';
     window.vbHear=()=>{ const q=VB.pipes.find(p=>!p.done); let p=q?q.p:3.5;
-      if(VB.boss&&VB.boss.st==='sing')p=VB.boss.n[VB.boss.i];
+      if(VB.boss&&VB.boss.st==='fight'){ p=VB.boss.n[VB.boss.i]; const f=VB.mobs.find(m=>m.k==='fire'&&m.warn<=0&&m.x>VB.W*.24); if(f&&Math.abs(p-f.p)<1.5)p=p>3.5?p-3:p+3; }
       return 60+[0,2,4,5,7,9,11,12][Math.round(p)]+(p%1?1:0); };
     await vbStart(); let t0=performance.now(); while(!VB.over&&performance.now()-t0<260000)await W(100);
     ok('완벽하게 부르면 끝까지 다 통과',VB.over&&VB.clean===VB.total&&VB.stars>=VB.total&&VB.hearts>=5,[VB.clean,VB.stars,VB.total,VB.hearts]);

@@ -1241,7 +1241,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "144";
+const APP_VER = "145";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -12650,7 +12650,7 @@ const VB_MAXH=10;
 const VB_STEP=[0,0.5,1,1.5,2,3,3.5,4,4.5,5,5.5,6];   // 반음 → 도레미 자리(검은 건반은 사이)
 const VB_NM=['도','레','미','파','솔','라','시','도'];
 const VB={on:false,stream:null,an:null,buf:null,raf:0,last:0,lv:'normal',song:'random',hint:true,
-  bgm:'beat',bus:null,bt:0,b8:-1,cd:0,combo:0,aura:0,flash:0,sparks:[],W:400,H:300,pos:3.5,vy:0,voice:null,mute:0,pipes:[],mobs:[],boss:null,sawMob:{},seq:[],si:0,t:0,next:0,stars:0,hearts:5,inv:0,total:20,passed:0,over:false,started:false,paused:false,flap:0,clouds:[],shake:0,fx:[],floor:.002};
+  bgm:'beat',bus:null,bt:0,b8:-1,cd:0,combo:0,aura:0,flash:0,sparks:[],W:400,H:300,pos:3.5,vy:0,voice:null,mute:0,pipes:[],mobs:[],bullets:[],ammo:0,boss:null,sawMob:{},seq:[],si:0,t:0,next:0,stars:0,hearts:5,inv:0,total:20,passed:0,over:false,started:false,paused:false,flap:0,clouds:[],shake:0,fx:[],floor:.002};
 function vbPosOfMidi(mf,near){   // 반음(실수) → 도~도 자리(0~7), 옥타브는 near 에 가장 가까운 것으로
   let best=null;
   for(let k=-4;k<=4;k++){ const rel=mf-(60+12*k); if(rel<-1.5||rel>13.5)continue; const sb=Math.floor(rel), fr=rel-sb, a=VB_STEP[((sb%12)+12)%12]+7*Math.floor(sb/12), b=VB_STEP[(((sb+1)%12)+12)%12]+7*Math.floor((sb+1)/12), p=a+(b-a)*fr;
@@ -12664,7 +12664,7 @@ function vbSeq(){
   const out=[]; let p=Math.floor(Math.random()*5)+1; for(let i=0;i<VB.total;i++){ p=Math.max(0,Math.min(7,p+[-2,-1,-1,0,1,1,2,3,-3][Math.floor(Math.random()*9)])); out.push(p); } return out;
 }
 function vbReset(){
-  const L=VB_LV[VB.lv]; VB.seq=vbSeq(); VB.total=VB.seq.length; VB.si=0; VB.pipes=[]; VB.t=0; VB.next=1.2; VB.stars=0; VB.hearts=L.hearts||5; VB.inv=0; VB.shield=0; VB.shieldN=0; VB.lastHeal=0; VB.passed=0; VB.over=false; VB.pos=3.5; VB.vy=0; VB.fx=[]; VB.voice=null; VB.combo=0; VB.clean=0; VB.sparks=[]; VB.cd=3.2; VB.bt=0; VB.b8=-1; VB.flash=0; VB.rep={}; VB.tut=null; VB.intro=0; VB.mobs=[]; VB.boss=null; VB.bossDone=-1; VB.sawGap=0; VB.sawMob={};
+  const L=VB_LV[VB.lv]; VB.seq=vbSeq(); VB.total=VB.seq.length; VB.si=0; VB.pipes=[]; VB.t=0; VB.next=1.2; VB.stars=0; VB.hearts=L.hearts||5; VB.inv=0; VB.shield=0; VB.shieldN=0; VB.lastHeal=0; VB.passed=0; VB.over=false; VB.pos=3.5; VB.vy=0; VB.fx=[]; VB.voice=null; VB.combo=0; VB.clean=0; VB.sparks=[]; VB.cd=3.2; VB.bt=0; VB.b8=-1; VB.flash=0; VB.rep={}; VB.tut=null; VB.intro=0; VB.mobs=[]; VB.bullets=[]; VB.ammo=0; VB.boss=null; VB.bossDone=-1; VB.sawGap=0; VB.sawMob={};
   if(!VB.clouds.length)for(let i=0;i<7;i++)VB.clouds.push({x:Math.random(),y:.08+Math.random()*.45,s:.5+Math.random()*.9});
   $('vbend').hidden=true; $('vbstart').hidden=false; vbDraw();
 }
@@ -12778,13 +12778,13 @@ function vbLoop(ts){
     // 파이프
     /* v142 새 장애물: 두 갈래 틈(idx%4==2) · 독수리(idx%5==3) · 벌 떼(idx%7==5) · 애벌레 먹이(idx%4==1) · 10개마다 보스 — 전부 번호로 정해서(난수 없음) 둘이 대결할 때 같은 판이 된다 */
     { const bossWant=VB.si>0&&VB.si%10===0&&VB.si<=VB.seq.length-4&&VB.bossDone!==VB.si;
-      if(bossWant){ if(!VB.boss&&VB.t>=VB.next&&!VB.pipes.length&&!VB.mobs.length){ VB.bossDone=VB.si; VB.boss={st:'in',t:0,n:VB.seq.slice(VB.si,VB.si+4),i:0,hold:0,k:-1}; vbSfx('count'); VB.fx.push({t:0,txt:'🦜 보스 등장!',bad:true}); } }
+      if(bossWant){ if(!VB.boss&&VB.t>=VB.next&&!VB.pipes.length&&!VB.mobs.length){ VB.bossDone=VB.si; VB.boss={st:'in',t:0,n:VB.seq.slice(VB.si,VB.si+4),i:0,hp:100,acc:0,stuck:0,fireT:3.2,atk:false}; vbSfx('count'); VB.fx.push({t:0,txt:'🦜 보스 등장!',bad:true}); } }
       else if(!VB.boss&&VB.t>=VB.next&&VB.si<VB.seq.length){ const idx=VB.si, p=VB.seq[VB.si++], gold=VB.si%6===0, d=L.gap>1.2?4:3, p2=(idx>=2&&idx%4===2&&!gold)?(p+d<=7?p+d:p-d):null;
         VB.pipes.push({x:VB.W+40,p,p2,done:false,hit:false,gold}); VB.next=VB.t+L.every;
         if(p2!=null&&!VB.sawGap){ VB.sawGap=1; VB.fx.push({t:0,txt:'🎯 두 갈래! 주황 길은 보너스 +2',bad:false}); }
         const px=VB.W+40, spx=VB.W*L.sp, bx0=VB.W*.24, half=spx*L.every/2;
-        if(idx>=3&&idx%5===3&&idx<VB.seq.length-1)VB.mobs.push({k:'eagle',x:bx0+1.25*(px-bx0)+1.25*half,p:VB.pos,lock:false});
-        if(idx>=5&&idx%7===5)VB.mobs.push({k:'bees',x:px+half,p:(idx*5+2)%8});
+        if(idx>=3&&idx%5===3&&idx<VB.seq.length-1){ const x0=bx0+1.25*(px-bx0)+1.25*half; VB.mobs.push({k:'eagle',x:x0,p:VB.pos,lock:false}); VB.mobs.push({k:'gun',x:bx0+(x0-bx0)/1.25-1.6*spx,p:(idx*5+1)%8}); }
+        if(idx>=5&&idx%7===5){ VB.mobs.push({k:'bees',x:px+half,p:(idx*5+2)%8}); VB.mobs.push({k:'gun',x:px+half-1.6*spx,p:(idx*3+6)%8}); }
         if(idx>=1&&idx%4===1)VB.mobs.push({k:'worm',x:px+spx*L.every*.35,p:(idx*3+1)%8}); }
     }   /* (예전 주석) */   // 음 힌트는 파이프가 생길 때가 아니라 '새 바로 앞의 다음 장애물'이 다가올 때 들려준다(아래, v120 — 예전엔 화면 끝에 생길 때 울려 지금 앞 파이프와 어긋났다)
     const sp=VB.W*L.sp, bx=VB.W*.24, br=vbRow()*.3, hr=vbRow()*(L.hit||.24), pw=Math.max(46,VB.W*.075);   // 부딪힘 판정은 그린 새보다 작게(v120)
@@ -12823,45 +12823,60 @@ function vbHurt(L,bx,by){   // 부딪힘 처리(파이프·독수리·벌·보�
 /* v142 독수리(새 쪽으로 따라오다 가까워지면 고정 — 다른 음으로 피한다) · 벌 떼(한 줄 높이) · 애벌레(먹으면 ★+1) */
 function vbMobStep(dt,sp,bx,hr,L){
   const by=vbY(VB.pos), row=vbRow();
-  for(const m of VB.mobs){
+  /* v145 총 아이템: 먹으면 장전 → 앞의 독수리·벌 떼가 가까워지면 자동 발사(없애면 ★+2). 못 먹으면 그냥 피한다 */
+  if(VB.ammo>0){ const t=VB.mobs.find(m=>(m.k==='eagle'||m.k==='bees')&&!m.dead&&!m.hit&&m.x>bx&&m.x-bx<VB.W*.62); if(t){ VB.ammo--; VB.bullets.push({x:bx+10,p:VB.pos,t}); vbSfx('pass'); } }
+  for(const b of VB.bullets){ b.x+=VB.W*1.3*dt; b.p+=(b.t.p-b.p)*Math.min(1,dt*10);
+    if(b.t.dead||b.x>VB.W+40)b.done=true; else if(b.x>=b.t.x-8){ b.done=true; b.t.dead=true; VB.stars+=2; vbSpark(b.t.x,vbY(b.t.p),'#ff9a2e',26); vbSpark(b.t.x,vbY(b.t.p),'#fff36b',12); VB.fx.push({t:0,txt:'💥 격파! +2',bad:false}); vbSfx('bonus'); } }
+  VB.bullets=VB.bullets.filter(b=>!b.done);
+  for(const m of VB.mobs){ if(m.dead)continue;
+    if(m.k==='fire'){ if(m.warn>0){ m.warn-=dt; m.p+=(VB.pos-m.p)*Math.min(1,dt*6); } else m.x-=VB.W*.7*dt; }
+    else
     if(m.k==='eagle'){ if(!m.lock){ if(m.x-bx<VB.W*.3)m.lock=true; else{ const d=VB.pos-m.p; m.p+=Math.sign(d)*Math.min(Math.abs(d),dt*(L.sp>.2?1.3:1)); } } m.x-=sp*1.25*dt;
       if(m.x<VB.W+30&&!VB.sawMob.eagle){ VB.sawMob.eagle=1; VB.fx.push({t:0,txt:'🦅 독수리! 다른 음으로 피해요',bad:true}); } }
     else m.x-=sp*dt;
-    const my=vbY(m.p), w=m.k==='bees'?VB.W*.12:m.k==='worm'?VB.W*.1:row*1.1, vh=(m.k==='worm'?.5:m.k==='bees'?.4:.45)*row+hr;
+    const my=vbY(m.p), w=m.k==='bees'?VB.W*.12:(m.k==='worm'||m.k==='gun')?VB.W*.1:m.k==='fire'?row*.9:row*1.1, vh=(m.k==='worm'?.5:m.k==='bees'?.4:.45)*row+hr;
     if(m.k==='bees'&&m.x<VB.W+30&&!VB.sawMob.bees){ VB.sawMob.bees=1; VB.fx.push({t:0,txt:'🐝 벌 떼! 그 줄을 피해요',bad:true}); }
     const over=Math.abs(m.x-bx)<w/2+hr&&Math.abs(my-by)<vh;
     if(over&&!m.hit&&!m.done){
       if(m.k==='worm'){ m.done=true; VB.stars++; VB.fx.push({t:0,txt:'🐛 냠! +1',bad:false}); vbSfx('pass'); vbSpark(bx,by,'#9be36b',10); }
+      else if(m.k==='gun'){ m.done=true; VB.ammo=1; VB.fx.push({t:0,txt:'🔫 장전! 곧 나올 장애물을 쏴요',bad:false}); vbSfx('bonus'); vbSpark(bx,by,'#ffd23f',16); }
       else if(VB.shield>0||VB.inv<=0){ m.hit=true; if(vbHurt(L,bx,by))return; } }
-    if(!m.pass&&m.x+w/2<bx-hr){ m.pass=true; if(!m.hit&&m.k!=='worm'){ VB.stars++; VB.fx.push({t:0,txt:(m.k==='eagle'?'🦅':'🐝')+' 피했다! +1',bad:false}); } }
+    if(!m.pass&&m.x+w/2<bx-hr){ m.pass=true; if(!m.hit&&m.k!=='worm'&&m.k!=='gun'&&m.k!=='fire'){ VB.stars++; VB.fx.push({t:0,txt:(m.k==='eagle'?'🦅':'🐝')+' 피했다! +1',bad:false}); } }
   }
-  VB.mobs=VB.mobs.filter(m=>m.x>-140);
+  VB.mobs=VB.mobs.filter(m=>m.x>-140&&!m.dead);
 }
-/* 보스: 큰 새가 4음 멜로디를 들려 주면(듣기) 같은 순서로 따라 부른다(부르기). 성공 ★+5·하트 +1, 8초 안에 못 부르면 부딪힘 */
+/* 보스전(v145): 노란 음을 목소리로 길게 유지하면 보스에게 공격(초당 24, 체력 100) — 1.2초 유지할 때마다 다음 음으로 바뀐다. 보스는 불덩이를 쏜다(경고 뒤 날아옴 — 다른 음으로 피하기). 45초 안에 못 쓰러뜨리면 도망간다 */
 function vbBossStep(dt){
-  const B=VB.boss, L=VB_LV[VB.lv], bx=VB.W*.24; B.t+=dt;
-  if(B.st==='in'){ if(B.t>1.3){ B.st='listen'; B.t=0; B.k=-1; } return; }
-  if(B.st==='listen'){ const k=Math.floor((B.t-.2)/.8); if(k>B.k&&k<B.n.length){ B.k=k; vbTone(B.n[k]); VB.mute=Math.max(VB.mute,.6); }
-    if(B.t>.2+B.n.length*.8+.3){ B.st='sing'; B.t=0; B.i=0; B.hold=0; } return; }
-  const tg=B.n[B.i]; if(VB.voice!=null&&Math.abs(VB.pos-tg)<.4)B.hold+=dt; else B.hold=Math.max(0,B.hold-dt*.6);
-  if(B.hold>=.5){ vbSfx('pass'); vbSpark(bx,vbY(VB.pos),'#fff36b',16); VB.fx.push({t:0,txt:'★ '+VB_NM[tg],bad:false}); B.i++; B.hold=0; B.t=0;
-    if(B.i>=B.n.length){ VB.stars+=5; if(VB.hearts<VB_MAXH)VB.hearts++; VB.fx.push({t:0,txt:'🏆 보스 격파! ⭐+5 ❤️+1',bad:false}); vbSfx('bonus'); vbSpark(VB.W*.7,VB.H*.3,'#ffd700',50); VB.boss=null; VB.next=VB.t+1.6; } }
-  else if(B.t>8){ VB.fx.push({t:0,txt:'🦜 보스의 반격!',bad:true}); const by=vbY(VB.pos); VB.boss=null; VB.next=VB.t+1.6; vbHurt(L,bx,by); }
+  const B=VB.boss, L=VB_LV[VB.lv], bx=VB.W*.24, by=vbY(VB.pos); B.t+=dt;
+  if(B.st==='in'){ if(B.t>1.3){ B.st='fight'; B.t=0; vbTone(B.n[B.i]); VB.mute=Math.max(VB.mute,.5); } return; }
+  const tg=B.n[B.i]; B.atk=VB.voice!=null&&Math.abs(VB.pos-tg)<.45;
+  if(B.atk){ B.hp-=24*dt; B.acc+=dt; B.stuck=0; B.hurt=.15; if(Math.random()<.35)vbSpark(VB.W*.74,VB.H*.3,'#ffe066',1); } else B.stuck+=dt;
+  B.hurt=Math.max(0,(B.hurt||0)-dt);
+  if(B.hp>0&&(B.acc>=1.2||B.stuck>6)){ B.i=(B.i+1)%B.n.length; B.acc=0; B.stuck=0; vbTone(B.n[B.i]); VB.mute=Math.max(VB.mute,.5); VB.fx.push({t:0,txt:'🎯 다음 '+VB_NM[B.n[B.i]],bad:false}); }
+  B.fireT-=dt; if(B.fireT<=0&&B.hp>0&&!VB.mobs.some(m=>m.k==='fire')){ B.fireT=4.2; VB.mobs.push({k:'fire',x:VB.W*.74,p:VB.pos,warn:.9}); vbSfx('count'); }
+  if(B.hp<=0){ VB.stars+=5; if(VB.hearts<VB_MAXH)VB.hearts++; VB.fx.push({t:0,txt:'🏆 보스 격파! ⭐+5 ❤️+1',bad:false}); vbSfx('bonus'); vbSpark(VB.W*.74,VB.H*.3,'#ffd700',70); VB.mobs=VB.mobs.filter(m=>m.k!=='fire'); VB.boss=null; VB.next=VB.t+1.6; }
+  else if(B.t>45){ VB.fx.push({t:0,txt:'🦜 보스가 도망갔어요',bad:true}); VB.mobs=VB.mobs.filter(m=>m.k!=='fire'); VB.boss=null; VB.next=VB.t+1.6; }
 }
 function vbDrawMobs(g,W,H,bx){
   const row=vbRow(); g.textBaseline='middle'; g.textAlign='center';
   for(const m of VB.mobs){ const y=vbY(m.p); g.globalAlpha=m.hit?.35:1;
     if(m.k==='eagle'){ g.font=Math.round(row*1.3)+'px serif'; g.fillText('🦅',m.x,y); if(m.x>W-10){ g.globalAlpha=.6+.4*Math.sin(VB.t*14); g.fillStyle='#ff3b3b'; g.font='900 26px sans-serif'; g.fillText('⚠',W-22,y); } }
     else if(m.k==='bees'){ const w=W*.12; g.font=Math.round(row*.8)+'px serif'; for(let i=0;i<4;i++)g.fillText('🐝',m.x-w/2+i*w/3+(i%2?3:-3)*Math.sin(VB.t*20+i),y+Math.sin(VB.t*16+i*2)*row*.12); }
+    else if(m.k==='gun'){ if(m.done)continue; g.save(); g.shadowColor='#ffd23f'; g.shadowBlur=14+6*Math.sin(VB.t*8); g.font=Math.round(row*.95)+'px serif'; g.fillText('🔫',m.x,y); g.restore(); }
+    else if(m.k==='fire'){ if(m.warn>0){ g.strokeStyle='rgba(255,60,60,'+(.35+.35*Math.sin(VB.t*20))+')'; g.lineWidth=4; g.setLineDash([12,8]); g.beginPath(); g.moveTo(bx+20,y); g.lineTo(m.x,y); g.stroke(); g.setLineDash([]); g.fillStyle='#ff3b3b'; g.font='900 24px sans-serif'; g.fillText('⚠',bx+34,y); } g.font=Math.round(row*1.0)+'px serif'; g.fillText('🔥',m.x,y); }
     else{ if(m.done)continue; g.font=Math.round(row*.7)+'px serif'; for(let i=0;i<3;i++)g.fillText('🐛',m.x-W*.04+i*W*.04,y); }
     g.globalAlpha=1; }
-  const B=VB.boss; if(B){ const bxx=W*.74, byy=H*.3, sz=Math.min(110,W*.2); g.save(); g.translate(0,Math.sin(VB.t*3)*6);
-    g.font=Math.round(sz)+'px serif'; g.fillText('🦜',bxx,byy);
-    const nn=B.n.length, cw=40, bw=nn*(cw+6)+10, bx0=bxx-bw/2, by0=byy-sz*.85;
-    g.fillStyle='rgba(255,255,255,.93)'; g.strokeStyle='#33302a'; g.lineWidth=2; g.beginPath(); g.roundRect?g.roundRect(bx0,by0-16,bw,40,12):g.rect(bx0,by0-16,bw,40); g.fill(); g.stroke();
-    for(let i=0;i<nn;i++){ const on=B.st==='listen'?B.k===i:B.st==='sing'?B.i===i:false, dn=B.st==='sing'&&i<B.i; g.fillStyle=dn?'#9be36b':on?'#ffd600':'#e8e8e8'; g.beginPath(); g.roundRect?g.roundRect(bx0+8+i*(cw+6),by0-11,cw,30,8):g.rect(bx0+8+i*(cw+6),by0-11,cw,30); g.fill(); g.fillStyle='#222'; g.font='900 18px sans-serif'; g.fillText(B.st==='in'?'?':VB_NM[B.n[i]],bx0+8+i*(cw+6)+cw/2,by0+5); }
-    g.fillStyle='#fff'; g.strokeStyle='rgba(0,0,0,.55)'; g.lineWidth=4; g.font='800 15px sans-serif'; const tx=B.st==='in'?'보스 등장!':B.st==='listen'?'👂 잘 들어 보세요':'🎤 같은 순서로 불러요 '+(B.i+1)+'/'+nn; g.strokeText(tx,bxx,byy+sz*.62); g.fillText(tx,bxx,byy+sz*.62);
-    if(B.st==='sing'){ const bw2=Math.min(160,W*.4); g.fillStyle='rgba(0,0,0,.35)'; g.fillRect(bxx-bw2/2,byy+sz*.62+14,bw2,10); g.fillStyle='#9be36b'; g.fillRect(bxx-bw2/2,byy+sz*.62+14,bw2*Math.min(1,B.hold/.5),10); }
+  for(const b of VB.bullets){ const y=vbY(b.p); g.save(); g.shadowColor='#ffb300'; g.shadowBlur=12; g.fillStyle='#fff36b'; g.beginPath(); g.ellipse(b.x,y,14,5,0,0,7); g.fill(); g.fillStyle='#ff7a1a'; g.beginPath(); g.ellipse(b.x-10,y,9,3,0,0,7); g.fill(); g.restore(); }
+  if(VB.ammo>0){ g.font='24px serif'; g.fillText('🔫',bx+8,vbY(VB.pos)-row*.55); }
+  const B=VB.boss; if(B){ const bxx=W*.71, byy=H*.3, sz=Math.min(110,W*.2); g.save(); g.translate(0,Math.sin(VB.t*3)*6);
+    g.font=Math.round(sz)+'px serif'; if(B.hurt>0)g.translate((Math.random()-.5)*6,0); g.fillText('🦜',bxx,byy);
+    if(B.st==='fight'){ const tg=B.n[B.i], ty=vbY(tg);
+      g.save(); g.strokeStyle='rgba(255,214,0,.9)'; g.lineWidth=3; g.setLineDash([10,7]); g.beginPath(); g.moveTo(40,ty); g.lineTo(W,ty); g.stroke(); g.setLineDash([]); g.restore();
+      if(B.atk){ const by0=vbY(VB.pos); g.save(); g.shadowColor='#ffe066'; g.shadowBlur=18; g.strokeStyle='rgba(255,240,120,.95)'; g.lineWidth=6+Math.sin(VB.t*40)*2; g.beginPath(); g.moveTo(bx+20,by0); g.lineTo(bxx-sz*.3,byy+sz*.1); g.stroke(); g.restore(); } }
+    const hw=Math.min(190,W*.46), hy=byy-sz*.78; g.fillStyle='rgba(0,0,0,.45)'; g.fillRect(bxx-hw/2,hy,hw,14); g.fillStyle=B.hp>35?'#ff5a5a':'#ff9a2e'; g.fillRect(bxx-hw/2,hy,hw*Math.max(0,B.hp)/100,14); g.strokeStyle='#33302a'; g.lineWidth=2; g.strokeRect(bxx-hw/2,hy,hw,14);
+    g.fillStyle='#fff'; g.strokeStyle='rgba(0,0,0,.55)'; g.lineWidth=4; g.font='800 15px sans-serif';
+    const tx=B.st==='in'?'🦜 보스 등장!':'🎤 「'+VB_NM[B.n[B.i]]+'」 길게 = 공격!'; g.strokeText(tx,bxx,byy+sz*.62); g.fillText(tx,bxx,byy+sz*.62);
+    if(B.st==='fight'){ g.font='700 13px sans-serif'; const t2='🔥 불은 다른 음으로 피해요'; g.strokeText(t2,bxx,byy+sz*.62+20); g.fillText(t2,bxx,byy+sz*.62+20); }
     g.restore(); }
   g.textAlign='left';
 }
