@@ -1246,7 +1246,7 @@ input[type=range]{accent-color:var(--gold2)}
   </div>
   <div id="wkfield"><canvas id="wkcv"></canvas>
     <button class="btn vbskip" id="wkskip" type="button" hidden>건너뛰기 ▶</button>
-    <div id="wkstart" class="vbov"><div class="gmbox"><b>🐶 폴짝 산책</b><small>강아지와 산책해요! 소리를 내면 폴짝 뛰어올라 걸어오는 장애물을 넘어요. <b>큰 소리</b>나 <b>높은 음</b>일수록 더 높이 올라가고, 소리를 멈추면 내려와요.<br>⭐ 별 · ❤️ 생명 · 🛡 방패 · 🍄 거대화 · 🌈 무적(다 부숴요!) · 🧲 자석 · 🐢 느리게 — 아이템을 모아 끝까지 걸어요.</small>
+    <div id="wkstart" class="vbov"><div class="gmbox"><b>🐶 폴짝 산책</b><small>강아지와 산책해요! 소리를 내면 폴짝 뛰어올라 걸어오는 장애물을 넘어요. <b>큰 소리</b>나 <b>높은 음</b>일수록 더 높이 올라가고(끝까지 내면 천장까지!), 소리를 멈추면 내려와요.<br>⭐ 별 · ❤️ 생명 · 🛡 방패 · 🍄 거대화 · 🌈 무적(다 부숴요!) · 🧲 자석 · 🐢 느리게 — 아이템을 모아 끝까지 걸어요.</small>
       <div class="vbgo"><button class="vbgobtn a" id="wkgo" type="button"><b>🎓 목소리 연습</b><small>내 목소리 크기·높이에 맞추기 · 처음이면 추천</small></button><button class="vbgobtn b" id="wkquick" type="button"><b>⚡ 바로 시작</b><small>지난번 맞춘 값으로 곧바로</small></button></div>
       <small id="wksum" class="vbsum"></small>
       <details class="vbdet"><summary>⚙ 설정 바꾸기 (난이도·마이크·배경음악)</summary><div class="vbopts">
@@ -1306,7 +1306,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "147";
+const APP_VER = "148";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -13115,7 +13115,9 @@ const WK={on:false,stream:null,an:null,buf:null,raf:0,last:0,lv:'normal',sens:1,
 function wkRngMake(seed){ let a=seed>>>0; return ()=>{ a=(a+0x6D2B79F5)>>>0; let t=a; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; }; }
 const wkClamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 /* 소리 크기·음 높이 → 목표 높이(0.12~1.05). 「큰 소리 또는 높은 음」: 큰 쪽이 주도하고 작은 쪽이 보탠다. */
-function wkHeightOf(volN,pN){ const hi=Math.max(volN,pN||0), lo=Math.min(volN,pN==null?volN:pN); return Math.min(1.05,Math.max(.12,hi*.92+lo*.18)); }
+/* v148(사용자: 「목소리를 낼수록 천장까지 올라가면 재밌겠다」): 가장 크게·높게 내면 맨 위(천장, WK_TOP)까지 — 높은 벽(.96)은 중간 정도 소리로도 넘고, 끝까지 내면 하늘 별 줄이 있다 */
+const WK_TOP=1.2;
+function wkHeightOf(volN,pN){ const hi=Math.max(volN,pN||0), lo=Math.min(volN,pN==null?volN:pN); return Math.min(WK_TOP,Math.max(.12,(hi*.92+lo*.18)*1.3)); }
 async function wkMic(){
   if(WK.stream)return true;
   const ctx=AC(); if(!ctx)return false; try{ await ctx.resume(); }catch(e){}
@@ -13149,7 +13151,7 @@ function wkInput(dt){
   WK.voiced=on; WK.lastIn=o; return {on,h};
 }
 function wkMove(dt,inp){
-  if(inp.on){ const dy=inp.h-WK.y; WK.y+=dy>0?Math.min(dy*Math.min(1,dt*10),4.2*dt):dy*Math.min(1,dt*8); WK.vy=0; WK.y=Math.min(1.08,WK.y); }
+  if(inp.on){ const dy=inp.h-WK.y; WK.y+=dy>0?Math.min(dy*Math.min(1,dt*10),5.2*dt):dy*Math.min(1,dt*8); WK.vy=0; WK.y=Math.min(WK_TOP+.02,WK.y); }
   else{ WK.vy=Math.min(3.4,WK.vy+dt*4.6); WK.y=Math.max(0,WK.y-WK.vy*dt); if(WK.y<=0)WK.vy=0; }
 }
 /* ---- 소리 ---- */
@@ -13220,8 +13222,9 @@ function wkSpawn(L){
   const o=mk(k,0);
   if(s>=3&&r()<.28&&k!=='bird'){ mk(r()<.5?'rock':'log',W*.3); }   // 연달아 두 개: 높이를 유지해야 한다
   /* 아이템: 장애물 위 별 아치(높이 뛰면 먹는다) · 가끔 낮게 늘어선 별 · 하트·방패·느림 */
-  if(k!=='bird'&&r()<.7){ const top=Math.min(1,o.h+.2); for(let i=0;i<3;i++)WK.items.push({k:(i===1&&r()<.15)?'gold':'star',x:o.x+(i-1)*W*.07,y:Math.min(1.02,top+(i===1?.1:0))}); }
+  if(k!=='bird'&&r()<.7){ const top=Math.min(1.1,o.h+.2); for(let i=0;i<3;i++)WK.items.push({k:(i===1&&r()<.15)?'gold':'star',x:o.x+(i-1)*W*.07,y:Math.min(1.15,top+(i===1?.1:0))}); }
   else if(r()<.4){ for(let i=0;i<4;i++)WK.items.push({k:'star',x:o.x+W*.2+i*W*.05,y:.1}); }
+  if(r()<.16){ for(let i=0;i<5;i++)WK.items.push({k:i===2?'gold':'star',x:o.x+W*.12+i*W*.05,y:1.12}); }   // 천장 별 줄: 소리를 끝까지 내야 먹는다
   WK.sinceP++;
   if(WK.sinceP>=4&&r()<.5){ WK.sinceP=0; const q=r(); let kk=q<.2?'heart':q<.38?'shield':q<.55?'big':q<.7?'magnet':q<.85?'slow':'mega'; if(kk==='heart'&&WK.hearts>=WK_MAXH)kk='shield'; if(kk==='mega'&&s<1)kk='big'; WK.items.push({k:kk,x:o.x+W*.3,y:.45+r()*.35}); }
 }
@@ -13372,9 +13375,9 @@ function wkDraw(dt){
   // 도착 문
   if(WK.gate){ const L=WK_LV[WK.lv], gx=dx+(L.goal-WK.dist)*W*.05; if(gx<W+60){ g.fillStyle='#fff'; g.strokeStyle='#33302a'; g.lineWidth=3; g.fillRect(gx-4,gy-U*1.1,8,U*1.1); g.strokeRect(gx-4,gy-U*1.1,8,U*1.1); for(let i=0;i<8;i++)for(let j=0;j<2;j++){ g.fillStyle=(i+j)%2?'#222':'#fff'; g.fillRect(gx+4+j*14,gy-U*1.1+i*10,14,10); } g.font='900 20px sans-serif'; g.textAlign='left'; g.fillStyle='#ffd23f'; g.strokeText('🏁 도착!',gx+30,gy-U*1.2); g.fillText('🏁 도착!',gx+30,gy-U*1.2); } }
   // 높이 길잡이: 왼쪽 막대 = 지금 내는 소리의 높이, 빨간 표시 = 다음 장애물을 넘는 데 필요한 높이
-  { const nx=WK.obs.find(o=>!o.done&&o.x>dx-sz), gx=14, gh=U; g.fillStyle='rgba(0,0,0,.25)'; g.fillRect(gx,gy-gh,10,gh); const cur=WK.voiced&&WK.lastIn?Math.max(WK.lastIn.h||0,0):0; g.fillStyle=WK.voiced?'#ffd166':'rgba(255,255,255,.35)'; g.fillRect(gx,gy-gh*Math.min(1,cur),10,gh*Math.min(1,cur));
+  { const nx=WK.obs.find(o=>!o.done&&o.x>dx-sz), gx=14, gh=U*WK_TOP; g.fillStyle='rgba(0,0,0,.25)'; g.fillRect(gx,gy-gh,10,gh); const cur=WK.voiced&&WK.lastIn?Math.max(WK.lastIn.h||0,0):0; g.fillStyle=WK.voiced?'#ffd166':'rgba(255,255,255,.35)'; g.fillRect(gx,gy-gh*Math.min(1,cur/WK_TOP),10,gh*Math.min(1,cur/WK_TOP));
     g.strokeStyle='#fff'; g.lineWidth=2; g.strokeRect(gx,gy-gh,10,gh);
-    if(nx&&nx.k!=='bird'){ const th=Math.min(1.02,nx.h+.06); g.fillStyle='#ff5a5a'; g.beginPath(); g.moveTo(gx+14,gy-gh*th); g.lineTo(gx+28,gy-gh*th-6); g.lineTo(gx+28,gy-gh*th+6); g.closePath(); g.fill(); g.setLineDash([6,6]); g.strokeStyle='rgba(255,90,90,.6)'; g.lineWidth=2; g.beginPath(); g.moveTo(gx+28,gy-gh*th); g.lineTo(Math.min(W,dx+W*.5),gy-gh*th); g.stroke(); g.setLineDash([]); } }
+    if(nx&&nx.k!=='bird'){ const th=Math.min(1.02,nx.h+.06); g.fillStyle='#ff5a5a'; g.beginPath(); g.moveTo(gx+14,gy-U*th); g.lineTo(gx+28,gy-U*th-6); g.lineTo(gx+28,gy-U*th+6); g.closePath(); g.fill(); g.setLineDash([6,6]); g.strokeStyle='rgba(255,90,90,.6)'; g.lineWidth=2; g.beginPath(); g.moveTo(gx+28,gy-U*th); g.lineTo(Math.min(W,dx+W*.5),gy-U*th); g.stroke(); g.setLineDash([]); } }
   g.textAlign='center'; g.textBaseline='middle';
   for(const it of WK.items){ if(it.got)continue; const y=gy-it.y*U+Math.sin(t*5+it.x*.05)*3; g.font=(it.k==='star'?22:30)+'px serif'; g.fillText(it.k==='star'?'⭐':it.k==='gold'?'🌟':it.k==='heart'?'❤️':it.k==='shield'?'🛡️':it.k==='big'?'🍄':it.k==='mega'?'🌈':it.k==='magnet'?'🧲':'🐢',it.x,y); }
   for(const ob of WK.obs)wkDrawOb(g,ob,gy,U);
