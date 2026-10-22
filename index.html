@@ -840,6 +840,8 @@ input[type=range]{accent-color:var(--gold2)}
 #home .hcards .hcard.game.span2{flex-direction:row}#home .hcards .hcard.game.span2 .gscene{width:46%;height:auto;min-height:96px}#home .hcards .hcard.game.span2>span:last-child{flex:1;align-self:center;text-align:left}
 @media (max-width:520px){#home .hcards .hcard.game .gscene{height:78px}#home .hcards .hcard.game.span2 .gscene{min-height:78px}#home .hcards .hcard.game b{font-size:15.5px}}
 #home .hcards .hcard.game.last::after{z-index:2}
+/* v144 노래하는 새 위 막대가 폰에서 잘리던 것 — 칩을 줄이고 막대·마이크는 좁아지게, 넘치면 줄바꿈 */
+.vbtop{flex-wrap:wrap;gap:4px 5px!important;padding:5px 6px!important}.vbtop .homebtn{padding:4px 9px!important;min-width:0}.vbtop .vbchip{padding:2px 6px;font-size:13px}.vbtop .vbbar{min-width:24px;flex:1 1 40px}.vbtop .vbmic{width:26px}.vbtop .vbround{flex:none}
 </style>
 </head>
 <body>
@@ -1239,7 +1241,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "143";
+const APP_VER = "144";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -12643,7 +12645,7 @@ function smEnter(){ if(!SM.notes.length&&smLoad()){ $('smlyric').value=SM.lyric|
    · 곡 따라 부르기: 파이프가 곡의 음 순서대로 나온다(도 장조·도~높은 도 안의 곡). 「음 미리 듣기」는 파이프가 나타날 때 목표음을 들려준다(그동안은 마이크를 안 듣는다 — 스피커 소리를 새가 따라가지 않게).
    음높이는 튜너·노래 만들기와 같은 yinPitch. 마이크는 화면을 나가면 끄고, 끝나면 소리 엔진을 새로 띄운다(통화 모드 방지, smFreshAudio). */
 /* v120(사용자: "쉬운 버전도 어렵다 · 무적·생명·보너스"): 쉬움은 틈을 아주 넓게(±1.4칸)·느리게·간격 넓게·하트 8·충돌 뒤 무적 길게·떨어지는 속도 느리게. fall=떨어지는 가속, maxH=하트 상한 */
-const VB_LV={easy:{label:'쉬움',gap:1.4,sp:.12,every:4.4,hearts:8,inv:2.6,fall:.8,vmax:1.2,hit:.2},normal:{label:'보통',gap:.95,sp:.16,every:3.6,hearts:6,inv:2.0,fall:1.2,vmax:1.7,hit:.24},hard:{label:'어려움',gap:.62,sp:.22,every:2.6,hearts:5,inv:1.6,fall:1.6,vmax:2.2,hit:.28}};
+const VB_LV={easy:{label:'쉬움',gap:1.4,sp:.12,every:5.8,hearts:8,inv:2.6,fall:.8,vmax:1.2,hit:.2},normal:{label:'보통',gap:.95,sp:.16,every:4.8,hearts:6,inv:2.0,fall:1.2,vmax:1.7,hit:.24},hard:{label:'어려움',gap:.62,sp:.22,every:3.4,hearts:5,inv:1.6,fall:1.6,vmax:2.2,hit:.28}};
 const VB_MAXH=10;
 const VB_STEP=[0,0.5,1,1.5,2,3,3.5,4,4.5,5,5.5,6];   // 반음 → 도레미 자리(검은 건반은 사이)
 const VB_NM=['도','레','미','파','솔','라','시','도'];
@@ -12950,9 +12952,9 @@ function vbDraw(dt){
   else if(VB.started&&VB.cd>0&&!VB.over){ const n=Math.ceil(VB.cd), fr=VB.cd-Math.floor(VB.cd), sc=1+(fr)*.4; g.save(); g.translate(W/2,H*.42); g.scale(sc,sc); g.textAlign='center'; g.textBaseline='middle'; g.font='900 72px sans-serif'; g.lineWidth=8; g.strokeStyle='#5a3b00'; g.fillStyle='#ffd23f'; g.strokeText(String(n),0,0); g.fillText(String(n),0,0); g.restore();
     g.textAlign='center'; g.font='800 16px sans-serif'; g.fillStyle='#fff'; g.strokeStyle='rgba(0,0,0,.5)'; g.lineWidth=4; g.strokeText('지금 소리를 내 보세요 — 새가 따라와요!',W/2,H*.62); g.fillText('지금 소리를 내 보세요 — 새가 따라와요!',W/2,H*.62); g.textAlign='left'; }
   // 위 막대
-  $('vbstarsn').textContent=VB.stars; $('vbhearts').textContent='❤️'.repeat(Math.max(0,VB.hearts))+'🤍'.repeat(Math.max(0,(VB_LV[VB.lv].hearts||5)-VB.hearts))+(VB.shield>0?' 🛡'+Math.ceil(VB.shield):'');
+  $('vbstarsn').textContent=VB.stars; { const hmax=VB_LV[VB.lv].hearts||5, hn=Math.max(0,VB.hearts); $('vbhearts').textContent=(hmax>5||hn>5?'❤️×'+hn:'❤️'.repeat(hn)+'🤍'.repeat(Math.max(0,hmax-hn)))+(VB.shield>0?' 🛡'+Math.ceil(VB.shield):''); }
   $('vbprog').style.width=(VB.passed/Math.max(1,VB.total)*100)+'%';
-  const nq=VB.pipes.find(q=>!q.done); $('vbtarget').textContent=VB.boss?'🦜 보스!':nq?'다음 '+VB_NM[nq.p]+(nq.p2!=null?' / '+VB_NM[nq.p2]:''):'–';
+  const nq=VB.pipes.find(q=>!q.done); $('vbtarget').textContent=VB.boss?'🦜 보스!':nq?'다음 '+VB_NM[nq.p]+(nq.p2!=null?'·'+VB_NM[nq.p2]:''):'–';
   $('vblevel').style.width=Math.min(100,Math.sqrt(VB.level||0)*200)+'%';
 }
 (function vbInit(){
