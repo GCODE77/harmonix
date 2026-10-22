@@ -326,7 +326,7 @@ body.focus #focusout{display:block}
 
 /* ===== 첫 화면 · 건반 연주 ===== */
 html.hm,html.hm body{overflow:hidden;height:100%;overscroll-behavior:none}
-html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):not(#dk):not(#dg):not(#ts):not(#tnpop):not(#instpop):not(#toast):not(#errbar):not(script):not(style){display:none!important}
+html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):not(#wk):not(#dk):not(#dg):not(#ts):not(#tnpop):not(#instpop):not(#toast):not(#errbar):not(script):not(style){display:none!important}
 #home{position:fixed;inset:0;height:100vh;height:100dvh;overscroll-behavior:none;touch-action:pan-y;z-index:80;background:var(--ink);display:flex;align-items:flex-start;justify-content:center;padding:calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom));overflow-x:hidden;overflow-y:auto}
 #home[hidden],#kb[hidden]{display:none}
 #home .hbox{width:min(760px,100%);text-align:center;margin:auto 0}
@@ -607,6 +607,11 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 .dgcf{position:absolute;top:-12px;width:9px;height:14px;z-index:4;pointer-events:none;animation:dgfall 1.9s ease-in forwards}@keyframes dgfall{to{transform:translateY(120vh) rotate(720deg);opacity:.9}}
 #dgcount{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;font:900 110px sans-serif;color:#ffd23f;-webkit-text-stroke:6px #10161E;paint-order:stroke fill;pointer-events:none}
 #dgcount[hidden]{display:none}
+/* v146 드럼 게임: 점수를 위 막대에 크게 · 가로 화면 권장 */
+#dg .dgscorechip{min-width:96px;font-size:15px;font-weight:800;padding:4px 14px;border-radius:14px;background:linear-gradient(180deg,#ffe08a,#f2b84b);color:#2a1b05;border:1px solid #d9a94f}
+#dg .dgscorechip b{font-size:26px;font-weight:900;margin-left:4px;display:inline-block;min-width:1.6em;text-align:right}
+.dgrot{display:none;font-size:13px;color:#ffd166;background:rgba(255,209,102,.12);border-radius:10px;padding:6px 10px}
+@media (orientation:portrait) and (max-width:820px){.dgrot{display:block}}
 #dgscore.pop{animation:dgpop .25s}@keyframes dgpop{50%{transform:scale(1.35);color:#ffd23f}}#dg .drchip{min-width:72px;text-align:center;font-size:16px}
 #dgcalbox{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%}#dgcalbox[hidden]{display:none}
 .drov{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;background:rgba(10,14,22,.62);padding:14px}
@@ -614,29 +619,54 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 .drov .gmbtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;width:100%}.drov .btn.cta{flex:1 1 140px;font-size:17px;min-height:50px}
 @media (max-height:520px){.dkbar{padding:3px 8px;gap:4px 6px}#dk .btn,#dg .btn{min-height:34px;padding:3px 10px;font-size:13px}.dkbar select{min-height:34px}.kithint{font-size:16px;padding:8px 14px}.kithint small{display:none}}
 /* 노래하는 새 (v113) */
-#vb{position:fixed;inset:0;height:100vh;height:100dvh;z-index:70;background:#5f9fd8;display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);user-select:none;-webkit-user-select:none;touch-action:manipulation}
-#vb[hidden]{display:none}
+#vb,#wk{position:fixed;inset:0;height:100vh;height:100dvh;z-index:70;background:#5f9fd8;display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+#vb[hidden],#wk[hidden]{display:none}
 .vbtop{flex:none;display:flex;align-items:center;gap:6px;padding:6px 8px;background:#fdf3d7;border-bottom:3px solid #5a3b00;color:#3a2a08}
 .vbtop .homebtn{min-height:38px;padding:4px 12px;background:#fff;color:#3a2a08;border-color:#5a3b00}
 .vbchip{flex:none;background:#fff;border:2px solid #5a3b00;border-radius:12px;padding:2px 8px;font-weight:900;font-size:15px;white-space:nowrap}
 .vbbar{flex:1;min-width:40px;height:14px;border:2px solid #5a3b00;border-radius:8px;background:#fff;overflow:hidden}.vbbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#9be36b,#5fae3a)}
 .vbmic{flex:none;width:34px;height:14px;border:2px solid #5a3b00;border-radius:8px;background:#fff;overflow:hidden}.vbmic i{display:block;height:100%;width:0;background:#ff7a1a}
 .vbround{flex:none;min-height:38px;min-width:42px;padding:2px;border-radius:50%;background:#ffb347;color:#3a2a08;border-color:#5a3b00;font-size:16px}
-#vbfield{position:relative;flex:1;min-height:200px;overflow:hidden}
-#vbcv{position:absolute;inset:0;width:100%;height:100%;display:block}
+#vbfield,#wkfield{position:relative;flex:1;min-height:200px;overflow:hidden}
+#vbcv,#wkcv{position:absolute;inset:0;width:100%;height:100%;display:block}
 .vbov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(20,40,70,.45);padding:14px}
 .vbov[hidden]{display:none}
 .vbov .gmbox{max-height:100%;overflow-y:auto;box-sizing:border-box}
 @media (max-height:500px){.vbov .gmbox{padding:10px 14px;gap:6px}.vbov .gmbox small{font-size:12.5px}}
-#vb .vbskip{position:absolute;right:10px;bottom:12px;z-index:3;min-height:44px;padding:6px 16px;border-radius:22px;background:rgba(20,30,45,.75);color:#fff;border:1px solid rgba(255,255,255,.4);font-weight:800}#vb .vbskip[hidden]{display:none}
+#vb .vbskip,#wk .vbskip{position:absolute;right:10px;bottom:12px;z-index:3;min-height:44px;padding:6px 16px;border-radius:22px;background:rgba(20,30,45,.75);color:#fff;border:1px solid rgba(255,255,255,.4);font-weight:800}#vb .vbskip[hidden]{display:none}
 #vb .vbduelbtn{width:100%;min-height:44px;border-color:var(--brass);color:var(--brass);font-weight:800}
 #vbreport{width:100%;display:flex;flex-direction:column;gap:5px;text-align:left}#vbreport:empty{display:none}
 #vbreport .rr{display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:8px;font-size:13px}#vbreport .rr b{font-size:15px}
 #vbreport .rb{height:10px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden}#vbreport .rb i{display:block;height:100%;background:linear-gradient(90deg,#9be36b,#5fae3a)}
 #vbreport .rr span{color:var(--dim);white-space:nowrap}#vbreport .rr span.hi{color:#ffb36b}#vbreport .rr span.lo{color:#7fc8ff}#vbreport .rr span.ok{color:#9be36b}#vbreport .rh{font-weight:800;color:var(--brass);font-size:13.5px}
-#vb .btn.cta{background:var(--mint,#4fd1a5);color:#10161E;border-color:var(--mint,#4fd1a5);font-weight:800;font-size:18px;min-height:52px;padding:10px 26px;width:100%}
+#vb .btn.cta,#wk .btn.cta{background:var(--mint,#4fd1a5);color:#10161E;border-color:var(--mint,#4fd1a5);font-weight:800;font-size:18px;min-height:52px;padding:10px 26px;width:100%}
 .vbsum{color:var(--dim);font-size:12.5px}.vbdet{width:100%;text-align:left}.vbdet summary{cursor:pointer;color:var(--brass,#f2b84b);font-size:14px;padding:8px 0;min-height:36px}.vbdet[open] summary{margin-bottom:6px}
 .vbopts{display:flex;flex-direction:column;gap:8px;text-align:left;font-size:14px;width:100%}.vbopts select{width:100%;margin-top:3px;padding:6px;border-radius:8px;background:var(--bg,#0e1520);color:inherit;border:1px solid var(--line)}
+/* v146 시작 단추 셋을 같은 크기·같은 결의 색으로(사용자: "연습하고 시작만 너무 눈에 띈다 — 반반 조화롭게") + 게임 중 설정 창 */
+#vb .vbgo,#wk .vbgo{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+#vb .vbgobtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:62px;padding:8px 10px;border-radius:16px;border:0;cursor:pointer;font-family:inherit;line-height:1.25;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .12s,filter .12s}
+#wk .vbgobtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:62px;padding:8px 10px;border-radius:16px;border:0;cursor:pointer;font-family:inherit;line-height:1.25;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .12s,filter .12s}
+#vb .vbgobtn:active{transform:scale(.97)}#vb .vbgobtn:hover{filter:brightness(1.07)}
+#wk .vbgobtn:active{transform:scale(.97)}#wk .vbgobtn:hover{filter:brightness(1.07)}
+#vb .vbgobtn b{font-size:16.5px;font-weight:900}#vb .vbgobtn small{font-size:11.5px;font-weight:600;opacity:.88;color:inherit}
+#wk .vbgobtn b{font-size:16.5px;font-weight:900}#wk .vbgobtn small{font-size:11.5px;font-weight:600;opacity:.88;color:inherit}
+#vb .vbgobtn.a{background:linear-gradient(180deg,#46d1b4,#1f9c8d);color:#06302a}
+#wk .vbgobtn.a{background:linear-gradient(180deg,#46d1b4,#1f9c8d);color:#06302a}
+#vb .vbgobtn.b{background:linear-gradient(180deg,#ffd166,#f2a32a);color:#3a2300}
+#wk .vbgobtn.b{background:linear-gradient(180deg,#ffd166,#f2a32a);color:#3a2300}
+#vb .vbgobtn.c{background:linear-gradient(180deg,#9d8cff,#6150de);color:#fff;grid-column:1/-1;min-height:54px}
+#wk .vbgobtn.c{background:linear-gradient(180deg,#9d8cff,#6150de);color:#fff;grid-column:1/-1;min-height:54px}
+#vb .vbgobtn.c small{opacity:.92}
+#wk .vbgobtn.c small{opacity:.92}
+#vbsetp .gmbox{width:min(420px,100%)}#vbsetp .vbgobtn{width:100%;min-height:52px}
+#wksetp .gmbox{width:min(420px,100%)}#wksetp .vbgobtn{width:100%;min-height:52px}
+.vbmeterbox{width:100%;display:flex;flex-direction:column;gap:4px;text-align:left;background:rgba(255,255,255,.06);border-radius:12px;padding:8px 10px}
+.vbmeterhd{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700}.vbmeterhd b{font-size:20px;min-width:54px;text-align:right;color:#ffd166}
+.vbmeter{height:16px;border-radius:9px;background:rgba(255,255,255,.14);overflow:hidden;position:relative}.vbmeter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#9be36b,#ffd166 70%,#ff7a1a);transition:width .06s}
+.vbmeter::after{content:"";position:absolute;left:35%;top:0;bottom:0;width:2px;background:rgba(255,255,255,.7)}
+.vbsethost{width:100%;max-height:34vh;overflow-y:auto}
+#vbsetp .vbpre{display:none}
+#wksetp .vbpre{display:none}
 .vbstars{font-size:46px;letter-spacing:6px;color:#ffd54a;text-shadow:0 0 14px rgba(255,213,74,.6)}
 /* 노래 파일 채보 (v117) — 노래 만들기의 카드 모양(.smbody·.smcard·.smrow)을 같이 쓴다 */
 #ts{position:fixed;inset:0;height:100vh;height:100dvh;z-index:70;background:var(--bg,#0e1520);display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
@@ -774,12 +804,12 @@ header{padding-top:8px!important;padding-left:10px!important}
 .livedot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#7be0a8;margin-right:6px;animation:kbpulse 1.1s infinite;vertical-align:middle}
 
 @keyframes hxIn{from{opacity:0;transform:translateY(8px) scale(.995)}to{opacity:1;transform:none}}
-#home:not([hidden]) .hbox,#kb:not([hidden]),#tn:not([hidden]),#mt:not([hidden]),#gm:not([hidden]),#sm:not([hidden]),#vb:not([hidden]),#dk:not([hidden]),#dg:not([hidden]),#ts:not([hidden]){animation:hxIn .32s cubic-bezier(.2,.8,.2,1)}
+#home:not([hidden]) .hbox,#kb:not([hidden]),#tn:not([hidden]),#mt:not([hidden]),#gm:not([hidden]),#sm:not([hidden]),#vb:not([hidden]),#wk:not([hidden]),#dk:not([hidden]),#dg:not([hidden]),#ts:not([hidden]){animation:hxIn .32s cubic-bezier(.2,.8,.2,1)}
 @keyframes hxCard{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 #home:not([hidden]) .hcard{animation:hxCard .45s cubic-bezier(.2,.8,.2,1) both}
 #home .hcard:nth-of-type(2){animation-delay:.03s}#home .hcard:nth-of-type(3){animation-delay:.06s}#home .hcard:nth-of-type(4){animation-delay:.09s}#home .hcard:nth-of-type(5){animation-delay:.12s}#home .hcard:nth-of-type(6){animation-delay:.15s}#home .hcard:nth-of-type(7){animation-delay:.18s}#home .hcard:nth-of-type(8){animation-delay:.21s}#home .hcard:nth-of-type(9){animation-delay:.24s}#home .hcard:nth-of-type(10){animation-delay:.27s}
-@media (prefers-reduced-motion:reduce){#home .hcard,#home .hbox,#kb,#tn,#mt,#gm,#sm,#vb,#dk,#dg,#ts{animation:none!important}}
-#vb .vbtop{background:linear-gradient(180deg,#fff8e6,#f6e7c2)!important;border-bottom:2px solid #c99a4a!important}
+@media (prefers-reduced-motion:reduce){#home .hcard,#home .hbox,#kb,#tn,#mt,#gm,#sm,#vb,#wk,#dk,#dg,#ts{animation:none!important}}
+#vb .vbtop,#wk .vbtop{background:linear-gradient(180deg,#fff8e6,#f6e7c2)!important;border-bottom:2px solid #c99a4a!important}
 /* ============ v132 고급스러운 디자인 (사용자: "어플이 고급스럽게") — 색·표면·그림자·글자만 다듬는 덧칠, 구조·크기는 그대로 ============
    깊은 남색 바탕 + 샴페인 금색 포인트 + 얇은 금빛 테두리·유리 느낌 막대·부드러운 그림자·금색 그라데이션 주 단추. 밝은 테마도 같은 결로. */
 :root{ --gold1:#F6DDA0; --gold2:#E3B461; --gold3:#B98A3C; --glass:rgba(22,30,42,.72); --hair:rgba(240,185,94,.22); --sh1:0 10px 30px rgba(0,0,0,.35),0 2px 6px rgba(0,0,0,.25); }
@@ -803,7 +833,7 @@ body{background:radial-gradient(120% 80% at 50% -10%,#1b2738 0%,var(--ink) 55%) 
 /* 단추 */
 .btn{border-color:rgba(255,255,255,.14);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 2px 6px rgba(0,0,0,.18);transition:transform .08s,filter .12s}
 .btn:active{transform:scale(.97)}.btn:hover{filter:brightness(1.08)}
-:is(body,#kb,#tn,#mt,#gm,#sm,#vb,#dk,#dg,#ts,#home) .btn.cta,:is(#kb,#tn,#mt,#gm,#sm,#vb,#dk,#dg,#ts) .btn.cta.on{background:linear-gradient(180deg,var(--gold1),var(--gold2) 60%,var(--gold3));border-color:#d9a94f;color:#2a1b05;font-weight:800;text-shadow:0 1px 0 rgba(255,255,255,.35);box-shadow:0 4px 14px rgba(227,180,97,.35),inset 0 1px 0 rgba(255,255,255,.5)}
+:is(body,#kb,#tn,#mt,#gm,#sm,#vb,#wk,#dk,#dg,#ts,#home) .btn.cta,:is(#kb,#tn,#mt,#gm,#sm,#vb,#wk,#dk,#dg,#ts) .btn.cta.on{background:linear-gradient(180deg,var(--gold1),var(--gold2) 60%,var(--gold3));border-color:#d9a94f;color:#2a1b05;font-weight:800;text-shadow:0 1px 0 rgba(255,255,255,.35);box-shadow:0 4px 14px rgba(227,180,97,.35),inset 0 1px 0 rgba(255,255,255,.5)}
 :is(#dk) .btn.cta.on{background:linear-gradient(180deg,#e9a8a0,#c4564a);color:#fff;border-color:#c4564a;text-shadow:none}
 #smrec,#kb .btn.rec,#dk .btn.rec{background:linear-gradient(180deg,#ef6a63,#c43d3d);border-color:#c43d3d;color:#fff;box-shadow:0 4px 14px rgba(196,61,61,.35),inset 0 1px 0 rgba(255,255,255,.25)}
 nav .btn.nb.cta{background:linear-gradient(180deg,var(--gold1),var(--gold2) 60%,var(--gold3))!important;color:#2a1b05!important}
@@ -914,6 +944,7 @@ input[type=range]{accent-color:var(--gold2)}
 <rect x="0" y="88" width="200" height="12" fill="#6fbf4a"/><rect x="0" y="95" width="200" height="5" fill="#b5651d"/>
 <g transform="translate(78 50) rotate(-12)"><ellipse rx="15" ry="12" fill="#ffd23f" stroke="#5a3b00" stroke-width="1.8"/><ellipse cx="-5" cy="2" rx="8" ry="5" fill="#f4a62a" stroke="#5a3b00" stroke-width="1.4" transform="rotate(-25)"/><circle cx="6" cy="-4" r="4" fill="#fff" stroke="#5a3b00" stroke-width="1.2"/><circle cx="7" cy="-4" r="1.8" fill="#000"/><path d="M13 -1l9 3-9 4z" fill="#ff7a1a" stroke="#5a3b00" stroke-width="1"/></g>
 <g fill="#fff36b" stroke="#c98f00" stroke-width=".8"><text x="98" y="36" font-size="13">♪</text><text x="56" y="34" font-size="10">♫</text></g><g fill="#fff36b"><circle cx="58" cy="54" r="1.6"/><circle cx="52" cy="58" r="1.2"/><circle cx="47" cy="52" r="1"/></g></svg><span><b>노래하는 새</b><br><small>목소리 높이로 새를 날려 파이프 틈을 통과해요 · 도레미 음정 놀이</small></span></button>
+      <button class="hcard game wide" id="h-wk" type="button"><svg class="gscene" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="gwk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6ec1ff"/><stop offset="1" stop-color="#dff3ff"/></linearGradient></defs><rect width="200" height="100" fill="url(#gwk)"/><circle cx="168" cy="18" r="10" fill="#fff3a3"/><path d="M0 70q30-24 60-6t70-4 70 8v32H0z" fill="#9ad68a"/><rect y="78" width="200" height="22" fill="#63b04e"/><rect y="90" width="200" height="10" fill="#a8723a"/><g stroke="#33302a" stroke-width="1.6"><rect x="150" y="62" width="10" height="3" fill="#f3e3c0"/><path d="M146 78l2-14 6-4 8 4 4 14z" fill="#a3a9ae"/></g><g transform="translate(70 42)" stroke="#5a3b00" stroke-width="1.6" stroke-linecap="round"><path d="M-14 12q-8-6-6-14" fill="none"/><ellipse cx="0" cy="12" rx="16" ry="9" fill="#e8b66b"/><circle cx="16" cy="3" r="8" fill="#e8b66b"/><ellipse cx="24" cy="6" rx="5" ry="4" fill="#fff3d6"/><ellipse cx="11" cy="-3" rx="3" ry="6" fill="#a36b2b" transform="rotate(25 11 -3)"/><circle cx="19" cy="1" r="1.4" fill="#222"/><path d="M-8 20l-3 7M0 20l2 7M8 20l-1 7M13 20l4 6" fill="none" stroke="#8a5a1c" stroke-width="2.4"/></g><g font-size="11" font-weight="900" fill="#fff36b" stroke="#c98f00" stroke-width=".6"><text x="100" y="30">★</text><text x="112" y="24">★</text><text x="124" y="30">★</text></g><text x="40" y="30" font-size="11" fill="#ff5a8a">♪</text></svg><span><b>폴짝 산책</b><br><small>소리를 내면 강아지가 폴짝! 큰 소리·높은 음일수록 높이 뛰어 장애물을 넘어요</small></span></button>
       <button class="hcard game wide" id="h-dg" type="button"><svg class="gscene" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><radialGradient id="gstage" cx=".5" cy=".1" r=".9"><stop offset="0" stop-color="#ff7ad9"/><stop offset=".45" stop-color="#5a2a9a"/><stop offset="1" stop-color="#140c2a"/></radialGradient><linearGradient id="gshell" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a51d2d"/><stop offset=".5" stop-color="#ff5a5a"/><stop offset="1" stop-color="#7a0f1d"/></linearGradient><radialGradient id="gcym" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#fff2b0"/><stop offset=".6" stop-color="#f0b84a"/><stop offset="1" stop-color="#b9741d"/></radialGradient></defs>
 <rect width="200" height="100" fill="url(#gstage)"/><path d="M60 0L20 100h160L140 0z" fill="#fff" opacity=".07"/>
 <g fill="#fff"><circle cx="20" cy="18" r="1.3"/><circle cx="180" cy="26" r="1.6"/><circle cx="160" cy="10" r="1"/><circle cx="35" cy="40" r="1"/></g>
@@ -1000,7 +1031,7 @@ input[type=range]{accent-color:var(--gold2)}
 <div id="dg" hidden>
   <div class="dkbar">
     <button class="btn homebtn" id="dghome" type="button" aria-label="처음으로">⌂</button>
-    <b class="dkttl">🥁 드럼 게임</b><span class="drchip">⭐ <b id="dgscore">0</b></span>
+    <b class="dkttl">🥁 드럼 게임</b><span class="drchip dgscorechip">점수 <b id="dgscore">0</b></span>
     <select id="dgpat" aria-label="단계 고르기"></select>
     <span class="drbpm"><button class="btn sq" id="dgbpmd" type="button" aria-label="느리게">−</button><b id="dgbpm">70</b><small>BPM</small><button class="btn sq" id="dgbpmu" type="button" aria-label="빠르게">+</button></span>
     <button class="btn" id="dgmode" type="button">🏁 단계</button>
@@ -1009,7 +1040,7 @@ input[type=range]{accent-color:var(--gold2)}
   </div>
   <div class="kitbox" id="dgbox">
     <div id="dgpulse"></div><div id="dgbar"></div><div id="dgcombo" hidden></div><div id="dgcount" hidden></div>
-    <div id="dgstart" class="drov"><div class="gmbox"><small id="dgstage"></small><b id="dgtitle">드럼 게임</b><small id="dgdesc"></small>
+    <div id="dgstart" class="drov"><div class="gmbox"><div class="dgrot">📱 폰을 <b>가로로</b> 돌리면 드럼이 훨씬 크게 보여요</div><small id="dgstage"></small><b id="dgtitle">드럼 게임</b><small id="dgdesc"></small>
       <div class="gmbtns"><button class="btn cta" id="dggo" type="button">▶ 시작</button><button class="btn" id="dglisten" type="button">🔊 먼저 듣기</button></div>
       <small>① 먼저 듣기로 박자를 익히고 ② 시작을 누르면 ③ 드럼 위에 큰 링이 나타나 줄어들어요 — 링이 부품 가장자리에 닿을 때 그 부품을 톡!</small></div></div>
     <div id="dgend" class="drov" hidden><div class="gmbox"><div id="dgstars" class="vbstars">★★★</div><b id="dgresult"></b><small id="dgdetail"></small>
@@ -1183,19 +1214,53 @@ input[type=range]{accent-color:var(--gold2)}
     <div class="vbbar"><i id="vbprog"></i></div>
     <span class="vbchip" id="vbtarget">–</span>
     <div class="vbmic" title="마이크 소리 크기"><i id="vblevel"></i></div>
+    <button class="btn vbround" id="vbset" type="button" aria-label="게임 설정" title="게임 설정 (마이크 감도 등)">⚙</button>
     <button class="btn vbround" id="vbpause" type="button" aria-label="잠깐 멈춤">⏸</button>
   </div>
   <div id="vbfield"><canvas id="vbcv"></canvas>
     <button class="btn vbskip" id="vbskip" type="button" hidden>건너뛰기 ▶</button><div id="vbstart" class="vbov"><div class="gmbox"><b>🐤 노래하는 새</b><small>목소리 높이로 새를 날려요! 파이프 틈에 적힌 음(도·레·미…)을 소리 내면 그 높이로 날아가 통과해요. 소리를 멈추면 새가 떨어져요.<br>허밍(음~)·「라~」 모두 좋아요. 남자·여자 목소리 모두 돼요.</small>
-      <div class="gmbtns"><button class="btn cta" id="vbgo" type="button">🎓 도레미 연습하고 시작</button><button class="btn" id="vbquick" type="button">⚡ 바로 시작</button></div><button class="btn vbduelbtn" id="vbduel" type="button">👥 둘이 대결 — 한 폰으로 번갈아 불러요</button><small id="vbsum" class="vbsum"></small><details class="vbdet"><summary>⚙ 설정 바꾸기 (난이도·노래·마이크·배경음악)</summary><div class="vbopts"><label>난이도 <select id="vblv"><option value="easy">쉬움 (틈 넓게·느리게)</option><option value="normal">보통</option><option value="hard">어려움 (틈 좁게·빠르게)</option></select></label>
-      <label>노래 <select id="vbsong"></select></label>
+      <div class="vbgo"><button class="vbgobtn a" id="vbgo" type="button"><b>🎓 도레미 연습</b><small>따라 부르며 시작 · 처음이면 추천</small></button><button class="vbgobtn b" id="vbquick" type="button"><b>⚡ 바로 시작</b><small>연습 없이 곧바로 날아요</small></button><button class="vbgobtn c" id="vbduel" type="button"><b>👥 둘이 대결</b><small>한 폰으로 번갈아 — 같은 판에서 점수 겨루기</small></button></div><small id="vbsum" class="vbsum"></small><details class="vbdet"><summary>⚙ 설정 바꾸기 (난이도·노래·마이크·배경음악)</summary><div class="vbopts"><label class="vbpre">난이도 <select id="vblv"><option value="easy">쉬움 (틈 넓게·느리게)</option><option value="normal">보통</option><option value="hard">어려움 (틈 좁게·빠르게)</option></select></label>
+      <label class="vbpre">노래 <select id="vbsong"></select></label>
       <label><input type="checkbox" id="vbhint" checked> 음 미리 듣기 (파이프가 나올 때 목표음 소리)</label>
       <label><input type="checkbox" id="vbvib" checked> 부딪히면 진동</label>
-      <label>마이크 감도 <select id="vbsens"><option value="5">보통</option><option value="12" selected>높음 (기본)</option><option value="25">아주 높음 (작은 목소리·멀리서)</option></select></label>
+      <label>마이크 감도 <select id="vbsens"><option value="3">낮음 (큰 목소리·가까이서)</option><option value="5">보통</option><option value="12" selected>높음 (기본)</option><option value="25">아주 높음 (작은 목소리·멀리서)</option><option value="45">최대 (아주 작은 목소리)</option></select></label>
       <label>배경음악 <select id="vbbgm"><option value="beat">🥁 신나는 리듬 (스피커도 OK)</option><option value="full">🎶 리듬 + 반주 (이어폰 낄 때)</option><option value="off">끔</option></select></label></div>
       </details>
       <small>이어폰을 끼면 「음 미리 듣기」 소리를 새가 따라가지 않아 더 잘 돼요.</small></div></div>
     <div id="vbend" class="vbov" hidden><div class="gmbox"><div id="vbstars" class="vbstars">★★★</div><b id="vbresult"></b><small id="vbdetail"></small><div id="vbreport"></div><div class="gmbtns"><button class="btn cta" id="vbagain" type="button">다시 하기</button><button class="btn" id="vbmenu" type="button">설정 바꾸기</button></div></div></div>
+    <div id="vbsetp" class="vbov" hidden><div class="gmbox"><b>⚙ 게임 설정</b><small>게임이 잠깐 멈춰 있어요. 바꾼 설정은 바로 적용돼요.</small>
+      <div class="vbmeterbox"><div class="vbmeterhd"><span>🎤 마이크 테스트 — 소리를 내 보세요</span><b id="vbmnote">–</b></div><div class="vbmeter"><i id="vbmeter"></i></div><small id="vbmhint">막대가 하얀 선을 넘으면 잘 들려요</small></div>
+      <div id="vbsethost" class="vbsethost"></div>
+      <button class="vbgobtn a" id="vbsetgo" type="button"><b>▶ 계속하기</b></button></div></div>
+  </div>
+</div>
+<div id="wk" hidden>
+  <div class="vbtop">
+    <button class="btn homebtn" id="wkhome" type="button" aria-label="처음으로">⌂</button>
+    <span class="vbchip">⭐ <b id="wkstarsn">0</b></span><span class="vbchip" id="wkhearts">❤️❤️❤️❤️❤️</span>
+    <div class="vbbar"><i id="wkprog"></i></div>
+    <span class="vbchip" id="wkstage">0m</span>
+    <div class="vbmic" title="마이크 소리 크기"><i id="wklevel"></i></div>
+    <button class="btn vbround" id="wkset" type="button" aria-label="게임 설정" title="게임 설정 (마이크 감도 등)">⚙</button>
+    <button class="btn vbround" id="wkpause" type="button" aria-label="잠깐 멈춤">⏸</button>
+  </div>
+  <div id="wkfield"><canvas id="wkcv"></canvas>
+    <button class="btn vbskip" id="wkskip" type="button" hidden>건너뛰기 ▶</button>
+    <div id="wkstart" class="vbov"><div class="gmbox"><b>🐶 폴짝 산책</b><small>강아지와 산책해요! 소리를 내면 폴짝 뛰어올라 걸어오는 장애물을 넘어요. <b>큰 소리</b>나 <b>높은 음</b>일수록 더 높이 올라가고, 소리를 멈추면 내려와요.<br>⭐ 별 · ❤️ 생명 · 🛡 방패 · 🐢 느리게 아이템을 모아 끝까지 걸어요.</small>
+      <div class="vbgo"><button class="vbgobtn a" id="wkgo" type="button"><b>🎓 목소리 연습</b><small>내 목소리 크기·높이에 맞추기 · 처음이면 추천</small></button><button class="vbgobtn b" id="wkquick" type="button"><b>⚡ 바로 시작</b><small>지난번 맞춘 값으로 곧바로</small></button></div>
+      <small id="wksum" class="vbsum"></small>
+      <details class="vbdet"><summary>⚙ 설정 바꾸기 (난이도·마이크·배경음악)</summary><div class="vbopts">
+        <label class="vbpre">난이도 <select id="wklv"><option value="easy">쉬움 (낮은 장애물·하트 많이)</option><option value="normal">보통</option><option value="hard">어려움 (빠르고 높은 장애물)</option></select></label>
+        <label>마이크 감도 <select id="wksens"><option value="low">낮음 (큰 소리를 내야 높이 뛰어요)</option><option value="mid" selected>보통</option><option value="high">높음 (작은 소리로도 높이 뛰어요)</option><option value="max">최대 (아주 작은 목소리)</option></select></label>
+        <label>배경음악 <select id="wkbgm"><option value="beat">🥁 가벼운 걷는 리듬</option><option value="off">끔</option></select></label>
+        <label><input type="checkbox" id="wkvib" checked> 부딪히면 진동</label>
+        <button class="btn vbpre" id="wkcalbtn" type="button">🎤 목소리 다시 맞추기</button></div></details>
+      <small>이어폰을 끼면 효과음이 마이크에 안 들어가 더 잘 돼요.</small></div></div>
+    <div id="wkend" class="vbov" hidden><div class="gmbox"><div id="wkstars" class="vbstars">★★★</div><b id="wkresult"></b><small id="wkdetail"></small><div class="gmbtns"><button class="btn cta" id="wkagain" type="button">다시 걷기</button><button class="btn" id="wkmenu" type="button">설정 바꾸기</button></div></div></div>
+    <div id="wksetp" class="vbov" hidden><div class="gmbox"><b>⚙ 게임 설정</b><small>게임이 잠깐 멈춰 있어요. 바꾼 설정은 바로 적용돼요.</small>
+      <div class="vbmeterbox"><div class="vbmeterhd"><span>🎤 마이크 테스트 — 소리를 내 보세요</span><b id="wkmnote">–</b></div><div class="vbmeter"><i id="wkmeter"></i></div><small>작은 소리에도 막대가 움직이면 감도가 충분해요 · 막대가 너무 쉽게 차면 「낮음」으로</small></div>
+      <div id="wksethost" class="vbsethost"></div>
+      <button class="vbgobtn a" id="wksetgo" type="button"><b>▶ 계속하기</b></button></div></div>
   </div>
 </div>
 <div id="tnpop" hidden role="dialog" aria-label="튜닝할 악기 고르기"><div class="tnpopbox"><div class="tnpophd"><b>튜닝할 악기 고르기</b><button class="btn" id="tnpopx" type="button">닫기</button></div><div id="tnpopbody"></div></div></div>
@@ -1241,7 +1306,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "145";
+const APP_VER = "146";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -11161,20 +11226,22 @@ function instOpen(){ $('inststeps').innerHTML=instSteps(); $('instgo').hidden=!I
 addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); INST_EVT=e; });
 addEventListener('appinstalled',()=>{ INST_EVT=null; instUpdate(); try{ toast('설치됐어요! 홈 화면에서 「하모닉스」를 열어 보세요'); }catch(e){} });
 try{ if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){}
-const LAST_CARD={score:'h-score',kb:'h-kb',tn:'h-tn',mt:'h-mt',ts:'h-ts',sm:'h-sm',vb:'h-vb',gm:'h-gm',dk:'h-dk',dg:'h-dg'};
+const LAST_CARD={score:'h-score',kb:'h-kb',tn:'h-tn',mt:'h-mt',ts:'h-ts',sm:'h-sm',vb:'h-vb',wk:'h-wk',gm:'h-gm',dk:'h-dk',dg:'h-dg'};
 function markLast(){ try{ const w=localStorage.getItem('konti:last'); document.querySelectorAll('#home .hcard.last').forEach(e=>e.classList.remove('last')); const el=w&&LAST_CARD[w]&&document.getElementById(LAST_CARD[w]); if(el)el.classList.add('last'); }catch(e){} }
 function showScreen(which){
   if(which!=='home'){ try{ localStorage.setItem('konti:last',which); }catch(e){} }
   else setTimeout(markLast,0);
   if(which!=='home')fsAuto();
-  wakeSet(['kb','tn','mt','gm','sm','vb','dk','dg'].includes(which));   // 연주·튜닝·박자 연습 중에는 화면이 꺼지지 않게
-  document.documentElement.classList.toggle('hm',which!=='score'); KB.shown=which; $('home').hidden=which!=='home'; $('kb').hidden=which!=='kb'; $('tn').hidden=which!=='tn'; $('mt').hidden=which!=='mt'; $('gm').hidden=which!=='gm'; $('sm').hidden=which!=='sm'; $('vb').hidden=which!=='vb'; $('dk').hidden=which!=='dk'; $('dg').hidden=which!=='dg'; if($('ts'))$('ts').hidden=which!=='ts';
+  wakeSet(['kb','tn','mt','gm','sm','vb','wk','dk','dg'].includes(which));   // 연주·튜닝·박자 연습 중에는 화면이 꺼지지 않게
+  document.documentElement.classList.toggle('hm',which!=='score'); KB.shown=which; $('home').hidden=which!=='home'; $('kb').hidden=which!=='kb'; $('tn').hidden=which!=='tn'; $('mt').hidden=which!=='mt'; $('gm').hidden=which!=='gm'; $('sm').hidden=which!=='sm'; $('vb').hidden=which!=='vb'; $('wk').hidden=which!=='wk'; $('dk').hidden=which!=='dk'; $('dg').hidden=which!=='dg'; if($('ts'))$('ts').hidden=which!=='ts';
   if(which!=='dk'&&typeof dkLeave==='function')dkLeave();
   if(which==='dk'&&typeof dkEnter==='function')dkEnter();
-  if(which!=='dg'&&typeof dgStop==='function')dgStop();
+  if(which!=='dg'&&typeof dgStop==='function'){ dgStop(); if(typeof DG!=='undefined'&&DG.lockTry){ DG.lockTry=0; try{ if(!document.fullscreenElement||which==='home')screen.orientation.unlock(); }catch(e){} } }
   if(which==='dg'&&typeof dgEnter==='function')dgEnter();
   if(which!=='vb'&&typeof vbStop==='function')vbStop();
   if(which==='vb'&&typeof vbEnter==='function')vbEnter();
+  if(which!=='wk'&&typeof wkStop==='function')wkStop();
+  if(which==='wk'&&typeof wkEnter==='function')wkEnter();
   if(which!=='sm'&&typeof smLeave==='function')smLeave();
   if(which==='sm'&&typeof smEnter==='function')smEnter();
   if(which!=='gm'&&typeof gmStop==='function')gmStop(true);
@@ -12664,6 +12731,7 @@ function vbSeq(){
   const out=[]; let p=Math.floor(Math.random()*5)+1; for(let i=0;i<VB.total;i++){ p=Math.max(0,Math.min(7,p+[-2,-1,-1,0,1,1,2,3,-3][Math.floor(Math.random()*9)])); out.push(p); } return out;
 }
 function vbReset(){
+  if(VB.setOpen)vbSetOpen(false);
   const L=VB_LV[VB.lv]; VB.seq=vbSeq(); VB.total=VB.seq.length; VB.si=0; VB.pipes=[]; VB.t=0; VB.next=1.2; VB.stars=0; VB.hearts=L.hearts||5; VB.inv=0; VB.shield=0; VB.shieldN=0; VB.lastHeal=0; VB.passed=0; VB.over=false; VB.pos=3.5; VB.vy=0; VB.fx=[]; VB.voice=null; VB.combo=0; VB.clean=0; VB.sparks=[]; VB.cd=3.2; VB.bt=0; VB.b8=-1; VB.flash=0; VB.rep={}; VB.tut=null; VB.intro=0; VB.mobs=[]; VB.bullets=[]; VB.ammo=0; VB.boss=null; VB.bossDone=-1; VB.sawGap=0; VB.sawMob={};
   if(!VB.clouds.length)for(let i=0;i<7;i++)VB.clouds.push({x:Math.random(),y:.08+Math.random()*.45,s:.5+Math.random()*.9});
   $('vbend').hidden=true; $('vbstart').hidden=false; vbDraw();
@@ -12673,7 +12741,7 @@ async function vbMic(){
   const ctx=AC(); if(!ctx)return false; try{ await ctx.resume(); }catch(e){}
   try{ VB.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}}); }
   catch(e){ toast('마이크를 쓸 수 없어요 — 주소창 옆 🔒 에서 마이크를 허용해 주세요'); return false; }
-  const src=ctx.createMediaStreamSource(VB.stream), g=ctx.createGain(); g.gain.value=+($('vbsens').value||12); const lim=ctx.createDynamicsCompressor(); lim.threshold.value=-12; lim.ratio.value=8; lim.attack.value=.003; lim.release.value=.15; const an=ctx.createAnalyser(); an.fftSize=2048;
+  const src=ctx.createMediaStreamSource(VB.stream), g=ctx.createGain(); g.gain.value=+($('vbsens').value||12); vbGainBase(+g.gain.value); const lim=ctx.createDynamicsCompressor(); lim.threshold.value=-12; lim.ratio.value=8; lim.attack.value=.003; lim.release.value=.15; const an=ctx.createAnalyser(); an.fftSize=2048;
   src.connect(g); g.connect(lim); lim.connect(an); VB.lim=lim;   /* 작은 목소리(v115): 크게 키우고 큰 소리는 눌러 찢어지지 않게 */ VB.src=src; VB.g=g; VB.an=an; VB.buf=new Float32Array(2048); VB.floor=.002; return true;
 }
 function vbMicOff(){ if(!VB.stream)return; try{ VB.stream.getTracks().forEach(t=>t.stop()); VB.src.disconnect(); VB.g.disconnect(); VB.lim&&VB.lim.disconnect(); }catch(e){} VB.stream=null; VB.an=null; try{ smFreshAudio(); }catch(e){} }
@@ -12702,7 +12770,7 @@ function vbHear(){
   const r=yinPitch(hb,AC().sampleRate/2,Math.max(.0006,VB.floor*1.5));
   VB.level=r.rms;
   /* 자동 감도: 목소리가 작으면 조금씩 키우고 너무 크면 줄인다(처음 「높음」에서 출발, 3~60배) */
-  if(VB.g){ const gg=VB.g.gain.value; if(r.rms>0&&r.rms<.04&&r.rms>VB.floor*1.4)VB.g.gain.value=Math.min(60,gg*1.015); else if(r.rms>.45)VB.g.gain.value=Math.max(3,gg*.96); }
+  if(VB.g){ const gg=VB.g.gain.value; if(r.rms>0&&r.rms<.04&&r.rms>VB.floor*1.4)VB.g.gain.value=Math.min(VB.gHi||60,gg*1.015); else if(r.rms>.45)VB.g.gain.value=Math.max(VB.gLo||3,gg*.96); }   /* v146: 고른 감도의 0.5~5배 안에서만 자동 조절 — 감도를 올리면 최저 증폭도 같이 올라간다 */
   if(!r.f||r.prob<.42||r.f<70||r.f>1100)return null;
   return 69+12*Math.log2(r.f/440);
 }
@@ -12807,6 +12875,7 @@ function vbLoop(ts){
     VB.pipes=VB.pipes.filter(q=>q.x>-80);
     if(VB.si>=VB.seq.length&&!VB.pipes.length&&!VB.mobs.length&&!VB.boss&&!VB.over)vbEnd(true);
   }
+  else if(VB.setOpen)vbMeterStep();
   vbDraw(dt);
   VB.raf=requestAnimationFrame(vbLoop);
 }
@@ -12899,7 +12968,7 @@ function vbEnd(clear){
   vbSfx(clear&&stars>=1?'win':'lose'); if(clear&&stars>=1)vbSpark(VB.W/2,VB.H*.4,'#ffd700',80);
   setTimeout(()=>{ $('vbend').hidden=false; vbBusOff(); },1400);
 }
-function vbStop(){ VB.started=false; VB.tut=null; VB.intro=0; try{ $('vbskip').hidden=true; }catch(e){} cancelAnimationFrame(VB.raf); vbBusOff(); vbMicOff(); }
+function vbStop(){ if(VB.setOpen)vbSetOpen(false); VB.started=false; VB.tut=null; VB.intro=0; try{ $('vbskip').hidden=true; }catch(e){} cancelAnimationFrame(VB.raf); vbBusOff(); vbMicOff(); }
 function vbBusOff(){ try{ const ctx=AC(), b=VB.bus; VB.bus=null; if(b){ b.gain.setTargetAtTime(0,ctx.currentTime,.3); setTimeout(()=>{ try{b.disconnect();}catch(e){} },2000); } }catch(e){} }
 function vbSized(){ const cv=$('vbcv'), r=cv.getBoundingClientRect(), d=Math.min(2,devicePixelRatio||1); VB.W=Math.max(300,r.width); VB.H=Math.max(240,r.height); cv.width=VB.W*d; cv.height=VB.H*d; VB.dpr=d; vbDraw(); }
 function vbDraw(dt){
@@ -12990,7 +13059,7 @@ function vbDraw(dt){
   $('vbsong').onchange=()=>{ VB.song=$('vbsong').value; vbSumm(); try{ localStorage.setItem('konti:vbsong',VB.song); }catch(e){} };
   try{ VB.bgm=localStorage.getItem('konti:vbbgm')||'beat'; }catch(e){} $('vbbgm').value=VB.bgm;
   $('vbbgm').onchange=()=>{ VB.bgm=$('vbbgm').value; try{ localStorage.setItem('konti:vbbgm',VB.bgm); }catch(e){} if(VB.bgm==='full')toast('🎧 반주는 이어폰을 끼고 하세요 — 스피커 소리를 새가 따라갈 수 있어요'); };
-  try{ $('vbsens').value=localStorage.getItem('konti:vbsens')||'12'; }catch(e){} $('vbsens').onchange=()=>{ try{ localStorage.setItem('konti:vbsens',$('vbsens').value); }catch(e){} if(VB.g)VB.g.gain.value=+$('vbsens').value; };
+  try{ $('vbsens').value=localStorage.getItem('konti:vbsens')||'12'; }catch(e){} if(!$('vbsens').value)$('vbsens').value='12'; $('vbsens').onchange=()=>{ try{ localStorage.setItem('konti:vbsens',$('vbsens').value); }catch(e){} vbGainBase(+$('vbsens').value); if(VB.g)VB.g.gain.value=+$('vbsens').value; };
   try{ VB.vib=localStorage.getItem('konti:vbvib')!=='0'; }catch(e){ VB.vib=true; }
   $('vbvib').checked=VB.vib;
   $('vbvib').onchange=()=>{ VB.vib=$('vbvib').checked; try{ localStorage.setItem('konti:vbvib',VB.vib?'1':'0'); }catch(e){} if(VB.vib&&navigator.vibrate)try{navigator.vibrate(60);}catch(e){} };
@@ -13000,11 +13069,352 @@ function vbDraw(dt){
   $('vbagain').onclick=()=>vbStart('quick');
   $('vbskip').onclick=()=>{ VB.intro=0; VB.tut=null; VB.mute=0; $('vbskip').hidden=true; };
   $('vbmenu').onclick=()=>{ VB.duel=null; $('vbend').hidden=true; vbReset(); };
-  $('vbpause').onclick=()=>{ if(!VB.started||VB.over)return; VB.paused=!VB.paused; $('vbpause').textContent=VB.paused?'▶':'⏸'; };
+  $('vbset').onclick=()=>vbSetOpen(!VB.setOpen); $('vbsetgo').onclick=()=>vbSetOpen(false);
+  $('vbpause').onclick=()=>{ if(!VB.started||VB.over||VB.setOpen)return; VB.paused=!VB.paused; $('vbpause').textContent=VB.paused?'▶':'⏸'; };
   addEventListener('resize',()=>{ if(KB.shown==='vb')vbSized(); });
 })();
+/* v146(사용자: "게임하는 중에도 환경설정을 바꿀 수 있게 — 마이크 감도가 안 좋으면 고치게") — ⚙ 를 누르면 게임이 멈추고 설정 창이 뜬다. 시작 화면의 설정 칸(.vbopts) 을 그대로 옮겨 와서 같은 값·같은 저장을 쓴다.
+   난이도·노래는 판이 바뀌는 설정이라 게임 중에는 숨긴다(.vbpre). 마이크 테스트 막대는 멈춘 동안에도 소리를 듣는다. */
+const VB_NOTE=['도','도#','레','레#','미','파','파#','솔','솔#','라','라#','시'];
+function vbGainBase(v){ VB.gBase=v; VB.gLo=Math.max(2,v*.5); VB.gHi=Math.min(80,v*5); }
+function vbMeterStep(){ const mf=vbHear(); $('vbmeter').style.width=Math.min(100,Math.sqrt(VB.level||0)*200)+'%'; $('vbmnote').textContent=mf==null?'–':VB_NOTE[((Math.round(mf)-60)%12+12)%12]; }
+function vbSetOpen(open){
+  const p=$('vbsetp'), host=$('vbsethost'), opts=document.querySelector('#vb .vbopts'), det=document.querySelector('#vb .vbdet'); if(!p||!opts||!det)return;
+  if(open){
+    if(VB.setOpen||VB.over)return;
+    if(!VB.started){ det.open=true; return; }   // 시작 화면에서는 이미 펼쳐진 설정을 쓴다
+    VB.setOpen=true; VB.setWas=VB.paused; VB.setT0=performance.now(); VB.paused=true; VB.mute=0; VB.level=0; $('vbpause').textContent='▶'; host.appendChild(opts); p.hidden=false; }
+  else{
+    if(!VB.setOpen)return; VB.setOpen=false; p.hidden=true; det.appendChild(opts);
+    if(VB.intro>0)VB.introT0+=performance.now()-VB.setT0;   // 도레미 소개는 벽시계 기준이라 멈춘 시간만큼 뒤로
+    VB.paused=VB.setWas; $('vbpause').textContent=VB.paused?'▶':'⏸'; VB.last=performance.now(); VB.prevMf=null; }
+}
 function vbSumm(){ try{ const L=VB_LV[VB.lv], so=$('vbsong'), sn=so.options[so.selectedIndex]; $('vbsum').textContent=L.label+' · '+(sn?sn.textContent:'')+' · 마이크 소리를 내면 새가 날아요'; }catch(e){} }
 function vbEnter(){ vbSized(); vbReset(); vbSumm(); }
+/* ============ 🐶 폴짝 산책 (v146, 사용자 요청: "노래하는 새 2 — 산책하는 배경에서 소리를 내면 장애물을 점프한다.
+   큰 소리나 높은 음이어야 높이 올라간다. 걸어오는 장애물을 피하고, 아이템·생명도 나오게") ============
+   목소리 → 강아지의 '높이'. 소리가 나는 동안 강아지는 목표 높이로 올라가고, 소리를 멈추면 떨어진다.
+   · 목표 높이 = 소리 크기(volN)와 음 높이(pN) 중 큰 쪽이 주도 — 「큰 소리 또는 높은 음」. 음 높이를 못 잡는 큰 소리(외침)도 volN>.6 이면 점프.
+   · 크기·음 높이는 사람마다 다르므로 「🎓 점프 연습」에서 작게→크게·낮게→높게 한 번씩 내 보게 해 범위(WK.cal)를 맞춘다(저장). 안 하면 기본값.
+   · 「마이크 감도」 = 소리 크기에 곱하는 배수(WK_SENS) — 노래하는 새와 달리 자동 증폭을 쓰지 않는다(크기가 곧 높이라서 자동 증폭이 높이를 망친다).
+   · 효과음·배경 리듬이 나는 동안엔 마이크를 쉰다(WK.mute) — 쉬는 동안엔 마지막 상태를 유지해 강아지가 갑자기 떨어지지 않게(v121 의 교훈). */
+const WK_LV={easy:{label:'쉬움',hearts:7,sp:.27,gap:2.9,inv:2.6,cap:.62,goal:500},normal:{label:'보통',hearts:5,sp:.33,gap:2.4,inv:2.1,cap:1,goal:700},hard:{label:'어려움',hearts:4,sp:.41,gap:1.9,inv:1.7,cap:1,goal:900}};
+const WK_MAXH=9, WK_GAIN=6, WK_SENS={low:.6,mid:1,high:1.8,max:3.2};
+const WK_OB={rock:{h:.2,w:.055,vx:0},snail:{h:.15,w:.05,vx:.015},log:{h:.38,w:.085,vx:0},hog:{h:.26,w:.055,vx:.07},fence:{h:.56,w:.07,vx:0},cat:{h:.42,w:.06,vx:.13},bush:{h:.76,w:.09,vx:0},wall:{h:.96,w:.075,vx:0},bird:{h:0,w:.07,vx:.05}};
+const WK_ST=[
+  {name:'🌳 공원 산책',sky:['#6ec1ff','#dff3ff'],sun:'#fff3a3',hill:'#9ad68a',hill2:'#7cc06c',ground:'#63b04e',dirt:'#a8723a',deco:'tree'},
+  {name:'🏖 바닷가 산책',sky:['#79d0ff','#fff0c8'],sun:'#fff3a3',hill:'#bfe6ff',hill2:'#8fd0f0',ground:'#f0d79a',dirt:'#cfae6a',deco:'palm',sea:1},
+  {name:'❄ 눈길 산책',sky:['#aab9d6','#eef3fc'],sun:'#ffffff',hill:'#dfe8f7',hill2:'#c4d3ea',ground:'#f6f9ff',dirt:'#c3cfe4',deco:'pine',snow:1},
+  {name:'🌇 노을 산책',sky:['#ff8f5c','#ffe3a6'],sun:'#fff0b0',hill:'#d98a5a',hill2:'#b86a45',ground:'#b98550',dirt:'#7d5230',deco:'lamp'},
+  {name:'🌙 별밤 산책',sky:['#121c47','#3d4c92'],sun:'#fff6d0',hill:'#243468',hill2:'#1b2a56',ground:'#2d5a3c',dirt:'#1f3a28',deco:'lamp',night:1}];
+const WK={on:false,stream:null,an:null,buf:null,raf:0,last:0,lv:'normal',sens:1,bgm:'beat',vib:true,started:false,paused:false,over:false,W:400,H:300,dpr:1,
+  cal:{lo:.004,hi:.08,loM:48,hiM:72},floor:.002,y:0,vy:0,clk:0,t:0,dist:0,scroll:0,obs:[],items:[],sparks:[],fx:[],clouds:[],snow:[],hearts:5,stars:0,inv:0,shield:0,slow:0,combo:0,bestCombo:0,passed:0,clean:0,hitN:0,nearN:0,
+  spawnT:1.2,sinceP:0,stage:0,cd:0,tut:null,mute:0,held:null,lastOnT:-9,hl:0,shake:0,flash:0,bt:0,b8:-1,bus:null,setOpen:false,voiced:false,lastIn:null,level:0,banner:null,rng:Math.random};
+function wkRngMake(seed){ let a=seed>>>0; return ()=>{ a=(a+0x6D2B79F5)>>>0; let t=a; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; }; }
+const wkClamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+/* 소리 크기·음 높이 → 목표 높이(0.12~1.05). 「큰 소리 또는 높은 음」: 큰 쪽이 주도하고 작은 쪽이 보탠다. */
+function wkHeightOf(volN,pN){ const hi=Math.max(volN,pN||0), lo=Math.min(volN,pN==null?volN:pN); return Math.min(1.05,Math.max(.12,hi*.92+lo*.18)); }
+async function wkMic(){
+  if(WK.stream)return true;
+  const ctx=AC(); if(!ctx)return false; try{ await ctx.resume(); }catch(e){}
+  try{ WK.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}}); }
+  catch(e){ toast('마이크를 쓸 수 없어요 — 주소창 옆 🔒 에서 마이크를 허용해 주세요'); return false; }
+  const src=ctx.createMediaStreamSource(WK.stream), g=ctx.createGain(); g.gain.value=WK_GAIN; const an=ctx.createAnalyser(); an.fftSize=2048;
+  src.connect(g); g.connect(an); WK.src=src; WK.g=g; WK.an=an; WK.buf=new Float32Array(2048); WK.floor=.002; return true;
+}
+function wkMicOff(){ if(!WK.stream)return; try{ WK.stream.getTracks().forEach(t=>t.stop()); WK.src.disconnect(); WK.g.disconnect(); }catch(e){} WK.stream=null; WK.an=null; try{ smFreshAudio(); }catch(e){} }
+function wkHear(){
+  const o={on:false,h:0,raw:0,mf:null,volN:0};
+  if(!WK.an)return o;
+  WK.an.getFloatTimeDomainData(WK.buf);
+  let r0=0; for(let i=0;i<WK.buf.length;i+=4)r0+=WK.buf[i]*WK.buf[i]; r0=Math.sqrt(r0/(WK.buf.length/4));
+  WK.floor=r0<WK.floor?WK.floor*.8+r0*.2:WK.floor*.997+r0*.003;
+  if(!WK.half)WK.half=new Float32Array(1024); const hb=WK.half, b=WK.buf; for(let i=0;i<1024;i++)hb[i]=(b[2*i]+b[2*i+1])*.5;
+  const r=yinPitch(hb,AC().sampleRate/2,Math.max(.0006*WK_GAIN,WK.floor*1.5));
+  const raw=r.rms/WK_GAIN; o.raw=raw; WK.level=r.rms;
+  const C=WK.cal, eff=raw*WK.sens, hi=C.hi>C.lo*1.2?C.hi:C.lo*3, volN=wkClamp((eff-C.lo)/(hi-C.lo),0,1); o.volN=volN;
+  const pitched=!!(r.f&&r.prob>=.42&&r.f>=70&&r.f<=1100); if(pitched)o.mf=69+12*Math.log2(r.f/440);
+  if(!(eff>C.lo&&eff>WK.floor/WK_GAIN*WK.sens*1.8))return o;           // 문턱 아래 · 주변 소음 아래
+  if(!pitched&&volN<.6)return o;                                         // 음 높이도 없고 아주 크지도 않은 소리(박수·잡음·배경 리듬)는 무시
+  const pN=pitched?wkClamp((o.mf-C.loM)/Math.max(3,C.hiM-C.loM),0,1):null;
+  o.on=true; o.h=wkHeightOf(volN,pN); return o;
+}
+/* 입력 한 프레임: 마이크를 쉬는 동안엔 마지막 상태 유지 + 0.12초 끊김(숨·자음)은 이어 붙인다 */
+function wkInput(dt){
+  let o; if(WK.mute>0){ WK.mute-=dt; o=WK.held||{on:false,h:0}; } else{ o=wkHear(); WK.held=o; }
+  if(o.on){ WK.lastOnT=WK.clk; WK.hl=o.h; }
+  let on=o.on, h=o.h; if(!on&&WK.clk-WK.lastOnT<.12){ on=true; h=WK.hl; }
+  WK.voiced=on; WK.lastIn=o; return {on,h};
+}
+function wkMove(dt,inp){
+  if(inp.on){ const dy=inp.h-WK.y; WK.y+=dy>0?Math.min(dy*Math.min(1,dt*10),4.2*dt):dy*Math.min(1,dt*8); WK.vy=0; WK.y=Math.min(1.08,WK.y); }
+  else{ WK.vy=Math.min(3.4,WK.vy+dt*4.6); WK.y=Math.max(0,WK.y-WK.vy*dt); if(WK.y<=0)WK.vy=0; }
+}
+/* ---- 소리 ---- */
+function wkAt(fn){ const ctx=AC(); if(!ctx||!WK.bus)return; const real=master; master=WK.bus; try{ fn(ctx,ctx.currentTime+.01); }catch(e){} finally{ master=real; } }
+function wkYelp(ctx,t){   // 강아지 깨갱: 높은 소리에서 낮게 미끄러지는 톱니파 두 번
+  for(const [d,f0,f1] of [[0,900,420],[.13,780,360]]){ const o=ctx.createOscillator(), g=ctx.createGain(), f=ctx.createBiquadFilter(); o.type='sawtooth'; f.type='lowpass'; f.frequency.value=2200;
+    o.frequency.setValueAtTime(f0,t+d); o.frequency.exponentialRampToValueAtTime(f1,t+d+.12); g.gain.setValueAtTime(.0001,t+d); g.gain.exponentialRampToValueAtTime(.3,t+d+.01); g.gain.exponentialRampToValueAtTime(.0001,t+d+.14);
+    o.connect(f); f.connect(g); g.connect(master); o.start(t+d); o.stop(t+d+.16); }
+}
+function wkSfx(k){
+  wkAt((ctx,t)=>{
+    if(k==='star'){ WK.mute=Math.max(WK.mute,.18); voice(ctx,'vibes',88,t,.2,.5); voice(ctx,'vibes',95,t+.05,.25,.45); }
+    else if(k==='gold'){ WK.mute=Math.max(WK.mute,.35); [76,80,83,88].forEach((m,i)=>voice(ctx,'vibes',m,t+i*.05,.3,.5)); }
+    else if(k==='heart'){ WK.mute=Math.max(WK.mute,.45); [72,76,79,84].forEach((m,i)=>voice(ctx,'piano',m,t+i*.08,.3,.5)); }
+    else if(k==='power'){ WK.mute=Math.max(WK.mute,.4); [67,72,79].forEach((m,i)=>voice(ctx,'brass',m,t+i*.07,.2,.4)); }
+    else if(k==='near'){ WK.mute=Math.max(WK.mute,.2); voice(ctx,'vibes',91,t,.18,.45); }
+    else if(k==='hit'){ WK.mute=Math.max(WK.mute,.6); drumHit('kick',.7,t,true); wkYelp(ctx,t+.02); }
+    else if(k==='block'){ WK.mute=Math.max(WK.mute,.3); drumHit('crash',.25,t,true); }
+    else if(k==='count'){ WK.mute=Math.max(WK.mute,.3); voice(ctx,'vibes',76,t,.18,.5); }
+    else if(k==='go'){ WK.mute=Math.max(WK.mute,.5); voice(ctx,'vibes',84,t,.4,.6); voice(ctx,'vibes',88,t,.4,.5); drumHit('crash',.3,t,true); }
+    else if(k==='stage'){ WK.mute=Math.max(WK.mute,.6); [60,64,67,72].forEach((m,i)=>voice(ctx,'vibes',m,t+i*.09,.3,.5)); }
+    else if(k==='win'){ [60,64,67,72,76,79,84].forEach((m,i)=>voice(ctx,'brass',m,t+i*.09,i===6?.9:.2,.45)); drumHit('crash',.5,t+.6,true); }
+    else if(k==='lose'){ [67,64,60,55].forEach((m,i)=>voice(ctx,'brass',m,t+i*.18,.3,.4)); }
+  });
+}
+function wkBgm(dt){   // 높이 없는 가벼운 리듬(걷는 박자) — 음으로 안 잡히는 잡음 소리만
+  if(WK.bgm==='off'||!WK.bus)return; const spb=60/112; WK.bt+=dt; const e=Math.floor(WK.bt/(spb/2)); if(e===WK.b8)return; WK.b8=e; const pos=e%8;
+  wkAt((ctx,t)=>{ if(pos===0||pos===4){ vbThump(ctx,t,.4); WK.mute=Math.max(WK.mute,.05); } if(pos===2||pos===6)drumHit('clap',.2,t,true); drumHit('hatc',pos%2?.1:.16,t,true); });
+}
+function wkBusOn(){ try{ const ctx=AC(); if(WK.bus){ try{WK.bus.disconnect();}catch(e){} } WK.bus=ctx.createGain(); WK.bus.gain.value=.75; WK.bus.connect(master); }catch(e){} }
+function wkBusOff(){ try{ const ctx=AC(), b=WK.bus; WK.bus=null; if(b){ b.gain.setTargetAtTime(0,ctx.currentTime,.3); setTimeout(()=>{ try{b.disconnect();}catch(e){} },2000); } }catch(e){} }
+function wkSpark(x,y,col,n){ for(let i=0;i<n;i++){ const a=Math.random()*6.28, v=60+Math.random()*170; WK.sparks.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-50,t:0,life:.5+Math.random()*.4,c:col,s:3+Math.random()*3.5}); } }
+/* ---- 판 시작·끝 ---- */
+function wkLoadCal(){ try{ const c=JSON.parse(localStorage.getItem('konti:wkcal')||'null'); if(c&&c.hi>c.lo&&c.hiM>c.loM)WK.cal=c; }catch(e){} }
+function wkReset(){
+  if(WK.setOpen)wkSetOpen(false);
+  const L=WK_LV[WK.lv]; Object.assign(WK,{y:0,vy:0,clk:0,t:0,dist:0,scroll:0,obs:[],items:[],sparks:[],fx:[],hearts:L.hearts,stars:0,inv:0,shield:0,slow:0,combo:0,bestCombo:0,passed:0,clean:0,hitN:0,nearN:0,spawnT:1.4,sinceP:0,stage:0,cd:3.2,tut:null,mute:0,held:null,lastOnT:-9,shake:0,flash:0,bt:0,b8:-1,over:false,paused:false,banner:null,gate:false,rng:wkRngMake((Math.random()*4294967296)>>>0)});
+  if(!WK.clouds.length)for(let i=0;i<6;i++)WK.clouds.push({x:Math.random(),y:.08+Math.random()*.3,s:.5+Math.random()*.8});
+  if(!WK.snow.length)for(let i=0;i<46;i++)WK.snow.push({x:Math.random(),y:Math.random(),s:1+Math.random()*2});
+  $('wkend').hidden=true; $('wkstart').hidden=false; wkDraw(0);
+}
+async function wkStart(mode){
+  if(!(await wkMic()))return;
+  wkReset(); $('wkstart').hidden=true; WK.started=true; WK.last=performance.now(); wkBusOn();
+  if(mode==='tut'){ WK.tut={step:0,t:0,raw:[],mf:[],hold:0,ob:null,done:0}; WK.cd=0; } else WK.cd=3.2;
+  $('wkskip').hidden=mode!=='tut';
+  cancelAnimationFrame(WK.raf); WK.raf=requestAnimationFrame(wkLoop);
+}
+function wkStop(){ if(WK.setOpen)wkSetOpen(false); WK.started=false; WK.tut=null; try{ $('wkskip').hidden=true; }catch(e){} cancelAnimationFrame(WK.raf); wkBusOff(); wkMicOff(); }
+function wkEnd(clear){
+  WK.over=true; const L=WK_LV[WK.lv], tot=Math.max(1,WK.passed), pct=WK.clean/tot, stars=!clear?(pct>=.7&&WK.dist>L.goal*.6?1:0):(WK.hearts>=L.hearts-1&&pct>=.85?3:pct>=.6?2:1);
+  let best={}; try{ best=JSON.parse(localStorage.getItem('konti:wkbest')||'{}'); }catch(e){} const rec=!best[WK.lv]||WK.stars>best[WK.lv];
+  if(rec){ best[WK.lv]=WK.stars; try{ localStorage.setItem('konti:wkbest',JSON.stringify(best)); }catch(e){} }
+  $('wkstars').textContent='★'.repeat(stars)+'☆'.repeat(3-stars);
+  $('wkresult').textContent=clear?(stars===3?'완벽한 산책이에요! 🎉':'끝까지 걸었어요! 👏'):'아쉬워요 — 다시 걸어 봐요!';
+  $('wkdetail').innerHTML='🏃 '+Math.round(WK.dist)+'m / '+L.goal+'m · ⭐ '+WK.stars+'개'+(rec&&WK.stars>0?' · <b>🎉 신기록!</b>':'')+'<br>넘은 장애물 '+WK.clean+' / '+WK.passed+' · 😮 아슬아슬 '+WK.nearN+' · 🔥 최고 연속 '+WK.bestCombo+' · 남은 하트 '+Math.max(0,WK.hearts);
+  wkSfx(clear?'win':'lose'); if(clear)wkSpark(WK.W/2,WK.H*.4,'#ffd700',80);
+  setTimeout(()=>{ $('wkend').hidden=false; wkBusOff(); },1400);
+}
+/* ---- 장애물·아이템 ---- */
+function wkSpawn(L){
+  const s=WK.stage, r=WK.rng, W=WK.W;
+  const pool=['rock','snail','log']; if(s>=1||WK.lv==='hard')pool.push('hog','fence','bird'); if(s>=2)pool.push('cat','bush'); if(s>=3)pool.push('wall','bush','hog');
+  let k=pool[Math.floor(r()*pool.length)]; if(L.cap<.7&&(k==='bush'||k==='wall'))k='fence';
+  const mk=(kk,dx)=>{ const D=WK_OB[kk], o={k:kk,x:W*1.08+dx,w:D.w*W,h:D.h,vx:D.vx*W,ph:r()*6,done:false,hit:false}; if(kk==='bird'){ o.alt=.45+r()*.4; o.h=o.alt+.09; } WK.obs.push(o); return o; };
+  const o=mk(k,0);
+  if(s>=3&&r()<.28&&k!=='bird'){ mk(r()<.5?'rock':'log',W*.3); }   // 연달아 두 개: 높이를 유지해야 한다
+  /* 아이템: 장애물 위 별 아치(높이 뛰면 먹는다) · 가끔 낮게 늘어선 별 · 하트·방패·느림 */
+  if(k!=='bird'&&r()<.7){ const top=Math.min(1,o.h+.2); for(let i=0;i<3;i++)WK.items.push({k:(i===1&&r()<.15)?'gold':'star',x:o.x+(i-1)*W*.07,y:Math.min(1.02,top+(i===1?.1:0))}); }
+  else if(r()<.4){ for(let i=0;i<4;i++)WK.items.push({k:'star',x:o.x+W*.2+i*W*.05,y:.1}); }
+  WK.sinceP++;
+  if(WK.sinceP>=6&&r()<.4){ WK.sinceP=0; const q=r(), kk=(q<.4&&WK.hearts<WK_MAXH)?'heart':q<.7?'shield':'slow'; WK.items.push({k:kk,x:o.x+W*.3,y:.5+r()*.3}); }
+}
+function wkHurt(L,ob,dx,dh){
+  ob.hit=true;
+  if(WK.shield>0||WK.tut){ wkSpark(dx,WK.H*.8-WK.y*WK.H*.5,'#7fe3ff',14); WK.fx.push({t:0,txt:WK.tut?'괜찮아요!':'🛡 막았어요!',bad:false}); wkSfx('block'); return false; }
+  if(WK.inv>0)return false;
+  WK.hearts--; WK.hitN++; WK.inv=L.inv; WK.shake=1; WK.flash=1; WK.combo=0; wkSfx('hit'); wkSpark(dx,WK.H*.8-WK.y*WK.H*.5-dh*.5,'#ff5a5a',18); WK.fx.push({t:0,txt:'깨갱!',bad:true});
+  if(WK.vib&&navigator.vibrate)try{ navigator.vibrate([70,40,110]); }catch(e){}
+  if(WK.hearts<=0){ wkEnd(false); return true; } return false;
+}
+/* ---- 연습(목소리 맞추기): ① 작고 낮게 ② 크고 높게 ③ 돌 넘기 ---- */
+const WK_TUT=['① 작고 낮은 소리로 「으~」 하고 길게 내 보세요','② 이번엔 크고 높은 소리로 「아~!」','③ 소리로 통나무를 폴짝 넘어 보세요!'];
+function wkMedian(a){ if(!a.length)return null; const s=a.slice().sort((x,y)=>x-y); return s[Math.floor(s.length/2)]; }
+function wkTutStep(dt){
+  const T=WK.tut; T.t+=dt; const o=WK.lastIn||{};
+  if(T.step<2){
+    if(o.on&&!WK.mute){ T.hold+=dt; T.raw.push(o.raw); if(o.mf!=null)T.mf.push(o.mf); } else T.hold=Math.max(0,T.hold-dt*.5);
+    if(T.hold>=.9||T.t>14){
+      if(T.step===0){ const m=wkMedian(T.raw); T.lo=m!=null?Math.max(.0015,m*.6):WK.cal.lo; T.loM=wkMedian(T.mf); }
+      else{ const s=T.raw.slice().sort((x,y)=>x-y); T.hi=s.length?s[Math.floor(s.length*.75)]:WK.cal.hi; T.hiM=wkMedian(T.mf); }
+      if(T.hold>=.9){ wkSfx('count'); wkSpark(WK.W*.2,WK.H*.7,'#fff36b',16); WK.fx.push({t:0,txt:'★ 좋아요!',bad:false}); }
+      T.step++; T.t=0; T.raw=[]; T.mf=[]; T.hold=0;
+      if(T.step===2){   // 범위 확정 + 연습용 통나무
+        const lo=T.lo||WK.cal.lo, hi=Math.max(lo*2.5,T.hi||WK.cal.hi), loM=T.loM!=null?T.loM-1:WK.cal.loM, hiM=T.hiM!=null?Math.max(T.hiM,loM+5):WK.cal.hiM;
+        WK.cal={lo,hi,loM,hiM}; try{ localStorage.setItem('konti:wkcal',JSON.stringify(WK.cal)); }catch(e){}
+        T.ob={k:'log',x:WK.W*1.05,w:WK_OB.log.w*WK.W,h:.38,vx:0,ph:0,done:false,hit:false}; WK.obs=[T.ob]; }
+    }
+  } else if(T.ob&&T.ob.done){ T.done+=dt; if(T.done>.8){ WK.tut=null; $('wkskip').hidden=true; WK.fx.push({t:0,txt:'🎉 연습 끝! 이제 산책해요',bad:false}); WK.cd=3.2; WK.obs=[]; WK.items=[]; } }
+}
+/* ---- 한 프레임 ---- */
+function wkStep(dt,L){
+  const W=WK.W, H=WK.H, dx=W*.2, sz=H*.15, hw=sz*.42, dogHu=sz*.9/(H*.5);
+  WK.t+=dt; WK.flash=Math.max(0,WK.flash-dt*3); WK.inv=Math.max(0,WK.inv-dt); WK.shield=Math.max(0,WK.shield-dt); WK.slow=Math.max(0,WK.slow-dt);
+  const inp=wkInput(dt); wkMove(dt,inp);
+  if(WK.cd>0){ const b=Math.ceil(WK.cd); WK.cd-=dt; const n=Math.ceil(WK.cd); if(n!==b)wkSfx(n>0?'count':'go'); WK.scroll+=W*.12*dt; wkBgm(dt); return; }
+  wkBgm(dt);
+  const tut=WK.tut; if(tut)wkTutStep(dt);
+  const v=(tut?W*.16:W*L.sp*(1+WK.stage*.06))*(WK.slow>0?.6:1);
+  WK.scroll+=v*dt; if(!tut)WK.dist+=v*dt/(W*.05);
+  /* 구역 */
+  if(!tut){ const st=Math.min(4,Math.floor(WK.dist/(L.goal/5))); if(st!==WK.stage){ WK.stage=st; WK.banner={t:0,txt:WK_ST[st].name}; wkSfx('stage'); } }
+  /* 생성 */
+  if(!tut){ if(WK.dist<L.goal-30){ WK.spawnT-=dt; if(WK.spawnT<=0){ wkSpawn(L); WK.spawnT=L.gap*(.8+WK.rng()*.5)/(1+WK.stage*.06); } } else WK.gate=true; }
+  /* 이동·부딪힘 */
+  for(const ob of WK.obs){
+    if(tut&&tut.step<2)continue;
+    ob.x-=(v+ob.vx*(WK.slow>0?.6:1))*dt; ob.ph+=dt*(ob.k==='bird'?14:ob.vx>0?9:0);
+    if(ob.done)continue; const ow=ob.w/2;
+    if(Math.abs(ob.x-dx)<hw+ow*.85){
+      if(ob.k==='bird'){ const above=WK.y-(ob.alt+.09), below=(ob.alt-.09)-(WK.y+dogHu*.8), clr=Math.max(above,below); ob.minClr=Math.min(ob.minClr==null?9:ob.minClr,clr); if(clr<0&&!ob.hit&&wkHurt(L,ob,dx,sz))return; }
+      else{ const clr=WK.y-ob.h; ob.minClr=Math.min(ob.minClr==null?9:ob.minClr,clr); if(clr<-.03&&!ob.hit&&wkHurt(L,ob,dx,sz))return; }
+    }
+    if(ob.x+ow<dx-hw){ ob.done=true; WK.passed++;
+      if(!ob.hit){ WK.clean++; WK.combo++; WK.bestCombo=Math.max(WK.bestCombo,WK.combo);
+        if(ob.k!=='bird'&&ob.minClr!=null&&ob.minClr<.1&&ob.minClr>=-.03){ WK.nearN++; WK.stars++; WK.fx.push({t:0,txt:'😮 아슬아슬! +1',bad:false}); wkSfx('near'); }
+        if(WK.combo%5===0&&!tut){ WK.shield=Math.max(WK.shield,3); WK.fx.push({t:0,txt:'🔥 '+WK.combo+' 연속! 🛡',bad:false}); wkSfx('power'); }
+        if(WK.combo%10===0&&WK.hearts<WK_MAXH&&!tut){ WK.hearts++; WK.fx.push({t:0,txt:'❤️ +1',bad:false}); wkSfx('heart'); } } }
+  }
+  /* 아이템 */
+  for(const it of WK.items){ it.x-=v*dt; if(it.got)continue;
+    if(Math.abs(it.x-dx)<hw+sz*.28&&it.y>=WK.y-.08&&it.y<=WK.y+dogHu+.1){ it.got=true; const px=it.x, py=H*.8-it.y*H*.5;
+      if(it.k==='star'){ WK.stars++; wkSfx('star'); wkSpark(px,py,'#fff36b',8); }
+      else if(it.k==='gold'){ WK.stars+=3; wkSfx('gold'); wkSpark(px,py,'#ffd700',22); WK.fx.push({t:0,txt:'🌟 +3',bad:false}); }
+      else if(it.k==='heart'){ if(WK.hearts<WK_MAXH)WK.hearts++; wkSfx('heart'); wkSpark(px,py,'#ff7aa8',20); WK.fx.push({t:0,txt:'❤️ 생명 +1',bad:false}); }
+      else if(it.k==='shield'){ WK.shield=5; wkSfx('power'); wkSpark(px,py,'#7fe3ff',20); WK.fx.push({t:0,txt:'🛡 방패 5초',bad:false}); }
+      else if(it.k==='slow'){ WK.slow=6; wkSfx('power'); wkSpark(px,py,'#b8ff9a',20); WK.fx.push({t:0,txt:'🐢 천천히 6초',bad:false}); } } }
+  WK.obs=WK.obs.filter(o=>o.x>-W*.2); WK.items=WK.items.filter(i=>i.x>-40&&!i.got);
+  if(!tut&&WK.dist>=L.goal&&!WK.obs.length&&!WK.over)wkEnd(true);
+}
+function wkLoop(ts){
+  if(!WK.started)return;
+  const dt=Math.min(.05,(ts-WK.last)/1000); WK.last=ts; WK.clk+=dt; const L=WK_LV[WK.lv];
+  if(!WK.paused&&!WK.over)wkStep(dt,L); else if(WK.setOpen)wkMeterStep();
+  wkDraw(dt); WK.raf=requestAnimationFrame(wkLoop);
+}
+/* ---- 그리기 ---- */
+const wkHash=n=>((Math.imul(n|0,2654435761)>>>0)%1000)/1000;
+function wkDrawDog(g,x,fy,sz,ph,air,talk,t){
+  g.save(); g.lineCap='round'; g.lineJoin='round';
+  const leg=(lx,sw)=>{ g.strokeStyle='#8a5a1c'; g.lineWidth=sz*.11; g.beginPath(); g.moveTo(x+lx*sz,fy-sz*.48); g.lineTo(x+lx*sz+(air?(lx<0?-.2:.22)*sz:sw),fy-(air?sz*.2:0)); g.stroke(); };
+  const s=Math.sin(ph)*sz*.2, c=Math.cos(ph)*sz*.2; leg(-.38,s); leg(.32,-s); leg(-.14,-c); leg(.5,c);
+  g.strokeStyle='#5a3b00'; g.lineWidth=2.4; g.fillStyle='#e8b66b';
+  g.beginPath(); g.moveTo(x-sz*.5,fy-sz*.7); g.quadraticCurveTo(x-sz*.85,fy-sz*(1.0+Math.sin(t*14)*.12),x-sz*.75,fy-sz*1.15); g.stroke();   // 꼬리
+  g.beginPath(); g.ellipse(x,fy-sz*.64,sz*.58,sz*.32,0,0,7); g.fill(); g.stroke();
+  g.fillStyle='#fff3d6'; g.beginPath(); g.ellipse(x+sz*.05,fy-sz*.5,sz*.34,sz*.16,0,0,7); g.fill();
+  g.fillStyle='#e8b66b'; g.beginPath(); g.arc(x+sz*.58,fy-sz*.98,sz*.29,0,7); g.fill(); g.stroke();
+  g.fillStyle='#fff3d6'; g.beginPath(); g.ellipse(x+sz*.78,fy-sz*.9,sz*.17,sz*.13,0,0,7); g.fill(); g.stroke();
+  g.fillStyle='#a36b2b'; g.beginPath(); g.ellipse(x+sz*.42,fy-sz*1.12,sz*.1,sz*.2,.5+(air?-.5:0),0,7); g.fill(); g.stroke();
+  g.fillStyle='#222'; g.beginPath(); g.ellipse(x+sz*.92,fy-sz*.97,sz*.06,sz*.045,0,0,7); g.fill();
+  g.beginPath(); g.arc(x+sz*.66,fy-sz*1.04,sz*.045,0,7); g.fill();
+  if(talk){ g.fillStyle='#7a2020'; g.beginPath(); g.ellipse(x+sz*.8,fy-sz*.8,sz*.1,sz*.07,0,0,7); g.fill(); g.fillStyle='#ff8aa0'; g.beginPath(); g.ellipse(x+sz*.8,fy-sz*.77,sz*.06,sz*.035,0,0,7); g.fill(); }
+  g.restore();
+}
+function wkDrawOb(g,ob,gy,U){
+  const x=ob.x, w=ob.w, hp=ob.h*U; g.save(); g.lineWidth=2.4; g.strokeStyle='#33302a'; g.lineJoin='round';
+  switch(ob.k){
+    case 'rock': g.fillStyle='#a3a9ae'; g.beginPath(); g.moveTo(x-w/2,gy); g.lineTo(x-w*.35,gy-hp*.7); g.lineTo(x-w*.05,gy-hp); g.lineTo(x+w*.38,gy-hp*.62); g.lineTo(x+w/2,gy); g.closePath(); g.fill(); g.stroke(); g.fillStyle='rgba(255,255,255,.35)'; g.fillRect(x-w*.2,gy-hp*.75,w*.15,hp*.12); break;
+    case 'log': g.fillStyle='#a8703a'; g.beginPath(); g.roundRect?g.roundRect(x-w/2,gy-hp,w,hp,hp*.3):g.rect(x-w/2,gy-hp,w,hp); g.fill(); g.stroke(); g.strokeStyle='#6d431d'; g.beginPath(); g.arc(x-w/2+hp*.35,gy-hp/2,hp*.28,0,7); g.stroke(); g.beginPath(); g.moveTo(x-w*.1,gy-hp*.7); g.lineTo(x+w*.3,gy-hp*.7); g.moveTo(x,gy-hp*.3); g.lineTo(x+w*.4,gy-hp*.3); g.stroke(); break;
+    case 'fence': g.fillStyle='#f3e3c0'; g.fillRect(x-w/2,gy-hp*.72,w,hp*.12); g.strokeRect(x-w/2,gy-hp*.72,w,hp*.12); g.fillRect(x-w/2,gy-hp*.35,w,hp*.12); g.strokeRect(x-w/2,gy-hp*.35,w,hp*.12);
+      for(let i=0;i<3;i++){ const px=x-w/2+i*w*.36; g.beginPath(); g.moveTo(px,gy); g.lineTo(px,gy-hp*.9); g.lineTo(px+w*.14,gy-hp); g.lineTo(px+w*.28,gy-hp*.9); g.lineTo(px+w*.28,gy); g.closePath(); g.fill(); g.stroke(); } break;
+    case 'bush': g.fillStyle='#3f9a3a'; for(const [cx,cy,r] of [[-.25,.45,.5],[.25,.5,.48],[0,.72,.5],[-.05,.35,.45]]){ g.beginPath(); g.arc(x+cx*w,gy-hp*cy,Math.min(w*.5,hp*.5)*(r*2),0,7); g.fill(); g.stroke(); } g.fillStyle='#e84a5f'; for(const [cx,cy] of [[-.2,.55],[.2,.4],[.05,.8]]){ g.beginPath(); g.arc(x+cx*w,gy-hp*cy,3.5,0,7); g.fill(); } break;
+    case 'wall': g.fillStyle='#b9b0a2'; g.fillRect(x-w/2,gy-hp,w,hp); g.strokeRect(x-w/2,gy-hp,w,hp); g.lineWidth=1.6; { const rows=Math.max(3,Math.round(hp/26)); for(let r=1;r<rows;r++){ const yy=gy-hp*r/rows; g.beginPath(); g.moveTo(x-w/2,yy); g.lineTo(x+w/2,yy); g.stroke(); const off=(r%2?.3:.65)*w; g.beginPath(); g.moveTo(x-w/2+off,yy); g.lineTo(x-w/2+off,yy+hp/rows); g.stroke(); } } break;
+    case 'snail': { const s=w*.5; g.fillStyle='#e9d08a'; g.beginPath(); g.ellipse(x,gy-s*.2,w*.5,s*.22,0,0,7); g.fill(); g.stroke(); g.fillStyle='#c4743c'; g.beginPath(); g.arc(x+w*.1,gy-s*.75,s*.62,0,7); g.fill(); g.stroke(); g.beginPath(); g.arc(x+w*.1,gy-s*.75,s*.3,0,5); g.stroke();
+      g.beginPath(); g.moveTo(x-w*.42,gy-s*.3); g.lineTo(x-w*.5,gy-s*.8); g.moveTo(x-w*.3,gy-s*.3); g.lineTo(x-w*.32,gy-s*.8); g.stroke(); break; }
+    case 'hog': { const b=Math.sin(ob.ph)*2; g.fillStyle='#7a5530'; g.beginPath(); g.ellipse(x+w*.05,gy-hp*.45+b,w*.5,hp*.5,0,Math.PI,0); g.lineTo(x+w*.55,gy-hp*.1+b); g.lineTo(x-w*.45,gy-hp*.1+b); g.closePath(); g.fill(); g.stroke(); g.lineWidth=2; g.strokeStyle='#4a3218';
+      for(let i=0;i<7;i++){ const a=Math.PI+i*Math.PI/6, px=x+w*.05+Math.cos(a)*w*.5, py=gy-hp*.45+b+Math.sin(a)*hp*.5; g.beginPath(); g.moveTo(px,py); g.lineTo(px+Math.cos(a)*5,py+Math.sin(a)*5); g.stroke(); }
+      g.fillStyle='#f0d2a8'; g.beginPath(); g.ellipse(x-w*.42,gy-hp*.25+b,w*.16,hp*.2,0,0,7); g.fill(); g.stroke(); g.fillStyle='#222'; g.beginPath(); g.arc(x-w*.5,gy-hp*.3+b,2.5,0,7); g.fill(); g.beginPath(); g.arc(x-w*.36,gy-hp*.33+b,2,0,7); g.fill(); break; }
+    case 'cat': { const b=Math.abs(Math.sin(ob.ph))*3; g.fillStyle='#f0a045'; g.beginPath(); g.ellipse(x+w*.1,gy-hp*.4-b,w*.45,hp*.3,0,0,7); g.fill(); g.stroke(); g.beginPath(); g.arc(x-w*.35,gy-hp*.62-b,hp*.24,0,7); g.fill(); g.stroke();
+      g.beginPath(); g.moveTo(x-w*.5,gy-hp*.78-b); g.lineTo(x-w*.46,gy-hp*1.0-b); g.lineTo(x-w*.32,gy-hp*.82-b); g.moveTo(x-w*.3,gy-hp*.8-b); g.lineTo(x-w*.2,gy-hp*.98-b); g.lineTo(x-w*.14,gy-hp*.74-b); g.fill(); g.stroke();
+      g.beginPath(); g.moveTo(x+w*.5,gy-hp*.45-b); g.quadraticCurveTo(x+w*.7,gy-hp*.9,x+w*.55,gy-hp*1.0-b); g.stroke(); g.fillStyle='#222'; g.beginPath(); g.arc(x-w*.42,gy-hp*.66-b,2.5,0,7); g.fill();
+      g.lineWidth=3; g.strokeStyle='#c27a28'; for(const o of [-.25,.0,.3,.45]){ const sw=Math.sin(ob.ph+o*9)*4; g.beginPath(); g.moveTo(x+o*w,gy-hp*.2-b); g.lineTo(x+o*w+sw,gy); g.stroke(); } break; }
+    case 'bird': { const by=gy-ob.alt*U+Math.sin(ob.ph*.5)*4, fl=Math.sin(ob.ph)*U*.07; g.fillStyle='#e8504a'; g.beginPath(); g.ellipse(x,by,w*.5,U*.07,0,0,7); g.fill(); g.stroke(); g.fillStyle='#f7a8a0'; g.beginPath(); g.ellipse(x+w*.1,by-fl*.5,w*.28,Math.max(3,Math.abs(fl)),-.3,0,7); g.fill(); g.stroke();
+      g.fillStyle='#ffb21f'; g.beginPath(); g.moveTo(x-w*.48,by-3); g.lineTo(x-w*.8,by+2); g.lineTo(x-w*.48,by+7); g.closePath(); g.fill(); g.stroke(); g.fillStyle='#fff'; g.beginPath(); g.arc(x-w*.28,by-5,4,0,7); g.fill(); g.fillStyle='#000'; g.beginPath(); g.arc(x-w*.31,by-5,1.8,0,7); g.fill(); break; }
+  }
+  g.restore();
+}
+function wkDraw(dt){
+  const cv=$('wkcv'); if(!cv)return; const g=cv.getContext('2d'), W=WK.W, H=WK.H; dt=dt||0; g.setTransform(WK.dpr||1,0,0,WK.dpr||1,0,0);
+  const S=WK_ST[Math.min(4,WK.stage||0)], gy=H*.8, U=H*.5, sz=H*.15, sc=WK.scroll||0, dx=W*.2, t=WK.clk||0;
+  let sx=0; if(WK.shake>0){ sx=(Math.random()-.5)*12*WK.shake; WK.shake=Math.max(0,WK.shake-dt*3); }
+  g.save(); g.translate(sx,0);
+  const sky=g.createLinearGradient(0,0,0,gy); sky.addColorStop(0,S.sky[0]); sky.addColorStop(1,S.sky[1]); g.fillStyle=sky; g.fillRect(-20,0,W+40,H);
+  if(S.night){ g.fillStyle='#fff'; for(let i=0;i<40;i++){ g.globalAlpha=.4+.6*Math.abs(Math.sin(t*1.5+i)); g.fillRect(wkHash(i*7)*W,wkHash(i*13)*gy*.8,2,2); } g.globalAlpha=1; }
+  g.fillStyle=S.sun; g.beginPath(); g.arc(W*.82,H*.2,H*.08,0,7); g.fill(); g.globalAlpha=.3; g.beginPath(); g.arc(W*.82,H*.2,H*.12,0,7); g.fill(); g.globalAlpha=1;
+  for(const c of WK.clouds){ if(WK.started&&!WK.paused)c.x-=dt*.01*c.s; if(c.x<-.25)c.x=1.15; const x=c.x*W, y=c.y*H, s=H*.07*c.s; g.fillStyle=S.night?'rgba(120,130,190,.5)':'#fffaf0'; g.beginPath(); g.arc(x,y,s,0,7); g.arc(x+s*.9,y+s*.15,s*.75,0,7); g.arc(x-s*.9,y+s*.2,s*.65,0,7); g.fill(); }
+  g.fillStyle=S.hill; g.beginPath(); g.moveTo(0,gy); for(let x=0;x<=W;x+=16)g.lineTo(x,gy-H*.13-Math.sin((x+sc*.1)/W*4.2)*H*.06); g.lineTo(W,gy); g.fill();
+  g.fillStyle=S.hill2; g.beginPath(); g.moveTo(0,gy); for(let x=0;x<=W;x+=16)g.lineTo(x,gy-H*.05-Math.sin((x+sc*.22)/W*7+2)*H*.04); g.lineTo(W,gy); g.fill();
+  if(S.sea){ g.fillStyle='#4fb6e8'; g.fillRect(0,gy-H*.045,W,H*.045); g.strokeStyle='rgba(255,255,255,.7)'; g.lineWidth=2; for(let x=-30;x<W+30;x+=36){ const xx=x-(sc*.3)%36; g.beginPath(); g.arc(xx,gy-H*.03,7,Math.PI,0); g.stroke(); } }
+  const sp=W*.26, base=Math.floor(sc*.45/sp);   // 가까운 풍경: 구역마다 다른 장식
+  for(let k=-1;k<=Math.ceil(W/sp)+1;k++){ const n=k+base, x=n*sp-sc*.45+wkHash(n)*sp*.4, h=H*(.16+wkHash(n+9)*.1); g.lineWidth=2; g.strokeStyle='#33302a';
+    if(S.deco==='tree'){ g.fillStyle='#8a5a2c'; g.fillRect(x-4,gy-h,8,h); g.fillStyle='#4fae45'; g.beginPath(); g.arc(x,gy-h,h*.45,0,7); g.fill(); g.stroke(); }
+    else if(S.deco==='palm'){ g.strokeStyle='#8a5a2c'; g.lineWidth=5; g.beginPath(); g.moveTo(x,gy); g.quadraticCurveTo(x+8,gy-h*.6,x+4,gy-h); g.stroke(); g.fillStyle='#3d9d4a'; g.strokeStyle='#33302a'; g.lineWidth=2; for(const a of [-2.6,-1.9,-1.2,-.5]){ g.beginPath(); g.ellipse(x+4+Math.cos(a)*h*.28,gy-h+Math.sin(a)*h*.18,h*.3,h*.08,a*.5,0,7); g.fill(); g.stroke(); } }
+    else if(S.deco==='pine'){ g.fillStyle='#8a5a2c'; g.fillRect(x-3,gy-h*.3,6,h*.3); g.fillStyle='#2f8a52'; for(let i=0;i<3;i++){ const yy=gy-h*.25-i*h*.28, ww=h*(.42-i*.1); g.beginPath(); g.moveTo(x-ww,yy); g.lineTo(x,yy-h*.4); g.lineTo(x+ww,yy); g.closePath(); g.fill(); g.stroke(); g.fillStyle='#fff'; g.beginPath(); g.moveTo(x-ww*.45,yy-h*.18); g.lineTo(x,yy-h*.4); g.lineTo(x+ww*.45,yy-h*.18); g.closePath(); g.fill(); g.fillStyle='#2f8a52'; } }
+    else { g.fillStyle='#4a4a58'; g.fillRect(x-2,gy-h*1.1,4,h*1.1); g.fillStyle='#fff3a3'; g.beginPath(); g.arc(x,gy-h*1.1,7,0,7); g.fill(); g.globalAlpha=.25; g.beginPath(); g.arc(x,gy-h*1.1,18,0,7); g.fill(); g.globalAlpha=1; } }
+  g.fillStyle=S.ground; g.fillRect(0,gy,W,H-gy); g.fillStyle=S.dirt; g.fillRect(0,gy+H*.04,W,H-gy-H*.04);
+  g.strokeStyle='rgba(0,0,0,.18)'; g.lineWidth=2; for(let x=-40;x<W+40;x+=46){ const xx=x-sc%46; g.beginPath(); g.moveTo(xx,gy+8); g.lineTo(xx+8,gy+3); g.moveTo(xx+14,gy+14); g.lineTo(xx+20,gy+8); g.stroke(); }
+  for(let x=-60;x<W+60;x+=90){ const xx=x-sc%90; g.fillStyle='rgba(0,0,0,.12)'; g.fillRect(xx,gy+H*.08,36,4); }
+  // 도착 문
+  if(WK.gate){ const L=WK_LV[WK.lv], gx=dx+(L.goal-WK.dist)*W*.05; if(gx<W+60){ g.fillStyle='#fff'; g.strokeStyle='#33302a'; g.lineWidth=3; g.fillRect(gx-4,gy-U*1.1,8,U*1.1); g.strokeRect(gx-4,gy-U*1.1,8,U*1.1); for(let i=0;i<8;i++)for(let j=0;j<2;j++){ g.fillStyle=(i+j)%2?'#222':'#fff'; g.fillRect(gx+4+j*14,gy-U*1.1+i*10,14,10); } g.font='900 20px sans-serif'; g.textAlign='left'; g.fillStyle='#ffd23f'; g.strokeText('🏁 도착!',gx+30,gy-U*1.2); g.fillText('🏁 도착!',gx+30,gy-U*1.2); } }
+  // 높이 길잡이: 왼쪽 막대 = 지금 내는 소리의 높이, 빨간 표시 = 다음 장애물을 넘는 데 필요한 높이
+  { const nx=WK.obs.find(o=>!o.done&&o.x>dx-sz), gx=14, gh=U; g.fillStyle='rgba(0,0,0,.25)'; g.fillRect(gx,gy-gh,10,gh); const cur=WK.voiced&&WK.lastIn?Math.max(WK.lastIn.h||0,0):0; g.fillStyle=WK.voiced?'#ffd166':'rgba(255,255,255,.35)'; g.fillRect(gx,gy-gh*Math.min(1,cur),10,gh*Math.min(1,cur));
+    g.strokeStyle='#fff'; g.lineWidth=2; g.strokeRect(gx,gy-gh,10,gh);
+    if(nx&&nx.k!=='bird'){ const th=Math.min(1.02,nx.h+.06); g.fillStyle='#ff5a5a'; g.beginPath(); g.moveTo(gx+14,gy-gh*th); g.lineTo(gx+28,gy-gh*th-6); g.lineTo(gx+28,gy-gh*th+6); g.closePath(); g.fill(); g.setLineDash([6,6]); g.strokeStyle='rgba(255,90,90,.6)'; g.lineWidth=2; g.beginPath(); g.moveTo(gx+28,gy-gh*th); g.lineTo(Math.min(W,dx+W*.5),gy-gh*th); g.stroke(); g.setLineDash([]); } }
+  g.textAlign='center'; g.textBaseline='middle';
+  for(const it of WK.items){ if(it.got)continue; const y=gy-it.y*U+Math.sin(t*5+it.x*.05)*3; g.font=(it.k==='star'?22:30)+'px serif'; g.fillText(it.k==='star'?'⭐':it.k==='gold'?'🌟':it.k==='heart'?'❤️':it.k==='shield'?'🛡️':'🐢',it.x,y); }
+  for(const ob of WK.obs)wkDrawOb(g,ob,gy,U);
+  // 강아지
+  const fy=gy-WK.y*U, air=WK.y>.04; g.fillStyle='rgba(0,0,0,.2)'; g.beginPath(); g.ellipse(dx,gy+4,sz*.5*(1-WK.y*.4),5,0,0,7); g.fill();
+  if(WK.shield>0){ g.save(); g.globalAlpha=.3+.15*Math.sin(t*10); g.fillStyle='rgba(127,227,255,.3)'; g.strokeStyle='#7fe3ff'; g.lineWidth=3; g.beginPath(); g.arc(dx+sz*.1,fy-sz*.6,sz*1.1,0,7); g.fill(); g.stroke(); g.restore(); }
+  if(!(WK.inv>0&&Math.floor(t*10)%2))wkDrawDog(g,dx,fy,sz,t*(WK.slow>0?7:11),air,WK.voiced,t);
+  if(S.snow){ g.fillStyle='#fff'; for(const f of WK.snow){ if(WK.started&&!WK.paused){ f.y+=dt*(.1+f.s*.05); f.x-=dt*.03; if(f.y>1)f.y=0; if(f.x<0)f.x=1; } g.beginPath(); g.arc(f.x*W,f.y*H,f.s,0,7); g.fill(); } }
+  for(const p of WK.sparks){ p.t+=dt; p.vy+=300*dt; p.x+=p.vx*dt; p.y+=p.vy*dt; g.globalAlpha=Math.max(0,1-p.t/p.life); g.fillStyle=p.c; g.beginPath(); g.arc(p.x,p.y,p.s,0,7); g.fill(); }
+  g.globalAlpha=1; WK.sparks=WK.sparks.filter(p=>p.t<p.life);
+  for(const f of WK.fx){ f.t+=dt; g.globalAlpha=Math.max(0,1-f.t/.9); g.font='900 22px sans-serif'; g.textBaseline='alphabetic'; g.fillStyle=f.bad?'#ff5a5a':'#fff36b'; g.strokeStyle='rgba(0,0,0,.5)'; g.lineWidth=4; g.strokeText(f.txt,dx+sz,fy-sz*1.5-f.t*40); g.fillText(f.txt,dx+sz,fy-sz*1.5-f.t*40); g.globalAlpha=1; }
+  WK.fx=WK.fx.filter(f=>f.t<.9);
+  if(WK.combo>=3&&WK.started&&!WK.over){ g.save(); g.textAlign='right'; g.textBaseline='top'; g.font='900 22px sans-serif'; g.lineWidth=5; g.strokeStyle='rgba(0,0,0,.45)'; g.fillStyle='#ffd600'; g.strokeText('🔥 '+WK.combo+' 연속',W-12,10); g.fillText('🔥 '+WK.combo+' 연속',W-12,10); g.restore(); }
+  g.restore();
+  if(WK.flash>0){ g.fillStyle='rgba(255,60,60,'+(WK.flash*.35)+')'; g.fillRect(0,0,W,H); }
+  const say=(txt,y,fs)=>{ g.save(); g.textAlign='center'; g.textBaseline='middle'; g.font='900 '+fs+'px sans-serif'; g.lineWidth=6; g.strokeStyle='rgba(0,0,0,.5)'; g.fillStyle='#fff36b'; g.strokeText(txt,W/2,y); g.fillText(txt,W/2,y); g.restore(); };
+  if(WK.started&&WK.tut&&!WK.over){ const T=WK.tut; say(WK_TUT[Math.min(2,T.step)],H*.3,Math.min(24,W/17)); if(T.step<2){ const bw=Math.min(240,W*.6); g.fillStyle='rgba(0,0,0,.35)'; g.fillRect(W/2-bw/2,H*.3+26,bw,12); g.fillStyle='#9be36b'; g.fillRect(W/2-bw/2,H*.3+26,bw*Math.min(1,T.hold/.9),12); } else say('왼쪽 막대를 빨간 표시까지 올려요 · 크게 또는 높게!',H*.3+34,Math.min(15,W/26)); }
+  else if(WK.started&&WK.cd>0&&!WK.over){ const n=Math.ceil(WK.cd), fr=WK.cd-Math.floor(WK.cd); g.save(); g.translate(W/2,H*.38); g.scale(1+fr*.4,1+fr*.4); g.textAlign='center'; g.textBaseline='middle'; g.font='900 72px sans-serif'; g.lineWidth=8; g.strokeStyle='#5a3b00'; g.fillStyle='#ffd23f'; g.strokeText(String(n),0,0); g.fillText(String(n),0,0); g.restore(); say('소리를 내면 폴짝! 큰 소리·높은 음일수록 높이 뛰어요',H*.55,Math.min(16,W/24)); }
+  else if(WK.started&&!WK.over&&WK.banner){ const b=WK.banner; b.t+=dt; if(b.t>2.2)WK.banner=null; else{ g.globalAlpha=Math.min(1,(2.2-b.t)*2); say(b.txt,H*.25,28); g.globalAlpha=1; } }
+  else if(WK.started&&!WK.over&&!WK.voiced&&WK.t<6&&WK.obs.length){ say('🎤 소리를 내서 폴짝!',H*.14,18); }
+  $('wkstarsn').textContent=WK.stars; { const hmax=WK_LV[WK.lv].hearts, hn=Math.max(0,WK.hearts); $('wkhearts').textContent=(hmax>5||hn>5?'❤️×'+hn:'❤️'.repeat(hn)+'🤍'.repeat(Math.max(0,hmax-hn)))+(WK.shield>0?' 🛡'+Math.ceil(WK.shield):'')+(WK.slow>0?' 🐢':''); }
+  $('wkprog').style.width=wkClamp(WK.dist/WK_LV[WK.lv].goal*100,0,100)+'%'; $('wkstage').textContent=Math.round(WK.dist)+'m';
+  $('wklevel').style.width=Math.min(100,Math.sqrt(WK.level||0)*100)+'%';
+}
+function wkSized(){ const cv=$('wkcv'), r=cv.getBoundingClientRect(), d=Math.min(2,devicePixelRatio||1); WK.W=Math.max(300,r.width); WK.H=Math.max(240,r.height); cv.width=WK.W*d; cv.height=WK.H*d; WK.dpr=d; wkDraw(0); }
+/* ---- 게임 중 설정(노래하는 새와 같은 방식 — 시작 화면의 설정 칸을 옮겨 쓴다) ---- */
+function wkMeterStep(){ const o=wkHear(); $('wkmeter').style.width=Math.min(100,Math.sqrt(WK.level||0)*100)+'%'; $('wkmnote').textContent=o.on?'높이 '+Math.round(o.h*100)+'%':'–'; }
+function wkSetOpen(open){
+  const p=$('wksetp'), host=$('wksethost'), opts=document.querySelector('#wk .vbopts'), det=document.querySelector('#wk .vbdet'); if(!p||!opts||!det)return;
+  if(open){ if(WK.setOpen||WK.over)return; if(!WK.started){ det.open=true; return; }
+    WK.setOpen=true; WK.setWas=WK.paused; WK.paused=true; WK.mute=0; WK.level=0; $('wkpause').textContent='▶'; host.appendChild(opts); p.hidden=false; }
+  else{ if(!WK.setOpen)return; WK.setOpen=false; p.hidden=true; det.appendChild(opts); WK.paused=WK.setWas; $('wkpause').textContent=WK.paused?'▶':'⏸'; WK.last=performance.now(); }
+}
+function wkSumm(){ try{ const L=WK_LV[WK.lv]; $('wksum').textContent=L.label+' · '+L.goal+'m 산책 · 소리를 내면 폴짝!'; }catch(e){} }
+function wkEnter(){ wkLoadCal(); wkSized(); wkReset(); wkSumm(); }
+(function wkInit(){
+  $('h-wk').onclick=()=>{ showScreen('wk'); try{ history.pushState({v:'wk'},''); }catch(e){} };
+  $('wkhome').onclick=()=>{ if(history.state&&history.state.v)history.back(); else goHome(); };
+  try{ WK.lv=localStorage.getItem('konti:wklv')||'normal'; if(!WK_LV[WK.lv])WK.lv='normal'; WK.bgm=localStorage.getItem('konti:wkbgm')||'beat'; WK.vib=localStorage.getItem('konti:wkvib')!=='0'; const sk=localStorage.getItem('konti:wksens')||'mid'; if(WK_SENS[sk]){ $('wksens').value=sk; WK.sens=WK_SENS[sk]; } }catch(e){}
+  $('wklv').value=WK.lv; $('wkbgm').value=WK.bgm; $('wkvib').checked=WK.vib;
+  $('wklv').onchange=()=>{ WK.lv=$('wklv').value; wkSumm(); try{ localStorage.setItem('konti:wklv',WK.lv); }catch(e){} };
+  $('wkbgm').onchange=()=>{ WK.bgm=$('wkbgm').value; try{ localStorage.setItem('konti:wkbgm',WK.bgm); }catch(e){} };
+  $('wkvib').onchange=()=>{ WK.vib=$('wkvib').checked; try{ localStorage.setItem('konti:wkvib',WK.vib?'1':'0'); }catch(e){} if(WK.vib&&navigator.vibrate)try{ navigator.vibrate(60); }catch(e){} };
+  $('wksens').onchange=()=>{ const k=$('wksens').value; WK.sens=WK_SENS[k]||1; try{ localStorage.setItem('konti:wksens',k); }catch(e){} };
+  $('wkgo').onclick=()=>wkStart('tut'); $('wkquick').onclick=()=>wkStart('quick'); $('wkagain').onclick=()=>wkStart('quick');
+  $('wkskip').onclick=()=>{ WK.tut=null; WK.obs=[]; WK.items=[]; WK.cd=3.2; $('wkskip').hidden=true; };
+  $('wkcalbtn').onclick=()=>wkStart('tut');
+  $('wkmenu').onclick=()=>{ $('wkend').hidden=true; wkReset(); };
+  $('wkset').onclick=()=>wkSetOpen(!WK.setOpen); $('wksetgo').onclick=()=>wkSetOpen(false);
+  $('wkpause').onclick=()=>{ if(!WK.started||WK.over||WK.setOpen)return; WK.paused=!WK.paused; $('wkpause').textContent=WK.paused?'▶':'⏸'; WK.last=performance.now(); };
+  addEventListener('resize',()=>{ if(KB.shown==='wk')wkSized(); });
+})();
+
 /* ============ 🥁 하모닉스 드럼 (v124 — 그림·치는 맛·이름·흐름 전면 개편; v123 은 허술하다는 사용자 지적으로 갈아엎음) ============
    · 드럼 세트 그림(`dkSvg`) 하나를 두 화면이 같이 쓴다. 리얼 드럼 앱처럼 위에서 내려다본 모습: 크롬 테두리에 볼트가 박힌 북(톰 셋·플로어 톰·스네어), 나무 테두리의 킥 둘,
      결 무늬·광택·색 띠가 있는 심벌(크래시 둘·스플래시·라이드·하이햇 닫힘/열림), 부품마다 영어 이름(크게) + 한글 이름 + 자판 글쇠. 가장 위에 그려진 부품이 눌린다.
@@ -13350,7 +13760,7 @@ function dgInfo(){ dgOpts(); $('dgmode').textContent=DG.mode==='surv'?'🔥 서�
 }
 function dgReset(){ dgStop(); $('dgstart').hidden=false; $('dgend').hidden=true; $('dgcount').hidden=true; $('dgbar').textContent=''; DG.score=0; $('dgscore').textContent=0; dgInfo(); }
 function dgSetPat(i,keepBpm){ DG.pat=Math.max(0,Math.min(DR_PATS.length-1,i)); if(!keepBpm)DG.bpm=dgPat().bpm; $('dgpat').value=String(DG.pat); $('dgbpm').textContent=DG.bpm; try{ localStorage.setItem('konti:dgpat',String(DG.pat)); }catch(e){} dgReset(); }
-function dgEnter(){ const box=$('dgbox'); if(!box.querySelector('.dkkit'))box.insertAdjacentHTML('afterbegin',dkSvg('G')); dkBake(box); dgFit(); dgReset(); }
+function dgEnter(){ DG.lockTry=1; setTimeout(()=>{ try{ if(document.fullscreenElement&&screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{}); }catch(e){} },400); const box=$('dgbox'); if(!box.querySelector('.dkkit'))box.insertAdjacentHTML('afterbegin',dkSvg('G')); dkBake(box); dgFit(); dgReset(); }
 (function dgInit(){
   const sel=$('dgpat'); sel.innerHTML=DR_PATS.map((p,i)=>'<option value="'+i+'">'+p.name+'</option>').join('');
   try{ DG.pat=Math.min(DR_PATS.length-1,+(localStorage.getItem('konti:dgpat')||0)||0); DG.lv=localStorage.getItem('konti:dglv')||'easy'; DG.metro=localStorage.getItem('konti:dgmetro')!=='0'; }catch(e){}
