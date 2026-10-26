@@ -72,6 +72,17 @@ export default async function songTest(){
     }finally{ window.smDownload=realDl; }
     smToScore();
     ok('악보 연주로 보내기',KB.shown==='score'&&/^♪ G4:1 G4:1 A4:1 A4:1/.test(S.raw)&&/\|\[Am\]학교종이/.test(S.raw),S.raw.slice(0,120));
+    /* v151 옥타브 튐 바로잡기 */
+    { const mk=a=>a.map((m,k)=>({t:k*.01,mf:m}));
+      const glitch=mk([...Array(20).fill(60),...Array(4).fill(72),...Array(20).fill(60)]); smFixOctaves(glitch);
+      ok('한 음 중간에 옥타브 위로 튄 4프레임이 되돌려진다',glitch.every(q=>Math.abs(q.mf-60)<.01),glitch.map(q=>q.mf).join());
+      const low=mk([...Array(20).fill(64),...Array(3).fill(52),...Array(20).fill(65)]); smFixOctaves(low);
+      ok('옥타브 아래로 튄 것도(앞뒤가 비슷할 때)',low.every(q=>q.mf>=63),low.map(q=>q.mf).join());
+      const leap=mk([...Array(25).fill(60),...Array(25).fill(72)]); smFixOctaves(leap);
+      ok('진짜 옥타브 도약은 건드리지 않는다',leap.slice(0,25).every(q=>q.mf===60)&&leap.slice(25).every(q=>q.mf===72));
+      const longer=mk([...Array(20).fill(60),...Array(15).fill(72),...Array(20).fill(60)]); smFixOctaves(longer);
+      ok('15프레임(0.15초) 넘게 이어진 것은 진짜 높은 음으로 본다',longer[25].mf===72);
+      const sil=mk([...Array(10).fill(60),NaN,NaN,...Array(10).fill(60)]); ok('무성 프레임이 있어도 오류 없이 돈다',smFixOctaves(sil)===0); }
   }finally{
     window.scheduleSave=realSave; S.raw=keepRaw; $('title').value=keepTitle; try{ reparse(); renderAll(); }catch(e){}
     Object.assign(SM,snap); if(keep===null)localStorage.removeItem('konti:smlast'); else localStorage.setItem('konti:smlast',keep);
