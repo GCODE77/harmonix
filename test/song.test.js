@@ -83,6 +83,12 @@ export default async function songTest(){
       const longer=mk([...Array(20).fill(60),...Array(15).fill(72),...Array(20).fill(60)]); smFixOctaves(longer);
       ok('15프레임(0.15초) 넘게 이어진 것은 진짜 높은 음으로 본다',longer[25].mf===72);
       const sil=mk([...Array(10).fill(60),NaN,NaN,...Array(10).fill(60)]); ok('무성 프레임이 있어도 오류 없이 돈다',smFixOctaves(sil)===0); }
+    /* v152 음정 점검 */
+    { const good=smPitchReport([{mf:60.02},{mf:62.98},{mf:64.1}],0); ok('정확하게 부르면 높은 점수·전부 정확',good.score>=90&&good.acc===3&&good.bad===0,good);
+      const off=smPitchReport([{mf:60.5},{mf:62.45},{mf:64.3}],.3); ok('반음 사이로 부르면 점수가 낮고 벗어남으로 센다',off.score<50&&off.bad>=1&&off.offCents===30,off);
+      ok('음마다 센트를 돌려준다(높음 +·낮음 −)',smPitchReport([{mf:60.3},{mf:61.8}],0).items.map(x=>Math.round(x.dev)).join()==='30,-20');
+      $('smpitch').checked=true; SM.pitchRep=smPitchReport([{mf:60.4},{mf:62.0},{mf:64.0}],.2); smPitchRender(); ok('옵션을 켜면 점검 결과가 화면에 뜬다',!$('smpitchrep').hidden&&/음정 점검/.test($('smpitchrep').textContent));
+      $('smpitch').checked=false; smPitchRender(); ok('옵션을 끄면 숨긴다',$('smpitchrep').hidden); }
   }finally{
     window.scheduleSave=realSave; S.raw=keepRaw; $('title').value=keepTitle; try{ reparse(); renderAll(); }catch(e){}
     Object.assign(SM,snap); if(keep===null)localStorage.removeItem('konti:smlast'); else localStorage.setItem('konti:smlast',keep);

@@ -336,7 +336,7 @@ body.focus #focusout{display:block}
 
 /* ===== 첫 화면 · 건반 연주 ===== */
 html.hm,html.hm body{overflow:hidden;height:100%;overscroll-behavior:none}
-html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):not(#wk):not(#dk):not(#dg):not(#ts):not(#tnpop):not(#instpop):not(#toast):not(#errbar):not(script):not(style){display:none!important}
+html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):not(#wk):not(#dk):not(#dg):not(#ts):not(#tnpop):not(#instpop):not(#bkpop):not(#toast):not(#errbar):not(script):not(style){display:none!important}
 #home{position:fixed;inset:0;height:100vh;height:100dvh;overscroll-behavior:none;touch-action:pan-y;z-index:80;background:var(--ink);display:flex;align-items:flex-start;justify-content:center;padding:calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom));overflow-x:hidden;overflow-y:auto}
 #home[hidden],#kb[hidden]{display:none}
 #home .hbox{width:min(760px,100%);text-align:center;margin:auto 0}
@@ -677,6 +677,7 @@ html.hm body>:not(#home):not(#kb):not(#tn):not(#mt):not(#gm):not(#sm):not(#vb):n
 .vbsethost{width:100%;max-height:34vh;overflow-y:auto}
 #vbsetp .vbpre{display:none}
 #wksetp .vbpre{display:none}
+.smpitchrep{background:rgba(255,209,102,.1);border:1px solid rgba(255,209,102,.4);border-radius:12px;padding:8px 12px;font-size:13.5px;line-height:1.55;margin:4px 0}.smpitchrep[hidden]{display:none}
 .vbstars{font-size:46px;letter-spacing:6px;color:#ffd54a;text-shadow:0 0 14px rgba(255,213,74,.6)}
 /* 노래 파일 채보 (v117) — 노래 만들기의 카드 모양(.smbody·.smcard·.smrow)을 같이 쓴다 */
 #ts{position:fixed;inset:0;height:100vh;height:100dvh;z-index:70;background:var(--bg,#0e1520);display:flex;flex-direction:column;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
@@ -936,6 +937,13 @@ input[type=range]{accent-color:var(--gold2)}
   <div id="inststeps"></div>
   <div class="instbtns"><button class="btn cta" id="instgo" type="button" hidden>📲 지금 설치</button><button class="btn" id="instx" type="button">닫기</button></div>
 </div></div>
+<div id="bkpop" class="instov" hidden role="dialog" aria-label="백업과 복원"><div class="instbox">
+  <b>💾 백업 · 복원</b>
+  <p>저장한 곡·녹음·게임 기록·설정은 <b>이 기기 안</b>에만 있어서, 폰을 바꾸거나 브라우저 데이터를 지우면 사라져요. 파일로 백업해 두면 어디서든 되살릴 수 있어요. (API 키는 담지 않아요)</p>
+  <p id="bksum"></p>
+  <div class="instbtns"><button class="btn cta" id="bkout" type="button">⬇ 백업 파일 만들기</button><button class="btn" id="bkin" type="button">⬆ 백업 파일 불러오기</button><button class="btn" id="bkx" type="button">닫기</button></div>
+  <input type="file" id="bkfile" accept=".json,application/json" hidden>
+</div></div>
 <div id="home">
   <div class="hbox">
     <button class="hinst" id="hinst" type="button" aria-label="홈 화면에 추가해서 앱처럼 쓰기">📲 앱 설치</button><button class="hfs" id="hfs" type="button" aria-label="전체화면 자동으로 켜기/끄기" title="전체화면 자동">⛶</button><div class="hhead"><img class="hicon" src="icon-192.png" alt="" width="84" height="84"><div class="hlogo">하모닉스</div></div>
@@ -979,7 +987,7 @@ input[type=range]{accent-color:var(--gold2)}
       <button class="hcard game wide" id="h-ts" type="button"><svg class="gscene" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="gsc7" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c49bff"/><stop offset="1" stop-color="#4a1fa0"/></linearGradient></defs><rect width="200" height="100" fill="url(#gsc7)"/><path d="M24 66v-8a26 26 0 0 1 52 0v8" stroke="#fff" stroke-width="5" fill="none"/><rect x="18" y="62" width="14" height="22" rx="5" fill="#ff7ad9"/><rect x="68" y="62" width="14" height="22" rx="5" fill="#ff7ad9"/><path d="M92 50 l4 -12 l4 24 l4 -30 l4 36 l4 -24 l4 18 l4 -12" stroke="#7fe3ff" stroke-width="2.5" fill="none"/><path d="M122 50h8" stroke="#fff" stroke-width="2"/><path d="M128 46l5 4-5 4" stroke="#fff" stroke-width="2" fill="none"/><g><line x1="140" x2="192" y1="34" y2="34" stroke="#fff" stroke-width=".8" opacity=".8"/><line x1="140" x2="192" y1="40" y2="40" stroke="#fff" stroke-width=".8" opacity=".8"/><line x1="140" x2="192" y1="46" y2="46" stroke="#fff" stroke-width=".8" opacity=".8"/><line x1="140" x2="192" y1="52" y2="52" stroke="#fff" stroke-width=".8" opacity=".8"/><line x1="140" x2="192" y1="58" y2="58" stroke="#fff" stroke-width=".8" opacity=".8"/><ellipse cx="150" cy="52" rx="4" ry="3" fill="#fff" transform="rotate(-20 150 52)"/><line x1="153.6" y1="52" x2="153.6" y2="37" stroke="#fff" stroke-width="1.3"/><ellipse cx="164" cy="46" rx="4" ry="3" fill="#fff" transform="rotate(-20 164 46)"/><line x1="167.6" y1="46" x2="167.6" y2="31" stroke="#fff" stroke-width="1.3"/><ellipse cx="178" cy="40" rx="4" ry="3" fill="#ffd23f" transform="rotate(-20 178 40)"/><line x1="181.6" y1="40" x2="181.6" y2="25" stroke="#ffd23f" stroke-width="1.3"/></g></svg><span><b>노래 파일 채보</b><br><small>노래 파일을 넣으면 멜로디·박자·코드를 악보로 옮겨 줘요 · 악보에서 바로 고쳐요</small></span></button>
       <button class="hcard game wide" id="h-sm" type="button"><svg class="gscene" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><radialGradient id="gsc8" cx=".5" cy=".2" r="1"><stop offset="0" stop-color="#ffb0c0"/><stop offset="1" stop-color="#c2294e"/></radialGradient></defs><rect width="200" height="100" fill="url(#gsc8)"/><rect x="88" y="14" width="24" height="40" rx="12" fill="#e9e9ef" stroke="#888" stroke-width="2"/><line x1="90" x2="110" y1="22" y2="22" stroke="#aaa" stroke-width="1"/><line x1="90" x2="110" y1="28" y2="28" stroke="#aaa" stroke-width="1"/><line x1="90" x2="110" y1="34" y2="34" stroke="#aaa" stroke-width="1"/><line x1="90" x2="110" y1="40" y2="40" stroke="#aaa" stroke-width="1"/><path d="M80 44a20 20 0 0 0 40 0" stroke="#fff" stroke-width="3" fill="none"/><line x1="100" y1="64" x2="100" y2="80" stroke="#fff" stroke-width="3"/><rect x="86" y="80" width="28" height="5" rx="2" fill="#fff"/><g fill="#fff"><text x="34" y="44" font-size="20">♪</text><text x="150" y="36" font-size="18">♫</text><text x="54" y="80" font-size="14">♩</text><text x="140" y="80" font-size="16">♪</text></g><path d="M30 13l1.6 3.4 3.4 1.6-3.4 1.6-1.6 3.4-1.6-3.4-3.4-1.6 3.4-1.6z" fill="#fff3a3"/><path d="M170 57l1.6 3.4 3.4 1.6-3.4 1.6-1.6 3.4-1.6-3.4-3.4-1.6 3.4-1.6z" fill="#fff3a3"/><path d="M130 9l1.6 3.4 3.4 1.6-3.4 1.6-1.6 3.4-1.6-3.4-3.4-1.6 3.4-1.6z" fill="#fff3a3"/></svg><span><b>노래 만들기</b><br><small>흥얼거리거나 노래하면 코드·반주를 붙여 노래로 만들어 줘요</small></span></button>
     </div>
-    <div class="hcopy">© GLORY &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; <a href="#" id="hreload" style="color:inherit;pointer-events:auto">🔄 새로 불러오기</a> &nbsp;·&nbsp; v<span id="hver"></span></div>
+    <div class="hcopy">© GLORY &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; <a href="#" id="hreload" style="color:inherit;pointer-events:auto">🔄 새로 불러오기</a> &nbsp;·&nbsp; <a href="#" id="hbk" style="color:inherit;pointer-events:auto">💾 백업</a> &nbsp;·&nbsp; v<span id="hver"></span></div>
   </div>
 </div>
 <div id="kb" hidden>
@@ -1124,6 +1132,7 @@ input[type=range]{accent-color:var(--gold2)}
         <label><input type="checkbox" id="smclick"> 🎧 박자 소리도 내기 <small>(이어폰을 꼈을 때만 — 스피커로 내면 녹음에 섞여요)</small></label>
         <label>빠르기 <input id="smbpm" type="number" min="50" max="160" value="90" inputmode="numeric"></label>
         <label><input type="checkbox" id="smstt" checked> 가사 받아쓰기</label>
+        <label><input type="checkbox" id="smpitch"> 🎯 음정 점검 <small>(내가 부른 음이 얼마나 정확한지 점수와 함께 알려 줘요 — 연습용)</small></label>
         <label>마이크 감도 <select id="smsens"><option value="2">보통</option><option value="5" selected>높음</option><option value="12">아주 높음 (작은 목소리)</option></select></label>
       </div>
       <div class="smlive"><div class="smlevel"><i id="smlevel"></i></div><span id="smnow">–</span><span id="smrectime"></span></div>
@@ -1136,6 +1145,7 @@ input[type=range]{accent-color:var(--gold2)}
     <section class="smcard" id="smedit" hidden>
       <h3>② 만들어진 노래 <input id="smtitle" placeholder="노래 제목" value="내 노래"></h3>
       <div id="sminfo" class="smnote"></div>
+      <div id="smpitchrep" class="smpitchrep" hidden></div>
       <div class="smrow smplayrow"><button class="btn cta smbig" id="smplay" type="button">▶ 노래 듣기</button><span id="smwhere"></span></div>
       <div class="smprog"><i id="smprog"></i></div>
       <div class="smlab">🎵 멜로디 오선보 <small>주황 선 = 내가 흥얼거린 실제 음높이 · 음표를 누르면 아래에서 고칠 수 있어요</small></div>
@@ -1319,7 +1329,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "151";
+const APP_VER = "152";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -3126,7 +3136,7 @@ function applyGenre(k){
 }
 
 /* ---- 시퀀서 ---- */
-const P={syncOff:0,playing:false,bpm:84,genre:'',insts:['piano'],melInst:'ep',pattern:'block',beats:4,loop:true,click:false,melody:true,accomp:true,readMel:true,bySystem:true,ocrBoost:true,geomPitch:true,realInst:true,melOct:0,melFit:true,playBass:false,
+const P={ab:null,pBase:0,countIn:false,syncOff:0,playing:false,bpm:84,genre:'',insts:['piano'],melInst:'ep',pattern:'block',beats:4,loop:true,click:false,melody:true,accomp:true,readMel:true,bySystem:true,ocrBoost:true,geomPitch:true,realInst:true,melOct:0,melFit:true,playBass:false,
          evs:[],total:0,k:0,cursorT:0,lastAt:0,t0:0,timer:null,uiTimer:null,marks:[],vmarks:[],vnext:1,cur:-1,
          sound:[],piano:true,nmarks:[],curNote:null,
          /* ★ 멜로디·반주 소리 크기를 따로 조절한다(v65, 사용자 요청).
@@ -3304,11 +3314,30 @@ function buildTimeline(){
 }
 function hasMelody(){return blocks.some(b=>b.k==='mel');}
 function hasBassMelody(){return blocks.some(b=>b.k==='mel'&&b.clef==='bass');}
+/* ---- v152 연습 모드(사용자 요청: 느리게 · 구간 반복 · 박자 세기) ----
+   · 속도: 연습 속도를 고르면 BPM 을 원래 값(P.pBase)의 몇 %로 바꾼다 — 100% 를 누르면 원래대로. BPM 을 손으로 고치면 「원래 속도」 기억은 지운다.
+   · 구간 반복: 마디 번호 A~B(재생 엔진이 만든 마디 목록 tlBars 기준)를 끝에서 처음으로 되감는다. 소리를 예약한 그 시각을 bmarks 에도 적어 사진·오선보 표시가 같이 따라간다.
+   · 박자 세기: 재생을 처음 시작할 때 한 마디 박자 소리(click)를 먼저 낸다(구간 반복·이어 재생에서는 안 센다). */
+function pracAB(){ const a=P.ab; if(!a||!(a.end>a.s)||a.s<0||a.s>=P.total)return null; return a; }
+function pracWrap(ab,spb){
+  const wrapT=P.cursorT+(ab.end-P.lastAt)*spb; P.cursorT=wrapT; P.lastAt=ab.s;
+  let k=0; while(k<P.evs.length&&P.evs[k].at<ab.s-1e-6)k++; P.k=k; P.bmarks.push({t:wrapT,at:ab.s});
+}
+function pracSpeed(f){ P.pSet=true; try{ if(!P.pBase)P.pBase=P.bpm; setBpm(Math.round(P.pBase*f)); if(Math.abs(f-1)<.01)P.pBase=0; }finally{ P.pSet=false; } if(P.playing)resyncPlay(); }
+function pracRange(sM,eM){ const bars=buildTimeline().bars||[]; if(!bars.length||sM<1||eM<sM||eM>bars.length)return null; const a=bars[sM-1], b=bars[eM-1]; return {s:a.at,end:b.at+b.beats,sM,eM}; }
+function pracLoop(on,sM,eM){
+  if(!on){ P.ab=null; return true; }
+  const r=pracRange(sM,eM); if(!r)return false; P.ab=r;
+  if(P.playing){ const spb=60/P.bpm, tl=buildTimeline(); seekTo(r.s*spb+Math.max(0,S.verse-1)*tl.total*spb); }
+  return true;
+}
 function schedule(){
   const ctx=AC(); if(!ctx)return;
   const now=ctx.currentTime;
   for(let guard=0;guard<400;guard++){
-    const spb=60/P.bpm;
+    const spb=60/P.bpm, ab=pracAB();
+    if(ab&&P.k<P.evs.length&&P.evs[P.k].at>=ab.end-1e-6){ pracWrap(ab,spb); continue; }
+    if(ab&&P.k>=P.evs.length&&P.total<=ab.end+1e-6){ pracWrap(ab,spb); continue; }
     if(P.k>=P.evs.length){
       const wrapT=P.cursorT+(P.total-P.lastAt)*spb, mv=maxVerse();
       if(P.vnext<mv){                      // 1절 끝 → 2절
@@ -3376,8 +3405,9 @@ function tickUI(){
   if(now-(P.lastT||0)>0.16){
     P.lastT=now;
     const total=songSeconds();
-    let el=now-P.t0;
+    let el=Math.max(0,now-P.t0);
     if(P.loop&&total>0&&el>total)el=el%total;
+    if(pracAB()&&P.bmarks&&P.bmarks.length&&P.bmarks[0].t<=vnow){ const bm=P.bmarks[0]; el=bm.at*(60/P.bpm)+(vnow-bm.t)+Math.max(0,S.verse-1)*P.total*(60/P.bpm); }
     renderTime(el);
   }
   while(P.vmarks.length&&P.vmarks[0].t<=vnow){
@@ -3467,7 +3497,7 @@ function markNote(nm2){
   });
   if(m!==null)setStaffMeasure(m,el);
 }
-function startPlay(){
+function startPlay(noCount){
   const ctx=AC(); if(!ctx){toast('이 브라우저에서는 소리를 낼 수 없습니다.');return;}
   const tl=buildTimeline();
   if(!tl.evs.length){toast('재생할 내용이 없습니다.');return;}
@@ -3476,8 +3506,11 @@ function startPlay(){
   P.playing=true; P.k=0; P.lastAt=0; P.marks=[]; P.vmarks=[]; P.vnext=S.verse; P.cur=-1; P.sound=[];
   P.nmarks=[]; P.curNote=null; P.bmarks=[];
   syncPiano(true); renderPiano(); measureFoot();   // 먼저 보이게 해야 폭을 잴 수 있다
-  P.t0=ctx.currentTime+.25;
-  P.cursorT=ctx.currentTime+.25;
+  const lead=(P.countIn&&!noCount)?P.beats*(60/P.bpm):0;
+  if(lead)for(let i=0;i<P.beats;i++)click(ctx,ctx.currentTime+.25+i*(60/P.bpm),i===0);
+  P.t0=ctx.currentTime+.25+lead;
+  P.cursorT=ctx.currentTime+.25+lead;
+  { const ab=pracAB(); if(ab){ let k=0; while(k<P.evs.length&&P.evs[k].at<ab.s-1e-6)k++; P.k=k; P.lastAt=ab.s; P.t0-=ab.s*(60/P.bpm); } }
   clearInterval(P.timer);
   P.timer=setInterval(schedule,25);
   clearInterval(P.uiTimer);
@@ -3619,6 +3652,7 @@ function pruneOrig(list){
     dead.forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
   }catch(e){}
 }
+try{ P.countIn=localStorage.getItem('konti:countin')==='1'; }catch(e){}
 const getKey=()=>{try{return localStorage.getItem('konti:apikey')||''}catch(e){return''}};
 const getGKey=()=>{try{return localStorage.getItem('konti:gkey')||''}catch(e){return''}};
 const getProv=()=>{try{return localStorage.getItem('konti:prov')||'gemini'}catch(e){return'gemini'}};
@@ -4317,7 +4351,7 @@ function seekTo(sec){
   sec=Math.max(0,Math.min(total-0.05,sec));
   const beat=sec/spb;
   const vi=Math.min(mv-1,Math.floor(beat/pass)), inPass=beat-vi*pass;
-  if(!P.playing){ S.verse=vi+1; startPlay(); }
+  if(!P.playing){ S.verse=vi+1; startPlay(true); }
   P.evs=tl.evs; P.total=tl.total;
   let k=0; while(k<P.evs.length&&P.evs[k].at<inPass)k++;
   P.k=k; P.lastAt=inPass; P.vnext=vi+1;
@@ -4538,6 +4572,18 @@ function pdfBytes(cv){
   return buildPdf(pages);
 }
 function baseName(){return ($('title').value.trim()||'chart').replace(/[\\/:*?"<>|]/g,'')+'_'+(S.num?'NNS':targetLabel());}
+/* ---- v152 백업·복원(사용자 요청): 저장한 곡·녹음·기록·설정은 이 기기의 localStorage 에만 있어 폰을 바꾸거나 캐시를 지우면 사라진다.
+   konti 로 시작하는 항목을 JSON 파일 하나로 내려받고(API 키는 뺀다), 불러올 때는 같은 이름을 덮어쓴다. */
+function bkKeys(){ const ks=[]; try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(/^konti[.:]/.test(k)&&!/key|token|secret/i.test(k))ks.push(k); } }catch(e){} return ks.sort(); }
+function bkBuild(){ const data={}; for(const k of bkKeys()){ try{ data[k]=localStorage.getItem(k); }catch(e){} } return {app:'harmonix',v:+APP_VER,at:new Date().toISOString(),data}; }
+function bkSummary(){ const cnt=k=>{ try{ const v=JSON.parse(localStorage.getItem(k)||'null'); return Array.isArray(v)?v.length:v&&typeof v==='object'?Object.keys(v).length:0; }catch(e){ return 0; } };
+  const sz=bkKeys().reduce((a,k)=>a+((localStorage.getItem(k)||'').length),0), at=localStorage.getItem('konti:bkat');
+  return '저장한 곡 <b>'+cnt('konti:songs')+'</b>개 · 건반 녹음 <b>'+(cnt('konti:kbrecs'))+'</b>개 · 항목 <b>'+bkKeys().length+'</b>개 · 약 '+(sz/1048576).toFixed(1)+'MB<br>마지막 백업: <b>'+(at?new Date(+at).toLocaleDateString('ko-KR'):'아직 없어요')+'</b>'; }
+function bkExport(){ const o=bkBuild(); const d=new Date(), nm='하모닉스-백업-'+d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'.json';
+  saveBlob(new Blob([JSON.stringify(o)],{type:'application/json'}),nm); try{ localStorage.setItem('konti:bkat',String(Date.now())); }catch(e){} return Object.keys(o.data).length; }
+function bkApply(text){   // 불러오기: 형식을 확인하고 같은 이름을 덮어쓴다. 쓴 항목 수를 돌려준다(형식이 틀리면 -1)
+  let o; try{ o=JSON.parse(text); }catch(e){ return -1; } if(!o||o.app!=='harmonix'||!o.data||typeof o.data!=='object')return -1;
+  let n=0; for(const k of Object.keys(o.data)){ if(!/^konti[.:]/.test(k)||/key|token|secret/i.test(k)||typeof o.data[k]!=='string')continue; try{ localStorage.setItem(k,o.data[k]); n++; }catch(e){ break; } } return n; }
 function saveBlob(blob,name){
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);a.download=name;a.rel='noopener';
@@ -10223,8 +10269,8 @@ async function ocrFallback(existing,say,fail,err){
    묶음 안에서는 패널 사이를 오갈 때 **제목이 바뀌지 않는다** — 지금 어디 있는지는
    켜진 탭 하나로만 보인다(제목까지 같이 바뀌면 어디가 어디인지 헷갈린다). */
 /* v87: 「설정」과 「더보기」를 「메뉴」 하나로 합쳤다 — 어디 있는지 두 번 찾지 않게. 자주 쓰는 순서로 탭을 둔다. */
-const PGROUP={play:'m',view:'m',staff:'m',input:'m',library:'m',export:'m',diag:'m'};
-const GTABS={m:[['play','악기·재생'],['view','보기'],['staff','오선보'],['input','편집'],['library','저장'],['export','내보내기'],['diag','진단']]};
+const PGROUP={play:'m',prac:'m',view:'m',staff:'m',input:'m',library:'m',export:'m',diag:'m'};
+const GTABS={m:[['play','악기·재생'],['prac','연습'],['view','보기'],['staff','오선보'],['input','편집'],['library','저장'],['export','내보내기'],['diag','진단']]};
 const GTITLE={m:'메뉴'};
 function openPanel(name){
   const keepY=(S.curPanel===name&&$('sheet'))?$('sheet').scrollTop:0;
@@ -10241,7 +10287,7 @@ function openPanel(name){
      ★ 되살릴 일이 생기면 v59 커밋의 `audioToMono`~`parseMusicXML` 구간과
        `test/musicxml.test.js` 를 그대로 가져오면 된다(git 에 남아 있다). */
   const titles={scan:'악보 사진 가져오기',input:'악보 편집',library:'저장된 콘티',export:'내보내기',
-                diag:'멜로디 진단',play:'재생 설정',view:'보기 설정',staff:'오선보 고치기',more:'더보기'};
+                diag:'멜로디 진단',play:'재생 설정',prac:'연습 모드',view:'보기 설정',staff:'오선보 고치기',more:'더보기'};
   const grp=PGROUP[name];
   s.innerHTML='<div class="sheethead"><span class="eyebrow">'+(grp?GTITLE[grp]:titles[name])+'</span>'
     +'<button class="btn" id="close">닫기</button></div>';
@@ -10905,6 +10951,30 @@ function openPanel(name){
     $('lp').onclick=()=>{P.loop=!P.loop;$('loopbtn').classList.toggle('on',P.loop);openPanel('play')};
   }
 
+  if(name==='prac'){
+    const bars=buildTimeline().bars||[], N=bars.length, ab=pracAB(), sp=P.pBase?P.bpm/P.pBase:1;
+    const chips=[.5,.6,.75,.9,1].map(f=>'<button class="btn '+(Math.abs(sp-f)<.02?'on':'')+'" data-sp="'+f+'">'+Math.round(f*100)+'%</button>').join('');
+    const optn=sel=>Array.from({length:N},(_,i)=>'<option value="'+(i+1)+'"'+(i+1===sel?' selected':'')+'>'+(i+1)+'마디</option>').join('');
+    body.innerHTML='<p class="note" style="margin-top:0">어려운 곳을 <b>느리게</b>, <b>그 마디만 반복</b>해서 익히세요. 한 손만 듣고 싶으면 아래 소리 구성을 쓰세요.</p>'
+      +'<span class="lbl">연습 속도 <small style="color:var(--dim)">(지금 '+P.bpm+' BPM'+(P.pBase?' · 원래 '+P.pBase:'')+')</small></span><div class="opts" id="pracsp">'+chips+'</div>'
+      +'<span class="lbl">구간 반복</span>'
+      +(N?'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><select class="field" id="pracs" style="flex:1;min-width:96px">'+optn(ab?ab.sM:1)+'</select><span>~</span><select class="field" id="pracee" style="flex:1;min-width:96px">'+optn(ab?ab.eM:Math.min(N,4))+'</select>'
+        +'<button class="btn '+(ab?'on':'')+'" id="pracloop">'+(ab?'🔁 반복 중 · 끄기':'🔁 반복 켜기')+'</button></div>'
+        +'<p class="note" style="margin:4px 0 14px">'+(ab?ab.sM+'~'+ab.eM+'마디를 계속 반복해요. 바꾸려면 마디를 고르고 다시 「반복 켜기」.':'시작·끝 마디를 고르고 「반복 켜기」를 누르면 그 구간만 되풀이해요.')+'</p>'
+        : '<p class="note">재생할 마디가 없어요. 코드나 멜로디를 먼저 넣어 주세요.</p>')
+      +'<span class="lbl">시작할 때 박자 세기</span><div class="opts"><button class="btn '+(P.countIn?'on':'')+'" id="praccount">'+(P.countIn?'🥁 켬 · 한 마디 먼저 센 뒤 시작':'끔')+'</button></div>'
+      +'<span class="lbl">한 손만 듣기</span><div class="opts">'
+      +'<button class="btn '+(accompOn()&&melodyOn()?'on':'')+'" data-pmix="all">전체</button>'
+      +'<button class="btn '+(!accompOn()&&melodyOn()?'on':'')+'" data-pmix="mel">멜로디만</button>'
+      +'<button class="btn '+(accompOn()&&!melodyOn()?'on':'')+'" data-pmix="acc">반주만</button></div>';
+    body.querySelectorAll('[data-sp]').forEach(b=>b.onclick=()=>{ pracSpeed(+b.dataset.sp); openPanel('prac'); });
+    if($('pracloop'))$('pracloop').onclick=()=>{ if(P.ab){ pracLoop(false); } else if(!pracLoop(true,+$('pracs').value,+$('pracee').value)){ toast('시작 마디가 끝 마디보다 뒤예요'); return; } openPanel('prac'); };
+    if($('pracs'))$('pracs').onchange=()=>{ if(P.ab){ if(!pracLoop(true,+$('pracs').value,+$('pracee').value))toast('시작 마디가 끝 마디보다 뒤예요'); openPanel('prac'); } };
+    if($('pracee'))$('pracee').onchange=$('pracs').onchange;
+    $('praccount').onclick=()=>{ P.countIn=!P.countIn; try{ localStorage.setItem('konti:countin',P.countIn?'1':'0'); }catch(e){} openPanel('prac'); };
+    body.querySelectorAll('[data-pmix]').forEach(b=>b.onclick=()=>{ const m=b.dataset.pmix; P.melody=m!=='acc'; P.accomp=m!=='mel'; if(P.accomp&&!instList().length)P.insts=(P.lastInsts&&P.lastInsts.length)?P.lastInsts.slice():['piano']; if(P.playing)resyncPlay(); openPanel('prac'); });
+  }
+
   if(name==='export'){
     body.innerHTML='<p class="note">지금 보이는 키 그대로 내보냅니다. PDF는 A4 세로, 넘치면 자동으로 여러 장이 됩니다.</p>'
       +'<div class="btns"><button class="btn lg on wide" id="pdf">PDF 내려받기</button>'
@@ -10989,7 +11059,7 @@ $('loopbtn').onclick=()=>{P.loop=!P.loop;$('loopbtn').classList.toggle('on',P.lo
 function setBpm(v,skipSlider){
   v=Math.round(Number(v));
   if(!isFinite(v))v=P.bpm;
-  P.bpm=Math.max(30,Math.min(300,v));
+  P.bpm=Math.max(30,Math.min(300,v)); if(!P.pSet)P.pBase=0;
   $('bpm').value=P.bpm;
   if(!skipSlider&&$('bpmr'))$('bpmr').value=P.bpm;
   if($('bpmnum'))$('bpmnum').value=P.bpm;
@@ -12430,12 +12500,33 @@ async function smFromBuffer(buf,beat0,fromFile){
   SM.notes=q.map(n=>{ let m=Math.round(n.mf);
     if(SM.snap&&!sc.includes(mod(m-SM.key.pc))){ const lo=Math.floor(n.mf), cands=[lo-1,lo,lo+1,lo+2].filter(c=>sc.includes(mod(c-SM.key.pc))); cands.sort((a,b)=>Math.abs(a-n.mf)-Math.abs(b-n.mf)); if(cands.length)m=cands[0]; }
     return {m,on:n.on,dur:n.dur,ly:''}; });
+  SM.pitchRep=smPitchReport(q,seg.off);
   SM.voiceBuf=buf; SM.transp=0; SM.tr.voice=true; SM.sel=-1;
   SM.lyric=(SM.sttText||'').trim(); $('smlyric').value=SM.lyric; smApplyLyric(true);
   smFixBars(true);
   SM.style=SM.style||'ballad';
   smStatus('완성! 음 '+SM.notes.length+'개 · '+SM.nb+'마디 · '+(TN_DOS[mod(SM.key.pc)])+' '+(SM.key.minor?'단조':'장조')+' · 빠르기 '+SM.bpm+' — ▶ 들어 보세요. 음·코드·가사는 아래에서 고칠 수 있어요.','ok');
-  smShowEditor(); smRender(); smSave(); smPrewarm();
+  smShowEditor(); smRender(); smSave(); smPrewarm(); smPitchRender();
+}
+/* ---- v152 음정 점검(사용자 요청, 옵션): 내가 부른 음이 가장 가까운 음(반음)에서 몇 센트 벗어났나 ----
+   · 통째로 높게/낮게 부른 만큼(smSegment 의 off)은 따로 말해 주고(점수에서는 뺀다 — 악보 음은 이미 그만큼 보정됐다), 음마다 ±25센트 안 = 정확 · ±45센트 안 = 살짝 · 그 밖 = 벗어남.
+   · 점수 = 음마다 max(0, 1−|센트|/50) 의 평균 × 100. 반음 사이(±50센트)에서는 어느 음인지 애매하므로 그 이상은 0점.
+   · 사람 목소리는 비브라토·시작 음 흔들림이 있어 합성음보다 점수가 낮게 나온다 — 절대 평가가 아니라 연습 전후 비교용이다. */
+function smPitchReport(list,off){
+  const items=[]; let sum=0,acc=0,near=0,bad=0;
+  list.forEach((n,i)=>{ const dev=(n.mf-Math.round(n.mf))*100, a=Math.abs(dev); sum+=Math.max(0,1-a/50); if(a<=25)acc++; else if(a<=45)near++; else bad++; items.push({i,dev,m:Math.round(n.mf)}); });
+  const N=Math.max(1,list.length);
+  return {score:Math.round(sum/N*100),acc,near,bad,n:list.length,offCents:Math.round((off||0)*100),items};
+}
+function smPitchRender(){
+  const el=$('smpitchrep'); if(!el)return; const R=SM.pitchRep;
+  if(!R||!$('smpitch').checked){ el.hidden=true; return; }
+  const grade=R.score>=85?'🏆 아주 정확해요':R.score>=70?'👍 좋아요':R.score>=50?'🙂 조금만 더':'💪 연습해 봐요';
+  let h='<b>🎯 음정 점검 — '+R.score+'점</b> · '+grade+'<br>정확 <b>'+R.acc+'</b> · 살짝 벗어남 <b>'+R.near+'</b> · 많이 벗어남 <b>'+R.bad+'</b> (음 '+R.n+'개)';
+  if(Math.abs(R.offCents)>=15)h+='<br>전체적으로 <b>'+Math.abs(R.offCents)+'센트 '+(R.offCents>0?'높게':'낮게')+'</b> 부르셨어요 — 악보와 반주는 자동으로 맞춰 드렸어요.';
+  const worst=R.items.filter(x=>Math.abs(x.dev)>25).sort((a,b)=>Math.abs(b.dev)-Math.abs(a.dev)).slice(0,4);
+  if(worst.length)h+='<br>제일 벗어난 음: '+worst.map(x=>(x.i+1)+'번째 '+TN_DOS[mod(x.m)]+' ('+(x.dev>0?'높음 +':'낮음 ')+Math.round(x.dev)+')').join(' · ');
+  el.innerHTML=h; el.hidden=false;
 }
 function smFixBars(reguess){
   SM.notes.sort((a,b)=>a.on-b.on);
@@ -12713,6 +12804,7 @@ function smEnter(){ if(!SM.notes.length&&smLoad()){ $('smlyric').value=SM.lyric|
   $('smstyles').innerHTML=Object.keys(SM_STYLES).map(k=>'<button class="btn" data-s="'+k+'" type="button">'+SM_STYLES[k].icon+' '+SM_STYLES[k].name+'<small>'+SM_STYLES[k].desc+'</small></button>').join('');
   $('smlead').innerHTML=SM_LEADS.map(l=>'<option value="'+l[0]+'">'+l[1]+'</option>').join('');
   $('smrec').onclick=()=>{ if(SM.recOn)smRecStop(); else smRecStart(); };
+  try{ $('smpitch').checked=localStorage.getItem('konti:smpitch')==='1'; }catch(e){} $('smpitch').onchange=()=>{ try{ localStorage.setItem('konti:smpitch',$('smpitch').checked?'1':'0'); }catch(e){} smPitchRender(); };
   $('smsens').onchange=()=>{ try{ localStorage.setItem('konti:smsens',$('smsens').value); }catch(e){} if(SM.boost)SM.boost.gain.value=+$('smsens').value; };
   $('smfile').onchange=e=>{ smFile(e.target.files[0]); e.target.value=''; };
   $('smchpng').onclick=smChartPng; $('smtitle').oninput=smChartRender; $('smchprint').onclick=()=>{ const w=window.open('','_blank'); if(!w){ toast('팝업이 막혔어요 — 그림 저장을 쓰세요'); return; } w.document.write('<meta charset=utf-8><title>코드 악보</title><style>body{font-family:sans-serif;margin:24px;color:#111}.smchead b{font-size:28px;margin-right:14px}.smchead span{color:#555}.smcgrid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:16px}.smcbar{border-left:2px solid #222;padding:4px 10px 12px;display:flex;flex-direction:column;gap:4px;min-height:96px}.smcbar i{font-size:11px;color:#999;font-style:normal}.smcbar b{font-size:24px;color:#c62828}.smcbar span{font-size:18px;font-weight:700}.smcbar small{color:#777}</style>'+$('smchart').innerHTML); w.document.close(); setTimeout(()=>{ try{ w.print(); }catch(e){} },300); };
@@ -13085,6 +13177,14 @@ function vbDraw(dt){
   markLast(); $('hver').textContent=APP_VER; $('hreload').onclick=e=>{ e.preventDefault(); toast('최신 판을 새로 받아요…'); hardReload(); };
   instUpdate(); $('hinst').onclick=()=>{ if(INST_EVT){ instOpen(); } else instOpen(); };
   $('instx').onclick=()=>{ $('instpop').hidden=true; };
+  $('hbk').onclick=e=>{ e.preventDefault(); $('bksum').innerHTML=bkSummary(); $('bkpop').hidden=false; };
+  $('bkx').onclick=()=>{ $('bkpop').hidden=true; }; $('bkpop').onclick=e=>{ if(e.target===$('bkpop'))$('bkpop').hidden=true; };
+  $('bkout').onclick=()=>{ const n=bkExport(); $('bksum').innerHTML=bkSummary(); toast('백업 파일을 만들었어요 ('+n+'개 항목)'); };
+  $('bkin').onclick=()=>$('bkfile').click();
+  $('bkfile').onchange=async e=>{ const f=e.target.files[0]; e.target.value=''; if(!f)return; const txt=await f.text(); let o=null; try{ o=JSON.parse(txt); }catch(x){}
+    if(!o||o.app!=='harmonix'){ toast('하모닉스 백업 파일이 아니에요'); return; }
+    if(!confirm('백업 파일('+Object.keys(o.data||{}).length+'개 항목)을 불러와요.\n같은 이름의 저장 내용은 백업 파일 것으로 바뀌어요. 계속할까요?'))return;
+    const n=bkApply(txt); if(n<0){ toast('백업 파일을 읽을 수 없어요'); return; } toast(n+'개 항목을 불러왔어요 — 새로 시작해요'); setTimeout(()=>location.reload(),900); };
   $('instgo').onclick=async()=>{ const e=INST_EVT; if(!e)return; try{ e.prompt(); const r=await e.userChoice; if(r&&r.outcome==='accepted')$('instpop').hidden=true; }catch(x){} INST_EVT=null; $('instgo').hidden=true; };
   { const b=$('hfs'); const upd=()=>{ b.classList.toggle('off',!fsOn()); b.title=fsOn()?'전체화면 자동: 켬 (누르면 끔)':'전체화면 자동: 끔 (누르면 켬)'; }; upd();
     b.onclick=()=>{ const on=!fsOn(); try{ localStorage.setItem('konti:autofs',on?'1':'0'); }catch(e){} upd(); if(on){ fsAuto(); toast('전체화면 자동 켬 — 기능 화면에 들어갈 때 전체화면이 돼요'); } else{ try{ if(document.fullscreenElement)document.exitFullscreen(); }catch(e){} toast('전체화면 자동 끔'); } }; }
