@@ -5,3 +5,7 @@ vendor/
 desktop/build/
 desktop/dist/
 desktop/*.spec
+android/build/
+android/harmonix.keystore
+harmonix.apk.idsig
+android/harmonix.keystore.pass
