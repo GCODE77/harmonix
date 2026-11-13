@@ -1115,6 +1115,7 @@ input:focus-visible,select:focus-visible{outline-offset:1px}
       <button class="btn" id="tnnames" type="button">도레미</button>
       <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap"><span class="lab">민감도</span><select id="tnsens" aria-label="마이크 민감도"><option value="0">보통</option><option value="1" selected>높음</option><option value="2">매우 높음</option><option value="3">최대 (조용한 곳)</option></select></span>
       <button class="btn" id="tnchime" type="button" aria-pressed="true">🔔 띵 소리 켬</button>
+      <button class="btn" id="tnfocus" type="button" aria-pressed="true">🎯 고른 악기 위주로 듣기</button>
       <button class="btn cta" id="tnlisten" type="button">🔊 목표음 듣기</button>
     </div>
     <div id="tnlevel"><i id="tnlevelbar"></i></div>
@@ -1352,7 +1353,7 @@ window.onerror=function(msg,src,ln){
    예) const SCAN_ENDPOINT = "https://konti-scan.내계정.workers.dev";
 */
 const SCAN_ENDPOINT = "";
-const APP_VER = "156";
+const APP_VER = "157";
 /* file:// 나 content:// 로 열면 브라우저가 외부 호출을 막는다(CORS). 미리 알려준다. */
 const LOCAL_FILE = !/^https?:$/.test(location.protocol);
 /* Claude 앱처럼 iframe 안에서 실행 중이면 키 없이도 인식이 통한다. */
@@ -14030,7 +14031,7 @@ const tnN=()=>tnPreArr().length;                    // 지금 고른 악기의 �
 const tnStr=()=>tnN()>=3;                           // 줄 악기 모드인가
 const tnHead=()=>tnIsGuitar(TN.pre)&&tnN()===6;     // 헤드스톡 그림을 그리는가(기타 6줄만, 나머지는 줄 카드)
 const tnStrIcon=()=>tnIsGuitar(TN.pre)?'🎸':(/^(violin|viola|cello|dbass)$/.test(TN.pre)?'🎻':'🎶');
-TN.done={}; TN.sens=1; TN.floor=null; try{ TN.piano=localStorage.getItem('konti:tnpiano')==='1'; }catch(e){ TN.piano=false; }
+TN.done={}; TN.sens=1; TN.floor=null; try{ TN.piano=localStorage.getItem('konti:tnpiano')==='1'; }catch(e){ TN.piano=false; } try{ TN.focus=localStorage.getItem('konti:tnfocus')!=='0'; }catch(e){ TN.focus=true; }
 const TN_TR=[['0','실제 소리 (C)'],['2','B♭ 악기 (트럼펫·클라리넷·테너)'],['9','E♭ 악기 (알토 색소폰)'],['7','F 악기 (호른)']];
 const tnHz=m=>TN.ref*Math.pow(2,(m-69)/12), tnMidi=f=>69+12*Math.log2(f/TN.ref);
 const TN_SH=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'], TN_DOS=['도','도♯','레','레♯','미','파','파♯','솔','솔♯','라','라♯','시'];
@@ -14160,13 +14161,19 @@ function tnPopOpen(){
 }
 /* v156 — 「피아노 음만」 켜짐 상태는 화면(TN.piano)과 저장(konti:tnpiano)을 항상 같이 바꾼다(예전엔 기타류로 바꿔도 저장은 '1' 로 남아 다시 들어오면 엇갈렸다) */
 function tnPianoSet(on){ on=!!on; TN.piano=on; try{ localStorage.setItem('konti:tnpiano',on?'1':'0'); }catch(e){} }
+/* v157(사용자: "그 악기만 추출 — 시끄러우면 기타 소리만 듣게"): 고른 악기 위주로 듣기.
+   ① 그 악기가 낼 수 있는 음역 밖은 소리 자체를 깎고(높낮이 거름망) ② 음역 밖으로 잡힌 음은 버린다. 진짜 소리 분리는 아니다 — 같은 음역의 다른 소리(사람 목소리 등)는 못 가른다. */
+function tnFocusRange(){ if(TN.piano)return null; const a=tnPreArr(); if(!a||!a.length)return null; return [Math.min.apply(null,a)-5,Math.max.apply(null,a)+7]; }
+function tnApplyFilter(){ if(!TN.hp||!TN.lp)return; const r=TN.focus?tnFocusRange():null;
+  try{ TN.hp.frequency.value=r?Math.max(20,tnHz(r[0])*.85):10; TN.lp.frequency.value=r?Math.min(8000,tnHz(r[1])*5):20000; }catch(e){} }
+function tnFocusPaint(){ const b=$('tnfocus'); if(!b)return; const r=tnFocusRange(); b.textContent=TN.focus?'🎯 고른 악기 위주로 듣기':'🔊 모든 소리 듣기'; b.setAttribute('aria-pressed',TN.focus?'true':'false'); b.title=r?'':'악기를 고르면 그 악기 소리 위주로 들어요'; b.classList.toggle('on',!!(TN.focus&&r)); }
 function tnStrings(){
-  const arr=tnPreArr(), gt=arr.length>=3; if(gt&&TN.piano)tnPianoSet(false);
+  const arr=tnPreArr(), gt=arr.length>=3; if(gt&&TN.pre&&TN.pre!=='chrom'){ try{ localStorage.setItem('konti:tnpre',TN.pre); }catch(e){} } if(gt&&TN.piano)tnPianoSet(false);
   $('tngtr').hidden=!gt; $('tnstrings').style.display=gt?'none':''; if(gt)tnGuitar(arr);
   $('tnmodes').querySelectorAll('.btn').forEach(b=>{ const m=b.dataset.mode; b.classList.toggle('on',m==='chrom'?(!gt&&!TN.piano):(m==='piano'?(!gt&&!!TN.piano):(m==='guitar'?tnIsGuitar(TN.pre):(gt&&!tnIsGuitar(TN.pre))))); });
   { const o=$('tnmodeo'); if(o)o.textContent=(gt&&!tnIsGuitar(TN.pre))?('🎻 '+TN_PRE[TN.pre][0].split(' (')[0]+' ▾'):'🎻 다른 악기 ▾'; }
   $('tnstrings').innerHTML=(arr.length&&!gt)?'<button class="btn'+(TN.target==null?' tg':'')+'" data-m="" type="button">자동</button>'+arr.map(m=>'<button class="btn" data-m="'+m+'" type="button">'+tnNames2(m).kr+'<small> '+tnNames2(m).en+'</small></button>').join(''):'';
-  tnMark();
+  tnMark(); tnApplyFilter(); tnFocusPaint();
 }
 /* 참조음 — 정확한 Hz 로 낸다(기준음 A4 를 바꿔도 맞게 직접 만든다) */
 function tnTone(m,secs){
@@ -14187,7 +14194,10 @@ async function tnStart(){
   }catch(e){ try{ctx0.close();}catch(_){} $('tnsub').textContent='마이크를 쓸 수 없어요 — 주소창의 권한(자물쇠)에서 마이크를 허용해 주세요.'; toast('마이크 권한이 필요해요'); return; }
   TN.ctx=ctx0; if(TN.ctx.state==='suspended')TN.ctx.resume();
   TN.src=TN.ctx.createMediaStreamSource(TN.stream); TN.an=TN.ctx.createAnalyser(); TN.an.fftSize=8192; TN.an.smoothingTimeConstant=0;
-  TN.gain=TN.ctx.createGain(); TN.gain.gain.value=TN_GAIN[TN.sens]; TN.floor=null; TN.src.connect(TN.gain); TN.gain.connect(TN.an); TN.buf=new Float32Array(TN.an.fftSize); TN.on=true; TN.hist=[]; TN.trace=[];
+  TN.gain=TN.ctx.createGain(); TN.gain.gain.value=TN_GAIN[TN.sens]; TN.floor=null; TN.src.connect(TN.gain);
+  /* v157: 고른 악기의 음역만 통과시키는 거름망(높은 소리·낮은 소리 깎기) — tnApplyFilter 가 악기마다 값을 정한다 */
+  TN.hp=TN.ctx.createBiquadFilter(); TN.hp.type='highpass'; TN.hp.Q.value=.707; TN.lp=TN.ctx.createBiquadFilter(); TN.lp.type='lowpass'; TN.lp.Q.value=.707;
+  TN.gain.connect(TN.hp); TN.hp.connect(TN.lp); TN.lp.connect(TN.an); tnApplyFilter(); TN.buf=new Float32Array(TN.an.fftSize); TN.on=true; TN.hist=[]; TN.trace=[];
   const b=$('tnmic'); b.innerHTML='<span class="livedot"></span>■ 정지'; b.classList.add('live'); $('tnsub').textContent='소리를 내 보세요 (악기를 한 음씩 길게)';
   TN.timer=setInterval(tnTick,50);
 }
@@ -14195,7 +14205,7 @@ function tnStop(){
   if(TN.timer){ clearInterval(TN.timer); TN.timer=null; }
   try{ TN.stream&&TN.stream.getTracks().forEach(t=>t.stop()); }catch(e){}
   try{ TN.ctx&&TN.ctx.close(); }catch(e){}
-  TN.on=false; TN.stream=null; TN.ctx=null; TN.an=null; TN.src=null;
+  TN.on=false; TN.stream=null; TN.ctx=null; TN.an=null; TN.src=null; TN.hp=null; TN.lp=null;
   const b=$('tnmic'); if(b){ b.textContent='🎤 시작'; b.classList.remove('live'); }
   $('tnlevelbar').style.width='0';
 }
@@ -14226,6 +14236,7 @@ function tnTick(){
       if(m<lo||m>hi){ m=null; TN.skipMsg='이 앱이 듣는 피아노 음역(D♯1~C♯7) 밖의 소리예요'; TN.skipAt=now; }
       else if(between||r.prob<=.7||near<Math.min(3,rec.length)||rec.length<3){ m=null; TN.skipMsg=between?'건반과 건반 사이 소리예요 — 피아노 소리만 보여 줘요':'소리가 흔들려요 — 피아노처럼 또렷한 소리만 보여 줘요'; TN.skipAt=now; }
     }
+    else if(TN.focus&&m!=null){ const fr=tnFocusRange(); if(fr&&(m<fr[0]||m>fr[1])){ m=null; TN.skipMsg='고른 악기 음역 밖의 소리라 걸렀어요 — 「모든 소리 듣기」로 바꾸면 다 들어요'; TN.skipAt=now; } }
   }else{ TN.hist=TN.hist.slice(-2); }
   TN.rmsNow=r.raw||0; TN.rmsMax=Math.max((TN.rmsMax||0)*.97,r.raw||0);
   tnRender(m,now);
@@ -14236,7 +14247,7 @@ function tnRender(m,now){
   if(m==null){
     nd.classList.remove('on','ok'); if(TN.holdUntil&&now<TN.holdUntil){ tnGraph(now); return; }
     st.className=''; st.textContent=TN.last==null?(TN.on?'소리를 내 보세요 — 한 음씩 길게':'「🎤 시작」을 누르고 소리를 내 보세요'):'소리를 기다리는 중…';
-    if(TN.piano&&TN.skipMsg&&now-TN.skipAt<900&&TN.on&&(!TN.holdUntil||now>TN.holdUntil+300)){ $('tnsub').textContent=TN.skipMsg; tnGraph(now); return; }
+    if((TN.piano||TN.focus)&&TN.skipMsg&&now-TN.skipAt<900&&TN.on&&(!TN.holdUntil||now>TN.holdUntil+300)){ $('tnsub').textContent=TN.skipMsg; tnGraph(now); return; }
     { const q=TN.rmsNow||0, mute=q<.0006; if(TN.on&&(!TN.holdUntil||now>TN.holdUntil+900))$('tnsub').textContent=mute?'소리가 안 들려요 — 마이크 가까이에서 한 음씩 길게 내 보세요':(q<.003?'소리가 작아요 — 조금 더 크게, 마이크에 가까이':'음을 못 잡았어요 — 한 줄(한 음)씩 또렷하게, 주변 소리를 줄여 보세요'); } if(tnStr())tnGuitarDet(-1,false); tnGraph(now); return; }
   // 목표: 직접 고른 음 > 프리셋에서 가장 가까운 줄 > 가장 가까운 반음
   let tgt=TN.target; const pre=(TN_PRE[TN.pre]||[0,[]])[1];
@@ -14322,6 +14333,7 @@ function mtSetBpm(v,restart){ v=Math.max(30,Math.min(300,Math.round(v||90))); MT
   { let on=true; try{ on=localStorage.getItem('konti:tnchime')!=='0'; }catch(e){} TN.chime=on;
     const paint=()=>{ const b=$('tnchime'); b.textContent=TN.chime?'🔔 띵 소리 켬':'🔕 띵 소리 끔'; b.setAttribute('aria-pressed',TN.chime?'true':'false'); }; paint();
     $('tnchime').onclick=()=>{ TN.chime=!TN.chime; try{ localStorage.setItem('konti:tnchime',TN.chime?'1':'0'); }catch(e){} paint(); if(TN.chime)tnChime(); }; }
+  $('tnfocus').onclick=()=>{ TN.focus=!TN.focus; try{ localStorage.setItem('konti:tnfocus',TN.focus?'1':'0'); }catch(e){} TN.hist=[]; tnApplyFilter(); tnFocusPaint(); toast(TN.focus?(tnFocusRange()?'고른 악기 음역 위주로 들어요 (소음을 완전히 없애지는 못해요)':'악기를 고르면 그 악기 소리 위주로 들어요'):'모든 소리를 들어요'); };
   $('tnlisten').onclick=()=>{ const t=TN.target!=null?TN.target:(TN.last!=null?Math.round(TN.last):69); tnTone(t); };
   $('tnstrings').onclick=e=>{ const b=e.target.closest('.btn'); if(!b)return; const v=b.dataset.m; tnSetTarget(v===''?null:+v,v!==''); };
   $('tnkeys').addEventListener('pointerdown',e=>{ const k=document.elementFromPoint(e.clientX,e.clientY); const el=k&&k.closest&&k.closest('#tnroll [data-m]'); if(!el)return;
@@ -14346,7 +14358,10 @@ function mtSetBpm(v,restart){ v=Math.max(30,Math.min(300,Math.round(v||90))); MT
   addEventListener('keydown',e=>{ if(KB.shown==='mt'&&e.code==='Space'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='SELECT'){ e.preventDefault(); if(MT.on)mtStop(); else mtStart(); } });
   window.addEventListener('resize',()=>{ if(KB.shown==='tn')tnGraph(performance.now()); });
   $('h-tn').onclick=()=>{ showScreen('tn'); $('tnttl').textContent='🎤 음 찾기 · 튜너'; try{ history.pushState({v:'tn'},''); }catch(e){} TN.pre='chrom'; $('tnpre').value='chrom'; TN.target=null; tnStrings(); tnStart(); };
-  $('h-tni').onclick=()=>{ showScreen('tn'); $('tnttl').textContent='🎸 악기 튜닝'; try{ history.pushState({v:'tn'},''); }catch(e){} tnStart(); tnPopOpen(); };   // 들어가면 바로 듣기 시작(정지·다시 시작 단추는 그대로)
+  $('h-tni').onclick=()=>{ showScreen('tn'); $('tnttl').textContent='🎸 악기 튜닝'; try{ history.pushState({v:'tn'},''); }catch(e){}
+    /* v157: 지난번에 고른 악기가 있으면 고르기 창 없이 바로 그 악기로 연다(바꾸려면 「다른 악기」) */
+    let k=null; try{ k=localStorage.getItem('konti:tnpre'); }catch(e){}
+    if(k&&TN_PRE[k]&&k!=='chrom'){ TN.pre=k; $('tnpre').value=k; TN.target=null; TN.hist=[]; tnStrings(); tnStart(); } else { tnStart(); tnPopOpen(); } };   // 들어가면 바로 듣기 시작(정지·다시 시작 단추는 그대로)
   $('h-mt').onclick=()=>{ showScreen('mt'); try{ history.pushState({v:'mt'},''); }catch(e){} };
 })();
 </script>
